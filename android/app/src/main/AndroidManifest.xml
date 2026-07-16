@@ -3,7 +3,7 @@
     <application
         android:name="${applicationName}"
         android:label="Kids World"
-        android:icon="@android:drawable/ic_menu_gallery">
+        android:icon="@mipmap/ic_launcher">
 
         <activity
             android:name=".MainActivity"
