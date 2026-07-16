@@ -1,6 +1,6 @@
-package com.example.flutter_starter
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-import io.flutter.embedding.android.FlutterActivity
+    <item android:drawable="@android:color/white" />
 
-class MainActivity: FlutterActivity() {
-}
+</layer-list>
