@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'win_screen.dart';
+
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
 
@@ -64,39 +66,28 @@ class _GameScreenState extends State<GameScreen> {
   int currentQuestion = 0;
 
   void checkAnswer(String answer) {
-    if (answer == questions[currentQuestion]["answer"]) {
-      if (currentQuestion < questions.length - 1) {
-        setState(() {
-          currentQuestion++;
-        });
-      } else {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (_) => AlertDialog(
-            title: const Text("🎉 مبروك"),
-            content: const Text("لقد أنهيت جميع المراحل."),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-                child: const Text("الرئيسية"),
-              ),
-            ],
-          ),
-        );
-      }
+  if (answer == questions[currentQuestion]["answer"]) {
+    if (currentQuestion < questions.length - 1) {
+      setState(() {
+        currentQuestion++;
+      });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("❌ حاول مرة أخرى"),
-          duration: Duration(seconds: 1),
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const WinScreen(),
         ),
       );
     }
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("❌ حاول مرة أخرى"),
+        duration: Duration(seconds: 1),
+      ),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
