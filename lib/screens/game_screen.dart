@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import 'win_screen.dart';
 
@@ -10,6 +11,8 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  final AudioPlayer audioPlayer = AudioPlayer();
+
   final List<Map<String, dynamic>> questions = [
     {
       "image": "assets/images/puzzles/kids_puzzle.png",
@@ -66,8 +69,16 @@ class _GameScreenState extends State<GameScreen> {
   int currentQuestion = 0;
   int stars = 0;
 
+  void playSound(String fileName) {
+    audioPlayer.play(
+      AssetSource('sounds/$fileName'),
+    );
+  }
+
   void checkAnswer(String answer) {
     if (answer == questions[currentQuestion]["answer"]) {
+      playSound("correct.mp3");
+
       setState(() {
         stars++;
       });
@@ -85,12 +96,20 @@ class _GameScreenState extends State<GameScreen> {
         );
       }
     } else {
+      playSound("wrong.mp3");
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("حاول مرة أخرى ⭐"),
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
   }
 
   @override
