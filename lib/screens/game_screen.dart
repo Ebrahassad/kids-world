@@ -67,106 +67,107 @@ class _GameScreenState extends State<GameScreen> {
   int stars = 0;
 
   void checkAnswer(String answer) {
-  if (answer == questions[currentQuestion]["answer"]) {
-    setState(() {
-      stars++;
-    });
-
-    if (currentQuestion < questions.length - 1) {
+    if (answer == questions[currentQuestion]["answer"]) {
       setState(() {
-        currentQuestion++;
+        stars++;
       });
+
+      if (currentQuestion < questions.length - 1) {
+        setState(() {
+          currentQuestion++;
+        });
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const WinScreen(),
+          ),
+        );
+      }
     } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const WinScreen(),
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("حاول مرة أخرى ⭐"),
         ),
       );
     }
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("حاول مرة أخرى ⭐"),
-      ),
-    );
   }
-}
+
   @override
   Widget build(BuildContext context) {
     final data = questions[currentQuestion];
 
     return Scaffold(
-  appBar: AppBar(
-    title: Text(
-      "المرحلة ${currentQuestion + 1} / ${questions.length}",
-    ),
-    centerTitle: true,
-    actions: [
-      Padding(
-        padding: const EdgeInsets.only(right: 16),
-        child: Row(
-          children: [
-            const Icon(
-              Icons.star,
-              color: Colors.yellow,
+      appBar: AppBar(
+        title: Text(
+          "المرحلة ${currentQuestion + 1} / ${questions.length}",
+        ),
+        centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.star,
+                  color: Colors.yellow,
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  "$stars",
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 5),
-            Text(
-              "$stars",
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+          ),
+        ],
+      ),
+
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Expanded(
+              child: Image.asset(
+                data["image"],
+                fit: BoxFit.contain,
               ),
             ),
+
+            const SizedBox(height: 20),
+
+            ...List.generate(
+              (data["options"] as List).length,
+              (index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        checkAnswer(data["options"][index]);
+                      },
+                      child: Text(
+                        data["options"][index],
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+
+            const SizedBox(height: 20),
           ],
         ),
       ),
-    ],
-  ),
-
-  body: Padding(
-    padding: const EdgeInsets.all(16),
-    child: Column(
-      children: [
-        Expanded(
-          child: Image.asset(
-            data["image"],
-            fit: BoxFit.contain,
-          ),
-        ),
-
-        const SizedBox(height: 20),
-
-        ...List.generate(
-          (data["options"] as List).length,
-          (index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: SizedBox(
-                width: double.infinity,
-                height: 55,
-                child: ElevatedButton(
-                  onPressed: () {
-                    checkAnswer(data["options"][index]);
-                  },
-                  child: Text(
-                    data["options"][index],
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-
-                const SizedBox(height: 20),
-      ],
-    ),
-  ),
-);
+    );
   }
 }
