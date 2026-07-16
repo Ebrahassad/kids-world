@@ -1,23 +1,27 @@
+import 'dart:ui';
+
 class PuzzlePiece {
   final int id;
-  final String imagePath;
-  final bool isCorrect;
 
-  const PuzzlePiece({
+  /// ترتيب القطعة الصحيح داخل الصورة
+  final int correctIndex;
+
+  /// ترتيبها الحالي داخل اللوحة
+  int currentIndex;
+
+  /// الجزء المقتطع من الصورة
+  final Rect sourceRect;
+
+  PuzzlePiece({
     required this.id,
-    required this.imagePath,
-    this.isCorrect = false,
+    required this.correctIndex,
+    required this.currentIndex,
+    required this.sourceRect,
   });
 
-  PuzzlePiece copyWith({
-    int? id,
-    String? imagePath,
-    bool? isCorrect,
-  }) {
-    return PuzzlePiece(
-      id: id ?? this.id,
-      imagePath: imagePath ?? this.imagePath,
-      isCorrect: isCorrect ?? this.isCorrect,
-    );
+  bool get isCorrect => currentIndex == correctIndex;
+
+  void moveTo(int newIndex) {
+    currentIndex = newIndex;
   }
 }
