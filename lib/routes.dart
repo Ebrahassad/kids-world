@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'app.dart';
+import 'screens/home_screen.dart';
 
 class AppRoutes {
   static const String home = '/';
 
   static Map<String, WidgetBuilder> routes = {
-    home: (context) => const HomePage(),
+    home: (context) => const HomeScreen(),
   };
 }
