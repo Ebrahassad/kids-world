@@ -64,9 +64,14 @@ class _GameScreenState extends State<GameScreen> {
   ];
 
   int currentQuestion = 0;
+  int stars = 0;
 
   void checkAnswer(String answer) {
   if (answer == questions[currentQuestion]["answer"]) {
+    setState(() {
+      stars++;
+    });
+
     if (currentQuestion < questions.length - 1) {
       setState(() {
         currentQuestion++;
@@ -82,13 +87,11 @@ class _GameScreenState extends State<GameScreen> {
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text("❌ حاول مرة أخرى"),
-        duration: Duration(seconds: 1),
+        content: Text("حاول مرة أخرى ⭐"),
       ),
     );
   }
 }
-
   @override
   Widget build(BuildContext context) {
     final data = questions[currentQuestion];
