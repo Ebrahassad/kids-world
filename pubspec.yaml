@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  puzzle_game: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -25,4 +24,5 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/puzzles/
     - assets/sounds/
