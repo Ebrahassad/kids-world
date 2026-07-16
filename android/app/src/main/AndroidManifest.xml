@@ -3,7 +3,7 @@
 
     <application
         android:label="flutter_starter"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@android:drawable/ic_menu_gallery">
 
         <activity
             android:name=".MainActivity"
