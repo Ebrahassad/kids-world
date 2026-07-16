@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 
 class GameScreen extends StatefulWidget {
@@ -9,67 +8,147 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  final List<String> images = [
-    'assets/images/puzzles/kids_puzzle.png',
-    'assets/images/puzzles/monkey_puzzle.png',
-    'assets/images/puzzles/bear_puzzle.png',
-    'assets/images/puzzles/fish_puzzle.png',
-    'assets/images/puzzles/dinosaur_puzzle.png',
-    'assets/images/puzzles/butterfly_puzzle.png',
-    'assets/images/puzzles/dog_puzzle.png',
-    'assets/images/puzzles/cat_puzzle.png',
-    'assets/images/puzzles/rabbit_puzzle.png',
-    'assets/images/puzzles/lion_puzzle.png',
+  final List<Map<String, dynamic>> questions = [
+    {
+      "image": "assets/images/puzzles/kids_puzzle.png",
+      "answer": "أطفال",
+      "options": ["أطفال", "قرد", "أسد", "سمكة"],
+    },
+    {
+      "image": "assets/images/puzzles/monkey_puzzle.png",
+      "answer": "قرد",
+      "options": ["دب", "قرد", "قطة", "كلب"],
+    },
+    {
+      "image": "assets/images/puzzles/bear_puzzle.png",
+      "answer": "دب",
+      "options": ["سمكة", "دب", "أرنب", "أسد"],
+    },
+    {
+      "image": "assets/images/puzzles/fish_puzzle.png",
+      "answer": "سمكة",
+      "options": ["فراشة", "سمكة", "كلب", "ديناصور"],
+    },
+    {
+      "image": "assets/images/puzzles/dinosaur_puzzle.png",
+      "answer": "ديناصور",
+      "options": ["قرد", "ديناصور", "أسد", "دب"],
+    },
+    {
+      "image": "assets/images/puzzles/butterfly_puzzle.png",
+      "answer": "فراشة",
+      "options": ["قطة", "كلب", "فراشة", "سمكة"],
+    },
+    {
+      "image": "assets/images/puzzles/dog_puzzle.png",
+      "answer": "كلب",
+      "options": ["كلب", "أرنب", "دب", "أسد"],
+    },
+    {
+      "image": "assets/images/puzzles/cat_puzzle.png",
+      "answer": "قطة",
+      "options": ["قطة", "سمكة", "قرد", "ديناصور"],
+    },
+    {
+      "image": "assets/images/puzzles/rabbit_puzzle.png",
+      "answer": "أرنب",
+      "options": ["فراشة", "كلب", "أرنب", "أسد"],
+    },
+    {
+      "image": "assets/images/puzzles/lion_puzzle.png",
+      "answer": "أسد",
+      "options": ["دب", "أسد", "قطة", "سمكة"],
+    },
   ];
 
-  String currentImage = '';
+  int currentQuestion = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    changeImage();
-  }
-
-  void changeImage() {
-    setState(() {
-      currentImage = images[Random().nextInt(images.length)];
-    });
+  void checkAnswer(String answer) {
+    if (answer == questions[currentQuestion]["answer"]) {
+      if (currentQuestion < questions.length - 1) {
+        setState(() {
+          currentQuestion++;
+        });
+      } else {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => AlertDialog(
+            title: const Text("🎉 مبروك"),
+            content: const Text("لقد أنهيت جميع المراحل."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: const Text("الرئيسية"),
+              ),
+            ],
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("❌ حاول مرة أخرى"),
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final data = questions[currentQuestion];
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Puzzle Game'),
+        title: Text(
+          "المرحلة ${currentQuestion + 1} / ${questions.length}",
+        ),
         centerTitle: true,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'اختر القطع لتكوين الصورة',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Expanded(
+              child: Image.asset(
+                data["image"],
+                fit: BoxFit.contain,
+              ),
             ),
-          ),
 
-          const SizedBox(height: 30),
+            const SizedBox(height: 20),
+            ...List.generate(
+              (data["options"] as List).length,
+              (index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        checkAnswer(data["options"][index]);
+                      },
+                      child: Text(
+                        data["options"][index],
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
 
-          Image.asset(
-            currentImage,
-            width: 250,
-            height: 250,
-            fit: BoxFit.cover,
-          ),
-
-          const SizedBox(height: 30),
-
-          ElevatedButton(
-            onPressed: changeImage,
-            child: const Text('صورة جديدة'),
-          ),
-        ],
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
