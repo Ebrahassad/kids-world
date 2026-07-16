@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    namespace "com.test.test"
+    namespace "com.kidsworld.app"
 
     compileSdk flutter.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.test.test"
+        applicationId "com.kidsworld.app"
 
         minSdk flutter.minSdkVersion
         targetSdk flutter.targetSdkVersion
