@@ -1,21 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 
-class WinScreen extends StatelessWidget {
+import 'game_screen.dart';
+
+class WinScreen extends StatefulWidget {
   const WinScreen({super.key});
+
+  @override
+  State<WinScreen> createState() => _WinScreenState();
+}
+
+class _WinScreenState extends State<WinScreen> {
+  final AudioPlayer audioPlayer = AudioPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+
+    audioPlayer.play(
+      AssetSource('sounds/win.mp3'),
+    );
+  }
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlue.shade100,
+
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
+
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+
             children: [
+
               const Text(
-                "🏆",
-                style: TextStyle(fontSize: 90),
+                "🎉🏆🎉",
+                style: TextStyle(
+                  fontSize: 80,
+                ),
               ),
 
               const SizedBox(height: 20),
@@ -23,7 +54,7 @@ class WinScreen extends StatelessWidget {
               const Text(
                 "مبروك!",
                 style: TextStyle(
-                  fontSize: 36,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                   color: Colors.green,
                 ),
@@ -32,7 +63,7 @@ class WinScreen extends StatelessWidget {
               const SizedBox(height: 15),
 
               const Text(
-                "لقد أكملت جميع المراحل بنجاح",
+                "لقد أكملت جميع المراحل بنجاح ⭐",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 22,
@@ -42,15 +73,52 @@ class WinScreen extends StatelessWidget {
               const SizedBox(height: 40),
 
               SizedBox(
-                width: 220,
-                height: 55,
+                width: 240,
+                height: 60,
+
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+
                   onPressed: () {
-                    Navigator.popUntil(context, (route) => route.isFirst);
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const GameScreen(),
+                      ),
+                    );
+
                   },
+
                   child: const Text(
-                    "العودة للرئيسية",
-                    style: TextStyle(fontSize: 22),
+                    "إعادة اللعب 🔄",
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              TextButton(
+                onPressed: () {
+                  Navigator.popUntil(
+                    context,
+                    (route) => route.isFirst,
+                  );
+                },
+
+                child: const Text(
+                  "العودة للرئيسية 🏠",
+                  style: TextStyle(
+                    fontSize: 20,
                   ),
                 ),
               ),
