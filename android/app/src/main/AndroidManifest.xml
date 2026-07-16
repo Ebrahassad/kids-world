@@ -1,8 +1,7 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.flutter_starter">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:label="flutter_starter"
+        android:label="Kids World"
         android:icon="@android:drawable/ic_menu_gallery">
 
         <activity
