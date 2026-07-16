@@ -85,14 +85,12 @@ class _WinScreenState extends State<WinScreen> {
                   ),
 
                   onPressed: () {
-
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (_) => const GameScreen(),
                       ),
                     );
-
                   },
 
                   child: const Text(
