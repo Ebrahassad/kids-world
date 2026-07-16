@@ -9,6 +9,13 @@ class KidsWorldApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kids World',
       debugShowCheckedModeBanner: false,
+
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.lightBlue.shade50,
+        fontFamily: 'Roboto',
+      ),
+
       home: const HomeScreen(),
     );
   }
