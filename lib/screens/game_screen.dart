@@ -98,21 +98,33 @@ class _GameScreenState extends State<GameScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "المرحلة ${currentQuestion + 1} / ${questions.length}",
-        ),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Expanded(
-              child: Image.asset(
-                data["image"],
-                fit: BoxFit.contain,
-              ),
+  title: Text(
+    "المرحلة ${currentQuestion + 1} / ${questions.length}",
+  ),
+  centerTitle: true,
+
+  actions: [
+    Padding(
+      padding: const EdgeInsets.only(right: 16),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.star,
+            color: Colors.yellow,
+          ),
+          const SizedBox(width: 5),
+          Text(
+            "$stars",
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
+          ),
+        ],
+      ),
+    ),
+  ],
+),
 
             const SizedBox(height: 20),
             ...List.generate(
