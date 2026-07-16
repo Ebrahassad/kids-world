@@ -12,9 +12,11 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         centerTitle: true,
+        elevation: 0,
         title: const Text(
           "Kids World",
           style: TextStyle(
+            fontSize: 26,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
@@ -26,32 +28,61 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
 
-            const Icon(
-              Icons.extension,
-              size: 120,
-              color: Colors.orange,
+            // شعار مؤقت للعبة
+            Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blue.withOpacity(0.2),
+                    blurRadius: 15,
+                    spreadRadius: 3,
+                  ),
+                ],
+              ),
+              child: const Center(
+                child: Text(
+                  "🧩⭐",
+                  style: TextStyle(
+                    fontSize: 70,
+                  ),
+                ),
+              ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 35),
 
             const Text(
-              "Puzzle Game",
+              "لعبة تركيب الصور",
               style: TextStyle(
-                fontSize: 32,
+                fontSize: 34,
                 fontWeight: FontWeight.bold,
               ),
             ),
 
-            const SizedBox(height: 40),
+            const SizedBox(height: 15),
+
+            const Text(
+              "تعلم والعب واجمع النجوم ⭐",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+
+            const SizedBox(height: 45),
 
             SizedBox(
-              width: 220,
-              height: 60,
+              width: 240,
+              height: 65,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
+                  elevation: 5,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(25),
                   ),
                 ),
 
@@ -65,9 +96,10 @@ class HomeScreen extends StatelessWidget {
                 },
 
                 child: const Text(
-                  "ابدأ اللعب",
+                  "ابدأ اللعب 🎮",
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
