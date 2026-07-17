@@ -5,1120 +5,413 @@ import 'package:audioplayers/audioplayers.dart';
 
 import 'win_screen.dart';
 
-
 class GameScreen extends StatefulWidget {
-
   const GameScreen({super.key});
-
 
   @override
   State<GameScreen> createState() => _GameScreenState();
-
 }
 
-
-
 class _GameScreenState extends State<GameScreen> {
-
-
   final AudioPlayer audioPlayer = AudioPlayer();
-
   final Random random = Random();
 
-
-
   final List<Map<String, dynamic>> originalQuestions = [
-
-
     {
       "image": "assets/images/Puzzle/kids_puzzle.png",
       "answer": "أطفال",
-      "options": [
-        "أطفال",
-        "قرد",
-        "أسد",
-        "سمكة",
-      ],
+      "options": ["أطفال", "قرد", "أسد", "سمكة"],
     },
-
-
     {
       "image": "assets/images/Puzzle/monkey_puzzle.png",
       "answer": "قرد",
-      "options": [
-        "دب",
-        "قرد",
-        "قطة",
-        "كلب",
-      ],
+      "options": ["دب", "قرد", "قطة", "كلب"],
     },
-
-
     {
       "image": "assets/images/Puzzle/bear_puzzle.png",
       "answer": "دب",
-      "options": [
-        "سمكة",
-        "دب",
-        "أرنب",
-        "أسد",
-      ],
+      "options": ["سمكة", "دب", "أرنب", "أسد"],
     },
-
-
     {
       "image": "assets/images/Puzzle/fish_puzzle.png",
       "answer": "سمكة",
-      "options": [
-        "فراشة",
-        "سمكة",
-        "كلب",
-        "ديناصور",
-      ],
+      "options": ["فراشة", "سمكة", "كلب", "ديناصور"],
     },
-
-
     {
       "image": "assets/images/Puzzle/dinosaur_puzzle.png",
       "answer": "ديناصور",
-      "options": [
-        "قرد",
-        "ديناصور",
-        "أسد",
-        "دب",
-      ],
+      "options": ["قرد", "ديناصور", "أسد", "دب"],
     },
-
-
     {
       "image": "assets/images/Puzzle/butterfly_puzzle.png",
       "answer": "فراشة",
-      "options": [
-        "قطة",
-        "كلب",
-        "فراشة",
-        "سمكة",
-      ],
+      "options": ["قطة", "كلب", "فراشة", "سمكة"],
     },
-
-
     {
       "image": "assets/images/Puzzle/dog_puzzle.png",
       "answer": "كلب",
-      "options": [
-        "كلب",
-        "أرنب",
-        "دب",
-        "أسد",
-      ],
+      "options": ["كلب", "أرنب", "دب", "أسد"],
     },
-
-
     {
       "image": "assets/images/Puzzle/cat_puzzle.png",
       "answer": "قطة",
-      "options": [
-        "قطة",
-        "سمكة",
-        "قرد",
-        "ديناصور",
-      ],
+      "options": ["قطة", "سمكة", "قرد", "ديناصور"],
     },
-
-
     {
       "image": "assets/images/Puzzle/rabbit_puzzle.png",
       "answer": "أرنب",
-      "options": [
-        "فراشة",
-        "كلب",
-        "أرنب",
-        "أسد",
-      ],
+      "options": ["فراشة", "كلب", "أرنب", "أسد"],
     },
-
-
     {
       "image": "assets/images/Puzzle/lion_puzzle.png",
       "answer": "أسد",
-      "options": [
-        "دب",
-        "أسد",
-        "قطة",
-        "سمكة",
-      ],
+      "options": ["دب", "أسد", "قطة", "سمكة"],
     },
-
   ];
-
-
 
   late List<Map<String, dynamic>> questions;
 
-
-
   int currentQuestion = 0;
-
   int stars = 0;
 
-
   bool answered = false;
-
-
   bool loadingNextQuestion = false;
+
   @override
   void initState() {
-
     super.initState();
-
     prepareGame();
-
   }
-
-
 
   void prepareGame() {
+    questions = originalQuestions.map((item) {
+      return {
+        "image": item["image"],
+        "answer": item["answer"],
+        "options": List<String>.from(item["options"]),
+      };
+    }).toList();
 
-  questions = originalQuestions.map((item) {
+    questions.shuffle(random);
 
-    return {
-
-      "image": item["image"],
-      "answer": item["answer"],
-      "options": List<String>.from(
-        item["options"],
-      ),
-
-    };
-
-  }).toList();
-
-
-  questions.shuffle(random);
-
-
-
-
-
-  for (var item in questions) {
-
-    List<String> options =
-        List<String>.from(item["options"]);
-
-    options.shuffle(random);
-
-    item["options"] = options;
-
-  }
-
-}
-
-
-
-
-  Future<void> playSound(String fileName) async {
-
-
-    try {
-
-
-      await audioPlayer.stop();
-
-
-      await audioPlayer.play(
-
-        AssetSource(
-          "sounds/$fileName",
-        ),
-
-      );
-
-
-    } catch (e) {
-
-
-      debugPrint(
-        "خطأ الصوت: $e",
-      );
-
-
+    for (var item in questions) {
+      final options = List<String>.from(item["options"]);
+      options.shuffle(random);
+      item["options"] = options;
     }
-
-
   }
-
-
-
-
+  Future<void> playSound(String fileName) async {
+    try {
+      await audioPlayer.stop();
+      await audioPlayer.play(
+        AssetSource("sounds/$fileName"),
+      );
+    } catch (e) {
+      debugPrint("خطأ في تشغيل الصوت: $e");
+    }
+  }
 
   void checkAnswer(String answer) {
-
-
-    // منع الضغط المتكرر
-
-    if (answered || loadingNextQuestion) {
-
-      return;
-
-    }
-
-
+    // منع الضغط أكثر من مرة
+    if (answered || loadingNextQuestion) return;
 
     setState(() {
-
       answered = true;
-
     });
 
-
-
-
-    final correctAnswer =
-        questions[currentQuestion]["answer"];
-
-
-
+    final correctAnswer = questions[currentQuestion]["answer"];
 
     if (answer == correctAnswer) {
-
-
-
-      playSound(
-        "correct.mp3",
-      );
-
-
+      playSound("correct.mp3");
 
       setState(() {
-
-
         stars++;
-
-
       });
 
-
-
-
       ScaffoldMessenger.of(context).showSnackBar(
-
-
         const SnackBar(
-
-
-          content: Text(
-            "إجابة صحيحة ⭐🎉",
-          ),
-
-
-          duration: Duration(
-            milliseconds: 700,
-          ),
-
-
+          content: Text("🎉 إجابة صحيحة"),
+          backgroundColor: Colors.green,
+          duration: Duration(milliseconds: 700),
         ),
-
-
       );
-
-
 
       goNextQuestion();
-
-
-
     } else {
-
-
-
-      playSound(
-        "wrong.mp3",
-      );
-
-
-
+      playSound("wrong.mp3");
 
       ScaffoldMessenger.of(context).showSnackBar(
-
-
         const SnackBar(
-
-
-          content: Text(
-            "حاول مرة أخرى ⭐",
-          ),
-
-
-          duration: Duration(
-            milliseconds: 800,
-          ),
-
-
+          content: Text("❌ حاول مرة أخرى"),
+          backgroundColor: Colors.red,
+          duration: Duration(milliseconds: 800),
         ),
-
-
       );
-
-
-
 
       Future.delayed(
-
-
-        const Duration(
-          milliseconds: 800,
-        ),
-
-
+        const Duration(milliseconds: 800),
         () {
-
-
           if (!mounted) return;
 
-
-
           setState(() {
-
-
             answered = false;
-
-
           });
-
-
-
         },
-
-
       );
-
-
-
     }
-
-
   }
 
-
-
-
-
-  void goNextQuestion() async {
-
-
-
+  Future<void> goNextQuestion() async {
     setState(() {
-
-
       loadingNextQuestion = true;
-
-
     });
 
-
-
-    
-    await Future.delayed(
-
-      const Duration(
-        seconds: 1,
-      ),
-
-    );
-
-
+    await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
 
-
-
     if (currentQuestion < questions.length - 1) {
-
-
-
       setState(() {
-
-
         currentQuestion++;
-
-
         answered = false;
-
-
         loadingNextQuestion = false;
-
-
-
+      });
+    } else {
+      setState(() {
+        loadingNextQuestion = false;
       });
 
-
-
-   } else {
-
-  setState(() {
-
-    loadingNextQuestion = false;
-
-  });
-
-
-  if (!mounted) return;
-
-
-  Navigator.pushReplacement(
-  context,
-
-  MaterialPageRoute(
-
-    builder: (_) => WinScreen(
-      stars: stars,
-    ),
-
-  ),
-);
-
-}
-
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => WinScreen(stars: stars),
+        ),
+      );
+    }
   }
 
-
-
-
-
   void restartGame() {
-
-
     prepareGame();
 
-
-
     setState(() {
-
-
       currentQuestion = 0;
-
-
       stars = 0;
-
-
       answered = false;
-
-
       loadingNextQuestion = false;
-
-
     });
-
-
   }
   @override
   Widget build(BuildContext context) {
-
-
     if (questions.isEmpty) {
-
-
       return const Scaffold(
-
         body: Center(
-
           child: CircularProgressIndicator(),
-
         ),
-
       );
-
-
     }
-
-
 
     final data = questions[currentQuestion];
 
-
-
     return Scaffold(
-
-
       body: Container(
-
-
         width: double.infinity,
-
-
         height: double.infinity,
-
-
-
         decoration: const BoxDecoration(
-
-
-          gradient: LinearGradient(
-
-
-            colors: [
-
-
-              Color(0xffFFF59D),
-
-
-              Color(0xff81D4FA),
-
-
-            ],
-
-
-            begin: Alignment.topCenter,
-
-
-            end: Alignment.bottomCenter,
-
-
+          image: DecorationImage(
+            image: AssetImage("assets/images/background.png"),
+            fit: BoxFit.cover,
           ),
-
-
         ),
-
-
-
-
-        child: SafeArea(
-
-
-          child: Column(
-
-
-            children: [
-
-
-
-              const SizedBox(height: 15),
-
-
-
-
-              Row(
-
-
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceAround,
-
-
-
-                children: [
-
-
-
-                  Text(
-
-
-                    "⭐ $stars",
-
-
-
-                    style: const TextStyle(
-
-
-                      fontSize: 26,
-
-
-                      fontWeight: FontWeight.bold,
-
-
-                      color: Colors.orange,
-
-
-                    ),
-
-
-                  ),
-
-
-
-
-                  Text(
-
-
-                    "السؤال ${currentQuestion + 1}/${questions.length}",
-
-
-
-                    style: const TextStyle(
-
-
-                      fontSize: 22,
-
-
-                      fontWeight: FontWeight.bold,
-
-
-                    ),
-
-
-                  ),
-
-
-
-                ],
-
-
-              ),
-
-
-
-
-              const SizedBox(height: 20),
-
-
-
-
-              Container(
-
-
-                margin: const EdgeInsets.symmetric(
-
-                  horizontal: 20,
-
-                ),
-
-
-
-                padding: const EdgeInsets.all(15),
-
-
-
-
-                decoration: BoxDecoration(
-
-
-                  color: Colors.white,
-
-
-                  borderRadius:
-                      BorderRadius.circular(25),
-
-
-
-
-                  boxShadow: const [
-
-
-                    BoxShadow(
-
-
-                      color: Colors.black26,
-
-
-                      blurRadius: 8,
-
-
-                      offset: Offset(0, 4),
-
-
-                    ),
-
-
-                  ],
-
-
-
-                ),
-
-
-
-
-                child: Image.asset(
-
-
-                  data["image"],
-
-
-
-                  height:
-
-                      MediaQuery.of(context)
-                          .size
-                          .height * 0.27,
-
-
-
-                  fit: BoxFit.contain,
-
-
-
-                  errorBuilder:
-                      (context, error, stackTrace) {
-
-
-
-                    return const Icon(
-
-
-                      Icons.image_not_supported,
-
-
-                      size: 120,
-
-
-                      color: Colors.grey,
-
-
-                    );
-
-
-
-                  },
-
-
-                ),
-
-
-
-              ),
-
-
-
-
-              const SizedBox(height: 20),
-
-
-
-
-              const Text(
-
-
-                "اختر الإجابة الصحيحة 🎯",
-
-
-
-                style: TextStyle(
-
-
-                  fontSize: 24,
-
-
-                  fontWeight: FontWeight.bold,
-
-
-                ),
-
-
-              ),
-
-
-
-
-              const SizedBox(height: 15),
-
-
-
-
-              Expanded(
-
-
-                child: GridView.builder(
-
-
-                  padding:
-                      const EdgeInsets.symmetric(
-
-                        horizontal: 20,
-
+        child: Container(
+          color: Colors.white.withOpacity(0.25),
+          child: SafeArea(
+            child: Column(
+              children: [
+                const SizedBox(height: 15),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 8,
                       ),
-
-
-
-
-                  itemCount:
-                      data["options"].length,
-
-
-
-
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-
-
-
-                    crossAxisCount: 2,
-
-
-
-                    crossAxisSpacing: 15,
-
-
-
-                    mainAxisSpacing: 15,
-
-
-
-                    childAspectRatio: 2,
-
-
-
-                  ),
-
-
-
-
-                  itemBuilder: (context, index) {
-
-
-                    final String option =
-                        data["options"][index];
-
-
-
-                    return InkWell(
-
-  splashColor: Colors.blue.shade100,
-
-  onTap: (loadingNextQuestion || answered)
-    ? null
-    : () {
-
-        checkAnswer(option);
-
-      },                 
-
-
-
-                      borderRadius:
-                          BorderRadius.circular(20),
-
-
-
-
-                      child: Container(
-
-
-                        alignment:
-                            Alignment.center,
-
-
-
-
-                        decoration: BoxDecoration(
-
-
-                          color: Colors.white,
-
-
-
-                          borderRadius:
-                              BorderRadius.circular(20),
-
-
-
-                          boxShadow: const [
-
-
-
-                            BoxShadow(
-
-
-                              color: Colors.black26,
-
-
-                              blurRadius: 5,
-
-
-                              offset: Offset(0, 3),
-
-
-                            ),
-
-
-
-                          ],
-
-
-
-                        ),
-
-
-
-
-                        child: Text(
-
-
-                          option,
-
-
-
-                          style: const TextStyle(
-
-
-                            fontSize: 22,
-
-
-                            fontWeight: FontWeight.bold,
-
-
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 5,
                           ),
-
-
-
-                          textAlign:
-                              TextAlign.center,
-
-
-
-                        ),
-
-
-
+                        ],
                       ),
+                      child: Text(
+                        "⭐ $stars",
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange,
+                        ),
+                      ),
+                    ),
 
-
-
-                    );
-
-
-                  },
-
-
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 5,
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        "السؤال ${currentQuestion + 1}/${questions.length}",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
 
-
-
-              ),
-              const SizedBox(height: 15),
-
-
-
-              ElevatedButton.icon(
-
-
-                onPressed: loadingNextQuestion
-    ? null
-    : restartGame,
-
-
-                icon: const Icon(
-
-                  Icons.refresh,
-
-                  size: 28,
-
+                const SizedBox(height: 20),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Image.asset(
+                    data["image"],
+                    height: MediaQuery.of(context).size.height * 0.28,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(
+                        Icons.image_not_supported,
+                        size: 120,
+                        color: Colors.grey,
+                      );
+                    },
+                  ),
                 ),
 
+                const SizedBox(height: 20),
 
-
-                label: const Text(
-
-
-                  "إعادة اللعب",
-
-
-
+                const Text(
+                  "اختر الإجابة الصحيحة 🎯",
                   style: TextStyle(
-
-
-                    fontSize: 20,
-
-
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
-
-
                   ),
-
-
-
                 ),
 
+                const SizedBox(height: 15),
 
-
-
-                style: ElevatedButton.styleFrom(
-
-
-
-                  padding: const EdgeInsets.symmetric(
-
-
-
-                    horizontal: 35,
-
-
-                    vertical: 12,
-
-
-
+                Expanded(
+                  child: GridView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: data["options"].length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 15,
+                      mainAxisSpacing: 15,
+                      childAspectRatio: 2,
+                    ),
+                    itemBuilder: (context, index) {
+                      final String option = data["options"][index];
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(20),
+                        splashColor: Colors.blue.shade100,
+                        onTap: (loadingNextQuestion || answered)
+                            ? null
+                            : () => checkAnswer(option),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            option,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-
-
-
-
-                  backgroundColor: Colors.white,
-
-
-
-                  foregroundColor: Colors.blue,
-
-
-
-
-                  shape: RoundedRectangleBorder(
-
-
-
-                    borderRadius:
-                        BorderRadius.circular(25),
-
-
-
-                  ),
-
-
-
                 ),
 
+                const SizedBox(height: 15),
 
+                ElevatedButton.icon(
+                  onPressed:
+                      loadingNextQuestion ? null : restartGame,
+                  icon: const Icon(
+                    Icons.refresh,
+                    size: 28,
+                  ),
+                  label: const Text(
+                    "إعادة اللعب",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.blue,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 35,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),
+                ),
 
-              ),
-
-
-
-
-              const SizedBox(height: 20),
-
-
-
-            ],
-
-
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
-
-
         ),
-
-
       ),
-
-
     );
-
-
   }
-
-
-
-
 
   @override
   void dispose() {
-
-
     audioPlayer.dispose();
-
-
-
     super.dispose();
-
-
   }
-
-
-
 }
