@@ -3,6 +3,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/services.dart';
 
+import 'star_manager.dart';
+
 
 class WinScreen extends StatefulWidget {
 
@@ -61,6 +63,22 @@ class _WinScreenState extends State<WinScreen> {
 
 
     confettiController.play();
+
+
+    saveStars();
+
+  }
+
+
+
+
+  Future<void> saveStars() async {
+
+    await StarManager.addStars(
+
+      widget.stars,
+
+    );
 
   }
 
@@ -402,8 +420,6 @@ class _WinScreenState extends State<WinScreen> {
 
 
 
-                    // زر إعادة اللعب
-
                     actionButton(
 
                       text:"إعادة اللعب 🔄",
@@ -442,8 +458,6 @@ class _WinScreenState extends State<WinScreen> {
 
 
 
-                    // زر صفحة الألعاب
-
                     actionButton(
 
                       text:"صفحة الألعاب 🎮",
@@ -481,8 +495,6 @@ class _WinScreenState extends State<WinScreen> {
 
 
 
-
-                    // زر إغلاق التطبيق
 
                     actionButton(
 
