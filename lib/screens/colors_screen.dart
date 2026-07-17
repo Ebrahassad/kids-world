@@ -156,10 +156,10 @@ class _ColorsScreenState extends State<ColorsScreen> {
   context,
   MaterialPageRoute(
     builder: (_) => WinScreen(
-      stars: stars,
-      nextGame: const ColorsScreen(),
-      gamesPage: const LevelsScreen(),
-    ),
+  stars: stars + 1,
+  nextGame: const ColorsScreen(),
+  gamesPage: const LevelsScreen(),
+),
   ),
 );
       }
