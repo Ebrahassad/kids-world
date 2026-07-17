@@ -27,9 +27,10 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/images/puzzles/
+    - assets/images/Puzzle/
     - assets/sounds/
     - assets/icon/app_icon.png
+
 
 flutter_launcher_icons:
   android: true
