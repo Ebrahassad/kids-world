@@ -112,7 +112,6 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void checkAnswer(String answer) {
-    // منع الضغط أكثر من مرة
     if (answered || loadingNextQuestion) return;
 
     setState(() {
@@ -284,6 +283,21 @@ class _GameScreenState extends State<GameScreen> {
                 ),
 
                 const SizedBox(height: 20),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: LinearProgressIndicator(
+                    value: (currentQuestion + 1) / questions.length,
+                    minHeight: 8,
+                    borderRadius: BorderRadius.circular(20),
+                    backgroundColor: Colors.white,
+                    valueColor: const AlwaysStoppedAnimation(
+                      Colors.green,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   padding: const EdgeInsets.all(15),
@@ -298,17 +312,21 @@ class _GameScreenState extends State<GameScreen> {
                       ),
                     ],
                   ),
-                  child: Image.asset(
-                    data["image"],
-                    height: MediaQuery.of(context).size.height * 0.28,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(
-                        Icons.image_not_supported,
-                        size: 120,
-                        color: Colors.grey,
-                      );
-                    },
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: Image.asset(
+                      data["image"],
+                      key: ValueKey(data["image"]),
+                      height: MediaQuery.of(context).size.height * 0.32,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.image_not_supported,
+                          size: 120,
+                          color: Colors.grey,
+                        );
+                      },
+                    ),
                   ),
                 ),
 
@@ -323,7 +341,6 @@ class _GameScreenState extends State<GameScreen> {
                 ),
 
                 const SizedBox(height: 15),
-
                 Expanded(
                   child: GridView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -337,32 +354,36 @@ class _GameScreenState extends State<GameScreen> {
                     ),
                     itemBuilder: (context, index) {
                       final String option = data["options"][index];
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        splashColor: Colors.blue.shade100,
-                        onTap: (loadingNextQuestion || answered)
-                            ? null
-                            : () => checkAnswer(option),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 5,
-                                offset: Offset(0, 3),
+
+                      return AnimatedScale(
+                        duration: const Duration(milliseconds: 150),
+                        scale: 1,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          splashColor: Colors.blue.shade100,
+                          onTap: (loadingNextQuestion || answered)
+                              ? null
+                              : () => checkAnswer(option),
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              option,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
-                          ),
-                          child: Text(
-                            option,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -376,10 +397,7 @@ class _GameScreenState extends State<GameScreen> {
                 ElevatedButton.icon(
                   onPressed:
                       loadingNextQuestion ? null : restartGame,
-                  icon: const Icon(
-                    Icons.refresh,
-                    size: 28,
-                  ),
+                  icon: const Icon(Icons.refresh, size: 28),
                   label: const Text(
                     "إعادة اللعب",
                     style: TextStyle(
@@ -390,6 +408,7 @@ class _GameScreenState extends State<GameScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.blue,
+                    elevation: 6,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 35,
                       vertical: 12,
