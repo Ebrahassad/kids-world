@@ -1,139 +1,290 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+
 import 'win_screen.dart';
+
 
 class MemoryGameScreen extends StatefulWidget {
   const MemoryGameScreen({super.key});
 
   @override
-  State<MemoryGameScreen> createState() => _MemoryGameScreenState();
+  State<MemoryGameScreen> createState() =>
+      _MemoryGameScreenState();
 }
+
 
 class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
   final AudioPlayer audioPlayer = AudioPlayer();
 
+  final Random random = Random();
+
+
   int stars = 0;
+
   int matches = 0;
 
-  List<Map<String, dynamic>> cards = [
-    {
-      "image": "🐶",
-      "open": false,
-      "done": false,
-    },
-    {
-      "image": "🐶",
-      "open": false,
-      "done": false,
-    },
-    {
-      "image": "🐱",
-      "open": false,
-      "done": false,
-    },
-    {
-      "image": "🐱",
-      "open": false,
-      "done": false,
-    },
-    {
-      "image": "🐮",
-      "open": false,
-      "done": false,
-    },
-    {
-      "image": "🐮",
-      "open": false,
-      "done": false,
-    },
-    {
-      "image": "🐑",
-      "open": false,
-      "done": false,
-    },
-    {
-      "image": "🐑",
-      "open": false,
-      "done": false,
-    },
-  ];
+
+  bool checking = false;
+
 
   int? firstCard;
+
   int? secondCard;
-  void playSound(String fileName) {
-    audioPlayer.play(
-      AssetSource('sounds/$fileName'),
-    );
+
+
+
+  final List<String> animals = [
+
+    "🐶",
+    "🐱",
+    "🐮",
+    "🐑",
+
+  ];
+
+
+
+  late List<Map<String, dynamic>> cards;
+
+
+
+  @override
+  void initState() {
+
+    super.initState();
+
+    startGame();
+
   }
 
 
-  void selectCard(int index) {
 
-    if (cards[index]["done"] == true ||
-        cards[index]["open"] == true) {
-      return;
+  void startGame() {
+
+
+    cards = [];
+
+
+    for (final animal in animals) {
+
+      cards.add({
+
+        "image": animal,
+
+        "open": false,
+
+        "done": false,
+
+      });
+
+
+      cards.add({
+
+        "image": animal,
+
+        "open": false,
+
+        "done": false,
+
+      });
+
     }
 
 
-    setState(() {
-      cards[index]["open"] = true;
-    });
+
+    cards.shuffle(random);
 
 
-    if (firstCard == null) {
 
-      firstCard = index;
+    stars = 0;
 
-    } else {
+    matches = 0;
 
-      secondCard = index;
+    firstCard = null;
+
+    secondCard = null;
+
+    checking = false;
 
 
-      Future.delayed(
-        const Duration(seconds: 1),
-        () {
+    setState(() {});
 
-          checkMatch();
+  }
 
-        },
+
+
+  Future<void> playSound(String fileName) async {
+
+    try {
+
+      await audioPlayer.stop();
+
+      await audioPlayer.play(
+
+        AssetSource(
+          "sounds/$fileName",
+        ),
+
+      );
+
+
+    } catch (e) {
+
+      debugPrint(
+        "خطأ الصوت: $e",
       );
 
     }
 
   }
+  void selectCard(int index) {
+
+
+    // منع الضغط أثناء المقارنة
+    if (checking) return;
+
+
+    // منع فتح نفس الكرت أو الكرت المكتمل
+    if (cards[index]["open"] == true ||
+        cards[index]["done"] == true) {
+
+      return;
+
+    }
+
+
+
+    setState(() {
+
+      cards[index]["open"] = true;
+
+    });
+
+
+
+    if (firstCard == null) {
+
+
+      firstCard = index;
+
+
+
+    } else {
+
+
+      secondCard = index;
+
+
+      checking = true;
+
+
+      Future.delayed(
+
+        const Duration(seconds: 1),
+
+        () {
+
+          checkMatch();
+
+        },
+
+      );
+
+
+    }
+
+  }
+
+
+
 
 
   void checkMatch() {
 
-    if (cards[firstCard!]["image"] ==
-        cards[secondCard!]["image"]) {
+
+    if (firstCard == null ||
+        secondCard == null) {
+
+      return;
+
+    }
+
+
+
+    final first =
+        cards[firstCard!]["image"];
+
+
+    final second =
+        cards[secondCard!]["image"];
+
+
+
+
+    if (first == second) {
 
 
       playSound("correct.mp3");
 
 
+
       setState(() {
 
+
         cards[firstCard!]["done"] = true;
+
+
         cards[secondCard!]["done"] = true;
 
+
+
         stars++;
+
+
         matches++;
+
 
       });
 
 
-      if (matches == cards.length ~/ 2) {
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const WinScreen(),
-          ),
+      if (matches == animals.length) {
+
+
+        Future.delayed(
+
+          const Duration(milliseconds: 500),
+
+          () {
+
+
+            Navigator.pushReplacement(
+
+              context,
+
+              MaterialPageRoute(
+
+                builder: (_) => WinScreen(
+
+                  stars: stars,
+
+                ),
+
+              ),
+
+            );
+
+
+          },
+
         );
 
+
       }
+
 
 
     } else {
@@ -142,10 +293,15 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
       playSound("wrong.mp3");
 
 
+
       setState(() {
 
+
         cards[firstCard!]["open"] = false;
+
+
         cards[secondCard!]["open"] = false;
+
 
       });
 
@@ -153,16 +309,32 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     }
 
 
+
     firstCard = null;
+
+
     secondCard = null;
 
+
+    checking = false;
+
+
   }
+
+
+
+
 
 
   @override
   void dispose() {
 
+
+    audioPlayer.stop();
+
+
     audioPlayer.dispose();
+
 
     super.dispose();
 
@@ -170,49 +342,702 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   @override
   Widget build(BuildContext context) {
 
+
     return Scaffold(
 
-      backgroundColor: Colors.lightBlue.shade50,
+
+      body: Container(
 
 
-      appBar: AppBar(
+        width: double.infinity,
 
-        backgroundColor: Colors.blue,
 
-        centerTitle: true,
+        height: double.infinity,
 
-        title: const Text(
-          "لعبة الذاكرة ⭐",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+
+        decoration: const BoxDecoration(
+
+
+          image: DecorationImage(
+
+
+            image: AssetImage(
+              "assets/images/background.png",
+            ),
+
+
+            fit: BoxFit.cover,
+
+
           ),
+
+
         ),
 
-        actions: [
 
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
+        child: Container(
 
-            child: Row(
+
+          color: Colors.white.withOpacity(0.25),
+
+
+          child: SafeArea(
+
+
+            child: Column(
+
 
               children: [
 
-                const Icon(
-                  Icons.star,
-                  color: Colors.yellow,
+
+
+                const SizedBox(height: 15),
+
+
+
+
+                Row(
+
+
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceEvenly,
+
+
+                  children: [
+
+
+
+                    Container(
+
+
+                      padding:
+                          const EdgeInsets.symmetric(
+
+                        horizontal: 20,
+
+                        vertical: 10,
+
+                      ),
+
+
+                      decoration: BoxDecoration(
+
+
+                        color: Colors.white,
+
+
+                        borderRadius:
+                            BorderRadius.circular(20),
+
+
+                        boxShadow: const [
+
+
+                          BoxShadow(
+
+
+                            color: Colors.black12,
+
+
+                            blurRadius: 6,
+
+
+                          ),
+
+
+                        ],
+
+
+                      ),
+
+
+
+                      child: Text(
+
+
+                        "⭐ $stars",
+
+
+
+                        style: const TextStyle(
+
+
+                          fontSize: 24,
+
+
+                          fontWeight:
+                              FontWeight.bold,
+
+
+                          color: Colors.orange,
+
+
+                        ),
+
+
+                      ),
+
+
+                    ),
+
+
+
+
+
+                    Container(
+
+
+                      padding:
+                          const EdgeInsets.symmetric(
+
+                        horizontal: 20,
+
+                        vertical: 10,
+
+                      ),
+
+
+                      decoration: BoxDecoration(
+
+
+                        color: Colors.white,
+
+
+                        borderRadius:
+                            BorderRadius.circular(20),
+
+
+                      ),
+
+
+
+                      child: Text(
+
+
+                        "المطابقة $matches/${cards.length ~/ 2}",
+
+
+
+                        style: const TextStyle(
+
+
+                          fontSize: 20,
+
+
+                          fontWeight:
+                              FontWeight.bold,
+
+
+                        ),
+
+
+                      ),
+
+
+                    ),
+
+
+
+                  ],
+
+
                 ),
 
-                const SizedBox(width: 5),
 
-                Text(
-                  "$stars",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+
+
+                const SizedBox(height: 25),
+
+
+
+
+                const Text(
+
+
+                  "🧠 ابحث عن الصور المتشابهة",
+
+
+
+                  style: TextStyle(
+
+
+                    fontSize: 26,
+
+
+                    fontWeight:
+                        FontWeight.bold,
+
+
                   ),
+
+
+
                 ),
+
+
+
+
+                const SizedBox(height: 20),
+
+
+
+
+
+                Expanded(
+
+
+                  child: GridView.builder(
+
+
+                    padding:
+                        const EdgeInsets.all(20),
+
+
+
+                    itemCount:
+                        cards.length,
+
+
+
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+
+
+                      crossAxisCount: 2,
+
+
+                      crossAxisSpacing: 20,
+
+
+                      mainAxisSpacing: 20,
+
+
+                    ),
+
+
+
+                    itemBuilder:
+                        (context,index){
+
+
+
+                      bool show =
+
+                          cards[index]["open"] ||
+
+                          cards[index]["done"];
+
+
+
+
+
+                      return GestureDetector(
+
+
+
+                        onTap: () {
+
+
+                          selectCard(index);
+
+
+                        },
+
+
+
+                        child: AnimatedContainer(
+
+
+                          duration:
+                              const Duration(
+                                milliseconds: 300,
+                              ),
+
+
+                          decoration: BoxDecoration(
+
+
+                            color: show
+
+                                ? Colors.white
+
+                                : Colors.green,
+
+
+                            borderRadius:
+                                BorderRadius.circular(25),
+
+
+
+                            boxShadow: const [
+
+
+                              BoxShadow(
+
+
+                                color: Colors.black26,
+
+
+                                blurRadius: 8,
+
+
+                                offset:
+                                    Offset(0,4),
+
+
+                              ),
+
+
+                            ],
+
+
+                          ),
+
+
+
+                          child: Center(
+
+
+
+                            child: AnimatedSwitcher(
+
+
+
+                              duration:
+                                  const Duration(
+                                    milliseconds: 300,
+                                  ),
+
+
+
+                              child: Text(
+
+
+                                show
+
+                                    ? cards[index]["image"]
+
+                                    : "❓",
+
+
+                                key: ValueKey(show),
+
+
+                                style: const TextStyle(
+
+
+                                  fontSize: 55,
+
+
+                                ),
+
+
+                              ),
+
+
+                            ),
+
+
+                          ),
+
+
+                        ),
+
+
+                      );
+
+
+
+                    },
+
+
+                  ),
+
+
+                ),
+
+
+              ],
+
+
+            ),
+
+
+          ),
+
+
+        ),
+
+
+      ),
+
+
+    );
+
+
+  }
+  Widget buildCard(int index) {
+
+    bool show =
+        cards[index]["open"] ||
+        cards[index]["done"];
+
+
+    return GestureDetector(
+
+      onTap: () {
+
+        selectCard(index);
+
+      },
+
+
+      child: AnimatedContainer(
+
+        duration:
+            const Duration(milliseconds: 300),
+
+
+        decoration: BoxDecoration(
+
+          color: show
+              ? Colors.white
+              : Colors.green,
+
+
+          borderRadius:
+              BorderRadius.circular(25),
+
+
+          boxShadow: const [
+
+            BoxShadow(
+
+              color: Colors.black26,
+
+              blurRadius: 8,
+
+              offset: Offset(0, 4),
+
+            ),
+
+          ],
+
+        ),
+
+
+        child: Center(
+
+          child: AnimatedSwitcher(
+
+            duration:
+                const Duration(milliseconds: 300),
+
+
+            child: Text(
+
+              show
+                  ? cards[index]["image"]
+                  : "❓",
+
+
+              key:
+                  ValueKey(show),
+
+
+              style: const TextStyle(
+
+                fontSize: 55,
+
+              ),
+
+            ),
+
+          ),
+
+        ),
+
+      ),
+
+    );
+
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+
+      body: Container(
+
+        width: double.infinity,
+
+        height: double.infinity,
+
+
+        decoration: const BoxDecoration(
+
+          image: DecorationImage(
+
+            image: AssetImage(
+              "assets/images/background.png",
+            ),
+
+            fit: BoxFit.cover,
+
+          ),
+
+        ),
+
+
+        child: Container(
+
+          color:
+              Colors.white.withOpacity(0.25),
+
+
+          child: SafeArea(
+
+            child: Column(
+
+              children: [
+
+                const SizedBox(height: 15),
+
+
+                Row(
+
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceEvenly,
+
+
+                  children: [
+
+                    Text(
+
+                      "⭐ $stars",
+
+                      style: const TextStyle(
+
+                        fontSize: 26,
+
+                        fontWeight:
+                            FontWeight.bold,
+
+                      ),
+
+                    ),
+
+
+                    Text(
+
+                      "🧩 $matches/${animals.length}",
+
+
+                      style: const TextStyle(
+
+                        fontSize: 22,
+
+                        fontWeight:
+                            FontWeight.bold,
+
+                      ),
+
+                    ),
+
+                  ],
+
+                ),
+
+
+
+                const SizedBox(height: 20),
+
+
+
+                const Text(
+
+                  "لعبة الذاكرة 🧠",
+
+                  style: TextStyle(
+
+                    fontSize: 30,
+
+                    fontWeight:
+                        FontWeight.bold,
+
+                  ),
+
+                ),
+
+
+
+                const SizedBox(height: 20),
+
+
+
+                Expanded(
+
+                  child: GridView.builder(
+
+                    padding:
+                        const EdgeInsets.all(20),
+
+
+                    itemCount:
+                        cards.length,
+
+
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+
+                      crossAxisCount: 4,
+
+                      crossAxisSpacing: 10,
+
+                      mainAxisSpacing: 10,
+
+                    ),
+
+
+                    itemBuilder:
+                        (context,index){
+
+                      return buildCard(index);
+
+                    },
+
+                  ),
+
+                ),
+
+
+
+                ElevatedButton.icon(
+
+                  onPressed: startGame,
+
+
+                  icon: const Icon(
+                    Icons.refresh,
+                  ),
+
+
+                  label: const Text(
+                    "إعادة اللعب",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+
+                ),
+
+
+
+                const SizedBox(height: 20),
+
 
               ],
 
@@ -220,124 +1045,24 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
           ),
 
-        ],
-
-      ),
-
-
-      body: Padding(
-
-        padding: const EdgeInsets.all(20),
-
-        child: Column(
-
-          children: [
-
-
-            const Text(
-              "ابحث عن الصور المتشابهة",
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-
-            const SizedBox(height: 30),
-
-
-            Expanded(
-
-              child: GridView.builder(
-
-                itemCount: cards.length,
-
-
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-
-                  crossAxisCount: 2,
-
-                  crossAxisSpacing: 20,
-
-                  mainAxisSpacing: 20,
-
-                ),
-
-
-                itemBuilder: (context, index) {
-
-
-                  bool show =
-                      cards[index]["open"] ||
-                      cards[index]["done"];
-
-
-                  return GestureDetector(
-
-                    onTap: () {
-
-                      selectCard(index);
-
-                    },
-
-
-                    child: Container(
-
-                      decoration: BoxDecoration(
-
-                        color: show
-                            ? Colors.white
-                            : Colors.green,
-
-                        borderRadius:
-                            BorderRadius.circular(20),
-
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 2,
-                        ),
-
-                      ),
-
-
-                      child: Center(
-
-                        child: Text(
-
-                          show
-                              ? cards[index]["image"]
-                              : "❓",
-
-                          style: const TextStyle(
-
-                            fontSize: 50,
-
-                          ),
-
-                        ),
-
-                      ),
-
-                    ),
-
-                  );
-
-
-                },
-
-              ),
-
-            ),
-
-
-          ],
-
         ),
 
       ),
 
     );
+
+  }
+
+
+
+  @override
+  void dispose() {
+
+    audioPlayer.stop();
+
+    audioPlayer.dispose();
+
+    super.dispose();
 
   }
 
