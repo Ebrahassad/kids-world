@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
+import 'games_screen.dart';
 
 class NumbersScreen extends StatefulWidget {
   const NumbersScreen({super.key});
@@ -88,11 +89,15 @@ class _NumbersScreenState extends State<NumbersScreen> {
         });
       } else {
         Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const WinScreen(),
-          ),
-        );
+  context,
+  MaterialPageRoute(
+    builder: (_) => WinScreen(
+      stars: stars,
+      nextGame: const NumbersScreen(),
+      gamesPage: const GamesScreen(),
+    ),
+  ),
+);
       }
     } else {
       playSound("wrong.mp3");
