@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
+import 'games_screen.dart';
 
 
 class HardPuzzleScreen extends StatefulWidget {
@@ -87,15 +88,23 @@ class _HardPuzzleScreenState extends State<HardPuzzleScreen> {
 
           Navigator.pushReplacement(
 
-            context,
+  context,
 
-            MaterialPageRoute(
+  MaterialPageRoute(
 
-              builder: (_) => const WinScreen(),
+    builder: (_) => WinScreen(
 
-            ),
+      stars: stars,
 
-          );
+      nextGame: const HardPuzzleScreen(),
+
+      gamesPage: const GamesScreen(),
+
+    ),
+
+  ),
+
+);
 
 
         },
