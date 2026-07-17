@@ -22,12 +22,24 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   final Random random = Random();
 
 
+  final List<String> animals = [
+
+    "🐶",
+    "🐱",
+    "🐮",
+    "🐑",
+    "🦁",
+    "🐸",
+
+  ];
+
+
+  late List<Map<String, dynamic>> cards;
+
+
   int stars = 0;
 
   int matches = 0;
-
-
-  bool checking = false;
 
 
   int? firstCard;
@@ -35,19 +47,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   int? secondCard;
 
 
-
-  final List<String> animals = [
-
-    "🐶",
-    "🐱",
-    "🐮",
-    "🐑",
-
-  ];
-
-
-
-  late List<Map<String, dynamic>> cards;
+  bool checking = false;
 
 
 
@@ -68,17 +68,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     cards = [];
 
 
-    for (final animal in animals) {
-
-      cards.add({
-
-        "image": animal,
-
-        "open": false,
-
-        "done": false,
-
-      });
+    for (String animal in animals) {
 
 
       cards.add({
@@ -90,6 +80,19 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
         "done": false,
 
       });
+
+
+
+      cards.add({
+
+        "image": animal,
+
+        "open": false,
+
+        "done": false,
+
+      });
+
 
     }
 
@@ -110,28 +113,30 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     checking = false;
 
 
+
     setState(() {});
 
   }
 
 
 
-  Future<void> playSound(String fileName) async {
+  Future<void> playSound(String file) async {
 
     try {
 
       await audioPlayer.stop();
 
+
       await audioPlayer.play(
 
         AssetSource(
-          "sounds/$fileName",
+          "sounds/$file",
         ),
 
       );
 
 
-    } catch (e) {
+    } catch(e) {
 
       debugPrint(
         "خطأ الصوت: $e",
@@ -142,12 +147,11 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   }
   void selectCard(int index) {
 
-
     // منع الضغط أثناء المقارنة
     if (checking) return;
 
 
-    // منع فتح نفس الكرت أو الكرت المكتمل
+    // منع فتح بطاقة مكتملة أو مفتوحة
     if (cards[index]["open"] == true ||
         cards[index]["done"] == true) {
 
@@ -167,9 +171,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
     if (firstCard == null) {
 
-
       firstCard = index;
-
 
 
     } else {
@@ -193,11 +195,9 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
       );
 
-
     }
 
   }
-
 
 
 
@@ -243,9 +243,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
         stars++;
 
-
         matches++;
-
 
       });
 
@@ -256,7 +254,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
         Future.delayed(
 
-          const Duration(milliseconds: 500),
+          const Duration(milliseconds: 700),
 
           () {
 
@@ -281,7 +279,6 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
           },
 
         );
-
 
       }
 
@@ -312,9 +309,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
     firstCard = null;
 
-
     secondCard = null;
-
 
     checking = false;
 
@@ -324,466 +319,19 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
 
 
-
-
-  @override
-  void dispose() {
-
-
-    audioPlayer.stop();
-
-
-    audioPlayer.dispose();
-
-
-    super.dispose();
-
-  }
-  @override
-  Widget build(BuildContext context) {
-
-
-    return Scaffold(
-
-
-      body: Container(
-
-
-        width: double.infinity,
-
-
-        height: double.infinity,
-
-
-        decoration: const BoxDecoration(
-
-
-          image: DecorationImage(
-
-
-            image: AssetImage(
-              "assets/images/background.png",
-            ),
-
-
-            fit: BoxFit.cover,
-
-
-          ),
-
-
-        ),
-
-
-        child: Container(
-
-
-          color: Colors.white.withOpacity(0.25),
-
-
-          child: SafeArea(
-
-
-            child: Column(
-
-
-              children: [
-
-
-
-                const SizedBox(height: 15),
-
-
-
-
-                Row(
-
-
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceEvenly,
-
-
-                  children: [
-
-
-
-                    Container(
-
-
-                      padding:
-                          const EdgeInsets.symmetric(
-
-                        horizontal: 20,
-
-                        vertical: 10,
-
-                      ),
-
-
-                      decoration: BoxDecoration(
-
-
-                        color: Colors.white,
-
-
-                        borderRadius:
-                            BorderRadius.circular(20),
-
-
-                        boxShadow: const [
-
-
-                          BoxShadow(
-
-
-                            color: Colors.black12,
-
-
-                            blurRadius: 6,
-
-
-                          ),
-
-
-                        ],
-
-
-                      ),
-
-
-
-                      child: Text(
-
-
-                        "⭐ $stars",
-
-
-
-                        style: const TextStyle(
-
-
-                          fontSize: 24,
-
-
-                          fontWeight:
-                              FontWeight.bold,
-
-
-                          color: Colors.orange,
-
-
-                        ),
-
-
-                      ),
-
-
-                    ),
-
-
-
-
-
-                    Container(
-
-
-                      padding:
-                          const EdgeInsets.symmetric(
-
-                        horizontal: 20,
-
-                        vertical: 10,
-
-                      ),
-
-
-                      decoration: BoxDecoration(
-
-
-                        color: Colors.white,
-
-
-                        borderRadius:
-                            BorderRadius.circular(20),
-
-
-                      ),
-
-
-
-                      child: Text(
-
-
-                        "المطابقة $matches/${cards.length ~/ 2}",
-
-
-
-                        style: const TextStyle(
-
-
-                          fontSize: 20,
-
-
-                          fontWeight:
-                              FontWeight.bold,
-
-
-                        ),
-
-
-                      ),
-
-
-                    ),
-
-
-
-                  ],
-
-
-                ),
-
-
-
-
-                const SizedBox(height: 25),
-
-
-
-
-                const Text(
-
-
-                  "🧠 ابحث عن الصور المتشابهة",
-
-
-
-                  style: TextStyle(
-
-
-                    fontSize: 26,
-
-
-                    fontWeight:
-                        FontWeight.bold,
-
-
-                  ),
-
-
-
-                ),
-
-
-
-
-                const SizedBox(height: 20),
-
-
-
-
-
-                Expanded(
-
-
-                  child: GridView.builder(
-
-
-                    padding:
-                        const EdgeInsets.all(20),
-
-
-
-                    itemCount:
-                        cards.length,
-
-
-
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-
-
-                      crossAxisCount: 2,
-
-
-                      crossAxisSpacing: 20,
-
-
-                      mainAxisSpacing: 20,
-
-
-                    ),
-
-
-
-                    itemBuilder:
-                        (context,index){
-
-
-
-                      bool show =
-
-                          cards[index]["open"] ||
-
-                          cards[index]["done"];
-
-
-
-
-
-                      return GestureDetector(
-
-
-
-                        onTap: () {
-
-
-                          selectCard(index);
-
-
-                        },
-
-
-
-                        child: AnimatedContainer(
-
-
-                          duration:
-                              const Duration(
-                                milliseconds: 300,
-                              ),
-
-
-                          decoration: BoxDecoration(
-
-
-                            color: show
-
-                                ? Colors.white
-
-                                : Colors.green,
-
-
-                            borderRadius:
-                                BorderRadius.circular(25),
-
-
-
-                            boxShadow: const [
-
-
-                              BoxShadow(
-
-
-                                color: Colors.black26,
-
-
-                                blurRadius: 8,
-
-
-                                offset:
-                                    Offset(0,4),
-
-
-                              ),
-
-
-                            ],
-
-
-                          ),
-
-
-
-                          child: Center(
-
-
-
-                            child: AnimatedSwitcher(
-
-
-
-                              duration:
-                                  const Duration(
-                                    milliseconds: 300,
-                                  ),
-
-
-
-                              child: Text(
-
-
-                                show
-
-                                    ? cards[index]["image"]
-
-                                    : "❓",
-
-
-                                key: ValueKey(show),
-
-
-                                style: const TextStyle(
-
-
-                                  fontSize: 55,
-
-
-                                ),
-
-
-                              ),
-
-
-                            ),
-
-
-                          ),
-
-
-                        ),
-
-
-                      );
-
-
-
-                    },
-
-
-                  ),
-
-
-                ),
-
-
-              ],
-
-
-            ),
-
-
-          ),
-
-
-        ),
-
-
-      ),
-
-
-    );
-
-
-  }
   Widget buildCard(int index) {
 
+
     bool show =
+
         cards[index]["open"] ||
+
         cards[index]["done"];
 
 
+
     return GestureDetector(
+
 
       onTap: () {
 
@@ -792,24 +340,35 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
       },
 
 
+
       child: AnimatedContainer(
 
+
         duration:
+
             const Duration(milliseconds: 300),
+
 
 
         decoration: BoxDecoration(
 
+
           color: show
+
               ? Colors.white
+
               : Colors.green,
 
 
+
           borderRadius:
+
               BorderRadius.circular(25),
 
 
+
           boxShadow: const [
+
 
             BoxShadow(
 
@@ -817,7 +376,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
               blurRadius: 8,
 
-              offset: Offset(0, 4),
+              offset: Offset(0,4),
 
             ),
 
@@ -826,23 +385,34 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
         ),
 
 
+
         child: Center(
+
 
           child: AnimatedSwitcher(
 
+
             duration:
+
                 const Duration(milliseconds: 300),
+
 
 
             child: Text(
 
+
               show
+
                   ? cards[index]["image"]
+
                   : "❓",
 
 
+
               key:
+
                   ValueKey(show),
+
 
 
               style: const TextStyle(
@@ -853,6 +423,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
             ),
 
+
           ),
 
         ),
@@ -862,9 +433,6 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     );
 
   }
-
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -894,8 +462,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
         child: Container(
 
-          color:
-              Colors.white.withOpacity(0.25),
+          color: Colors.white.withOpacity(0.25),
 
 
           child: SafeArea(
@@ -904,7 +471,9 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
               children: [
 
+
                 const SizedBox(height: 15),
+
 
 
                 Row(
@@ -915,37 +484,109 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
                   children: [
 
-                    Text(
 
-                      "⭐ $stars",
 
-                      style: const TextStyle(
+                    Container(
 
-                        fontSize: 26,
+                      padding:
+                          const EdgeInsets.symmetric(
 
-                        fontWeight:
-                            FontWeight.bold,
+                        horizontal: 20,
+
+                        vertical: 10,
+
+                      ),
+
+
+                      decoration: BoxDecoration(
+
+                        color: Colors.white,
+
+                        borderRadius:
+                            BorderRadius.circular(20),
+
+                        boxShadow: const [
+
+                          BoxShadow(
+
+                            color: Colors.black12,
+
+                            blurRadius: 6,
+
+                          ),
+
+                        ],
+
+                      ),
+
+
+
+                      child: Text(
+
+                        "⭐ $stars",
+
+
+                        style: const TextStyle(
+
+                          fontSize: 24,
+
+                          fontWeight:
+                              FontWeight.bold,
+
+                          color: Colors.orange,
+
+                        ),
 
                       ),
 
                     ),
 
 
-                    Text(
-
-                      "🧩 $matches/${animals.length}",
 
 
-                      style: const TextStyle(
 
-                        fontSize: 22,
+                    Container(
 
-                        fontWeight:
-                            FontWeight.bold,
+                      padding:
+                          const EdgeInsets.symmetric(
+
+                        horizontal: 20,
+
+                        vertical: 10,
+
+                      ),
+
+
+                      decoration: BoxDecoration(
+
+                        color: Colors.white,
+
+                        borderRadius:
+                            BorderRadius.circular(20),
+
+                      ),
+
+
+
+                      child: Text(
+
+                        "🧩 $matches/${animals.length}",
+
+
+                        style: const TextStyle(
+
+                          fontSize: 22,
+
+                          fontWeight:
+                              FontWeight.bold,
+
+                        ),
 
                       ),
 
                     ),
+
+
 
                   ],
 
@@ -953,7 +594,9 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
 
 
-                const SizedBox(height: 20),
+
+                const SizedBox(height: 25),
+
 
 
 
@@ -974,65 +617,148 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
 
 
+
+                const SizedBox(height: 10),
+
+
+
+                const Text(
+
+                  "ابحث عن الصور المتشابهة 🎯",
+
+                  style: TextStyle(
+
+                    fontSize: 22,
+
+                    fontWeight:
+                        FontWeight.bold,
+
+                  ),
+
+                ),
+
+
+
+
                 const SizedBox(height: 20),
+
 
 
 
                 Expanded(
 
+
                   child: GridView.builder(
+
 
                     padding:
                         const EdgeInsets.all(20),
+
 
 
                     itemCount:
                         cards.length,
 
 
+
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
 
+
                       crossAxisCount: 4,
 
-                      crossAxisSpacing: 10,
 
-                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 12,
+
+
+                      mainAxisSpacing: 12,
+
 
                     ),
+
 
 
                     itemBuilder:
                         (context,index){
 
+
                       return buildCard(index);
+
 
                     },
 
+
                   ),
 
+
                 ),
+
 
 
 
                 ElevatedButton.icon(
 
+
                   onPressed: startGame,
 
 
+
                   icon: const Icon(
-                    Icons.refresh,
+
+                    Icons.refresh_rounded,
+
                   ),
+
 
 
                   label: const Text(
+
                     "إعادة اللعب",
+
                     style: TextStyle(
+
                       fontSize: 20,
+
+                      fontWeight:
+                          FontWeight.bold,
+
                     ),
+
+                  ),
+
+
+
+                  style: ElevatedButton.styleFrom(
+
+                    backgroundColor: Colors.white,
+
+                    foregroundColor: Colors.blue,
+
+                    elevation: 8,
+
+                    padding:
+                        const EdgeInsets.symmetric(
+
+                      horizontal: 35,
+
+                      vertical: 12,
+
+                    ),
+
+
+
+                    shape:
+                        RoundedRectangleBorder(
+
+                      borderRadius:
+                          BorderRadius.circular(25),
+
+                    ),
+
                   ),
 
                 ),
+
 
 
 
@@ -1041,20 +767,23 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
               ],
 
+
             ),
+
 
           ),
 
+
         ),
+
 
       ),
 
+
     );
 
+
   }
-
-
-
   @override
   void dispose() {
 
