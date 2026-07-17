@@ -3,6 +3,7 @@ import 'game_screen.dart';
 import 'choose_image_screen.dart';
 import 'match_image_screen.dart';
 import 'colors_screen.dart';
+import 'numbers_screen.dart';
 
 class LevelsScreen extends StatelessWidget {
   const LevelsScreen({super.key});
@@ -24,7 +25,6 @@ class LevelsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlue.shade50,
-
       appBar: AppBar(
         backgroundColor: Colors.blue,
         centerTitle: true,
@@ -36,7 +36,6 @@ class LevelsScreen extends StatelessWidget {
           ),
         ),
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: GridView.builder(
@@ -84,10 +83,19 @@ class LevelsScreen extends StatelessWidget {
                       builder: (_) => const ColorsScreen(),
                     ),
                   );
+                } else if (index == 4) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const NumbersScreen(),
+                    ),
+                  );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text("هذه المرحلة قيد التطوير 🚀"),
+                      content: Text(
+                        "هذه المرحلة قيد التطوير 🚀",
+                      ),
                     ),
                   );
                 }
@@ -114,8 +122,3 @@ class LevelsScreen extends StatelessWidget {
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-}
