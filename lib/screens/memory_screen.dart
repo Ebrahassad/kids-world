@@ -53,10 +53,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 @override
 void initState() {
   super.initState();
-
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    startGame();
-  });
+  startGame();
 }
 
 
@@ -96,7 +93,9 @@ void startGame() {
 
 
 
-  setState(() {
+  if (!mounted) return;
+
+setState(() {
 
     cards = newCards;
 
@@ -141,6 +140,8 @@ void startGame() {
 
   }
   void selectCard(int index) {
+
+if (cards.isEmpty) return;
 
     // منع الضغط أثناء المقارنة
     if (checking) return;
@@ -199,16 +200,15 @@ void startGame() {
 
   void checkMatch() {
 
+  if (!mounted) return;
 
-    if (firstCard == null ||
-        secondCard == null) {
-
-      return;
-
-    }
-
+  if (firstCard == null ||
+      secondCard == null) {
+    return;
+  }
 
 
+   
     final first =
         cards[firstCard!]["image"];
 
