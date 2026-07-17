@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
+import 'levels_screen.dart';
 
 class ChooseImageScreen extends StatefulWidget {
   const ChooseImageScreen({super.key});
@@ -138,11 +139,15 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         });
       } else {
         Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const WinScreen(),
-          ),
-        );
+  context,
+  MaterialPageRoute(
+    builder: (_) => WinScreen(
+      stars: stars,
+      nextGame: const ChooseImageScreen(),
+      gamesPage: const LevelsScreen(),
+    ),
+  ),
+);
       }
     } else {
       playSound("wrong.mp3");
