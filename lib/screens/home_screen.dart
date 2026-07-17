@@ -74,9 +74,9 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 const Text(
-                  "لعبة تركيب الصور للأطفال",
+                  "عالم الاطفال",
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 26,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
