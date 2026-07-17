@@ -15,52 +15,52 @@ class _GameScreenState extends State<GameScreen> {
 
   final List<Map<String, dynamic>> questions = [
     {
-      "image": "assets/images/puzzles/kids_puzzle.png",
+      "image": "assets/images/Puzzle/kids_puzzle.png",
       "answer": "أطفال",
       "options": ["أطفال", "قرد", "أسد", "سمكة"],
     },
     {
-      "image": "assets/images/puzzles/monkey_puzzle.png",
+      "image": "assets/images/Puzzle/monkey_puzzle.png",
       "answer": "قرد",
       "options": ["دب", "قرد", "قطة", "كلب"],
     },
     {
-      "image": "assets/images/puzzles/bear_puzzle.png",
+      "image": "assets/images/Puzzle/bear_puzzle.png",
       "answer": "دب",
       "options": ["سمكة", "دب", "أرنب", "أسد"],
     },
     {
-      "image": "assets/images/puzzles/fish_puzzle.png",
+      "image": "assets/images/Puzzle/fish_puzzle.png",
       "answer": "سمكة",
       "options": ["فراشة", "سمكة", "كلب", "ديناصور"],
     },
     {
-      "image": "assets/images/puzzles/dinosaur_puzzle.png",
+      "image": "assets/images/Puzzle/dinosaur_puzzle.png",
       "answer": "ديناصور",
       "options": ["قرد", "ديناصور", "أسد", "دب"],
     },
     {
-      "image": "assets/images/puzzles/butterfly_puzzle.png",
+      "image": "assets/images/Puzzle/butterfly_puzzle.png",
       "answer": "فراشة",
       "options": ["قطة", "كلب", "فراشة", "سمكة"],
     },
     {
-      "image": "assets/images/puzzles/dog_puzzle.png",
+      "image": "assets/images/Puzzle/dog_puzzle.png",
       "answer": "كلب",
       "options": ["كلب", "أرنب", "دب", "أسد"],
     },
     {
-      "image": "assets/images/puzzles/cat_puzzle.png",
+      "image": "assets/images/Puzzle/cat_puzzle.png",
       "answer": "قطة",
       "options": ["قطة", "سمكة", "قرد", "ديناصور"],
     },
     {
-      "image": "assets/images/puzzles/rabbit_puzzle.png",
+      "image": "assets/images/Puzzle/rabbit_puzzle.png",
       "answer": "أرنب",
       "options": ["فراشة", "كلب", "أرنب", "أسد"],
     },
     {
-      "image": "assets/images/puzzles/lion_puzzle.png",
+      "image": "assets/images/Puzzle/lion_puzzle.png",
       "answer": "أسد",
       "options": ["دب", "أسد", "قطة", "سمكة"],
     },
@@ -122,16 +122,20 @@ class _GameScreenState extends State<GameScreen> {
           "المرحلة ${currentQuestion + 1} / ${questions.length}",
         ),
         centerTitle: true,
+
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
+
             child: Row(
               children: [
                 const Icon(
                   Icons.star,
                   color: Colors.yellow,
                 ),
+
                 const SizedBox(width: 5),
+
                 Text(
                   "$stars",
                   style: const TextStyle(
@@ -147,8 +151,10 @@ class _GameScreenState extends State<GameScreen> {
 
       body: Padding(
         padding: const EdgeInsets.all(16),
+
         child: Column(
           children: [
+
             Expanded(
               child: Image.asset(
                 data["image"],
@@ -160,18 +166,26 @@ class _GameScreenState extends State<GameScreen> {
 
             ...List.generate(
               (data["options"] as List).length,
+
               (index) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 6),
+
                   child: SizedBox(
                     width: double.infinity,
                     height: 55,
+
                     child: ElevatedButton(
                       onPressed: () {
-                        checkAnswer(data["options"][index]);
+                        checkAnswer(
+                          data["options"][index],
+                        );
                       },
+
                       child: Text(
                         data["options"][index],
+
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
