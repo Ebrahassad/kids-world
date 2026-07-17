@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-lib/screens/memory_screen.dart
+import 'memory_screen.dart';
 
 class LevelsScreen extends StatelessWidget {
   const LevelsScreen({super.key});
@@ -20,7 +20,6 @@ class LevelsScreen extends StatelessWidget {
         backgroundColor: Colors.blue,
       ),
 
-
       body: Container(
 
         decoration: const BoxDecoration(
@@ -33,7 +32,6 @@ class LevelsScreen extends StatelessWidget {
             end: Alignment.bottomCenter,
           ),
         ),
-
 
         child: Center(
 
@@ -50,7 +48,6 @@ class LevelsScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
 
               const SizedBox(height: 40),
 
@@ -81,8 +78,7 @@ class LevelsScreen extends StatelessWidget {
 
                       MaterialPageRoute(
 
-                        builder: (_) =>
-                        const MemoryGameScreen(),
+                        builder: (_) => MemoryGameScreen(),
 
                       ),
 
