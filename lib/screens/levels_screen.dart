@@ -7,10 +7,9 @@ class LevelsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
         title: const Text(
-          "اختيار المرحلة ⭐",
+          "مستويات لعبة الذاكرة 🧠",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -21,7 +20,7 @@ class LevelsScreen extends StatelessWidget {
       ),
 
       body: Container(
-
+        width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -33,166 +32,79 @@ class LevelsScreen extends StatelessWidget {
           ),
         ),
 
-        child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
 
-          child: Column(
-
-            mainAxisAlignment: MainAxisAlignment.center,
-
-            children: [
-
-              const Text(
-                "اختر اللعبة 🎮",
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
+            const Text(
+              "اختر المستوى ⭐",
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
               ),
+            ),
 
-              const SizedBox(height: 40),
+            const SizedBox(height: 40),
 
+            levelButton(
+              context,
+              "المستوى الأول ⭐",
+              Colors.green,
+            ),
 
-              SizedBox(
+            const SizedBox(height: 20),
 
-                width: 250,
-                height: 70,
+            levelButton(
+              context,
+              "المستوى الثاني ⭐⭐",
+              Colors.orange,
+            ),
 
-                child: ElevatedButton(
+            const SizedBox(height: 20),
 
-                  style: ElevatedButton.styleFrom(
-
-                    backgroundColor: Colors.green,
-
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-
-                  ),
-
-
-                  onPressed: () {
-
-                    Navigator.push(
-
-                      context,
-
-                      MaterialPageRoute(
-
-                        builder: (_) => MemoryGameScreen(),
-
-                      ),
-
-                    );
-
-                  },
-
-
-                  child: const Text(
-
-                    "لعبة الذاكرة 🧠",
-
-                    style: TextStyle(
-
-                      fontSize: 25,
-
-                      color: Colors.white,
-
-                      fontWeight: FontWeight.bold,
-
-                    ),
-
-                  ),
-
-                ),
-
-              ),
-
-
-              const SizedBox(height: 25),
-
-
-              levelButton(
-                "المستوى 1 ⭐",
-                Colors.orange,
-              ),
-
-
-              const SizedBox(height: 15),
-
-
-              levelButton(
-                "المستوى 2 ⭐⭐",
-                Colors.purple,
-              ),
-
-
-              const SizedBox(height: 15),
-
-
-              levelButton(
-                "المستوى 3 ⭐⭐⭐",
-                Colors.red,
-              ),
-
-            ],
-
-          ),
-
+            levelButton(
+              context,
+              "المستوى الثالث ⭐⭐⭐",
+              Colors.red,
+            ),
+          ],
         ),
-
       ),
-
     );
-
   }
 
-
-  Widget levelButton(String text, Color color) {
-
+  Widget levelButton(
+    BuildContext context,
+    String text,
+    Color color,
+  ) {
     return SizedBox(
-
-      width: 250,
-
-      height: 60,
-
+      width: 280,
+      height: 65,
       child: ElevatedButton(
-
         style: ElevatedButton.styleFrom(
-
           backgroundColor: color,
-
           shape: RoundedRectangleBorder(
-
             borderRadius: BorderRadius.circular(30),
-
           ),
-
         ),
-
-
-        onPressed: () {},
-
-
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const MemoryGameScreen(),
+            ),
+          );
+        },
         child: Text(
-
           text,
-
           style: const TextStyle(
-
-            fontSize: 22,
-
+            fontSize: 24,
             color: Colors.white,
-
             fontWeight: FontWeight.bold,
-
           ),
-
         ),
-
       ),
-
     );
-
   }
-
 }
