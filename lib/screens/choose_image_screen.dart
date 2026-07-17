@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
-import 'levels_screen.dart';
+import 'games_screen.dart';
 
 class ChooseImageScreen extends StatefulWidget {
   const ChooseImageScreen({super.key});
@@ -142,10 +142,10 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
   context,
   MaterialPageRoute(
     builder: (_) => WinScreen(
-  stars: stars + 1,
-  nextGame: const ChooseImageScreen(),
-  gamesPage: const LevelsScreen(),
-),
+      stars: stars + 1,
+      nextGame: const ChooseImageScreen(),
+      gamesPage: const GamesScreen(),
+    ),
   ),
 );
       }
