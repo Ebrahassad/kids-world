@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/material.dart';
 
 import 'win_screen.dart';
 
@@ -92,9 +92,11 @@ class _GameScreenState extends State<GameScreen> {
       };
     }).toList();
 
+    // ترتيب الأسئلة عشوائياً
     questions.shuffle(random);
 
-    for (var item in questions) {
+    // ترتيب الاختيارات عشوائياً
+    for (final item in questions) {
       final options = List<String>.from(item["options"]);
       options.shuffle(random);
       item["options"] = options;
@@ -112,6 +114,7 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void checkAnswer(String answer) {
+    // منع الضغط أكثر من مرة
     if (answered || loadingNextQuestion) return;
 
     setState(() {
@@ -147,16 +150,13 @@ class _GameScreenState extends State<GameScreen> {
         ),
       );
 
-      Future.delayed(
-        const Duration(milliseconds: 800),
-        () {
-          if (!mounted) return;
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (!mounted) return;
 
-          setState(() {
-            answered = false;
-          });
-        },
-      );
+        setState(() {
+          answered = false;
+        });
+      });
     }
   }
 
@@ -180,8 +180,13 @@ class _GameScreenState extends State<GameScreen> {
         loadingNextQuestion = false;
       });
 
-   await playSound("win.mp3");   
-   Navigator.pushReplacement(
+      // تشغيل صوت الفوز كاملاً
+      await playSound("win.mp3");
+      await Future.delayed(const Duration(seconds: 2));
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => WinScreen(stars: stars),
@@ -229,6 +234,7 @@ class _GameScreenState extends State<GameScreen> {
               children: [
                 const SizedBox(height: 15),
 
+                // النجوم ورقم السؤال
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -285,6 +291,7 @@ class _GameScreenState extends State<GameScreen> {
 
                 const SizedBox(height: 20),
 
+                // شريط التقدم
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: LinearProgressIndicator(
@@ -292,13 +299,14 @@ class _GameScreenState extends State<GameScreen> {
                     minHeight: 8,
                     borderRadius: BorderRadius.circular(20),
                     backgroundColor: Colors.white,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-  Colors.lightGreen,
-),
+                    valueColor: const AlwaysStoppedAnimation(
+                      Colors.lightGreen,
+                    ),
                   ),
                 ),
 
                 const SizedBox(height: 20),
+                // صورة السؤال
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   padding: const EdgeInsets.all(15),
@@ -313,31 +321,32 @@ class _GameScreenState extends State<GameScreen> {
                       ),
                     ],
                   ),
-                  child: child: AnimatedSwitcher(
-  duration: const Duration(milliseconds: 400),
-  transitionBuilder: (child, animation) {
-    return ScaleTransition(
-      scale: animation,
-      child: FadeTransition(
-        opacity: animation,
-        child: child,
-      ),
-    );
-  },
-  child: Image.asset(
-    data["image"],
-    key: ValueKey(data["image"]),
-    height: MediaQuery.of(context).size.height * 0.32,
-    fit: BoxFit.contain,
-    errorBuilder: (context, error, stackTrace) {
-      return const Icon(
-        Icons.image_not_supported,
-        size: 120,
-        color: Colors.grey,
-      );
-    },
-  ),
-),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    transitionBuilder: (child, animation) {
+                      return ScaleTransition(
+                        scale: animation,
+                        child: FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: Image.asset(
+                      data["image"],
+                      key: ValueKey(data["image"]),
+                      height: MediaQuery.of(context).size.height * 0.32,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.image_not_supported,
+                          size: 120,
+                          color: Colors.grey,
+                        );
+                      },
+                    ),
+                  ),
+                ),
 
                 const SizedBox(height: 20),
 
@@ -365,16 +374,17 @@ class _GameScreenState extends State<GameScreen> {
                       final String option = data["options"][index];
 
                       return AnimatedScale(
-  duration: const Duration(milliseconds: 180),
-  curve: Curves.easeInOut,
-  scale: answered ? 0.95 : 1,
+                        duration: const Duration(milliseconds: 180),
+                        curve: Curves.easeInOut,
+                        scale: answered ? 0.95 : 1,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(20),
                           splashColor: Colors.blue.shade100,
                           onTap: (loadingNextQuestion || answered)
                               ? null
                               : () => checkAnswer(option),
-                          child: Container(
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -401,13 +411,14 @@ class _GameScreenState extends State<GameScreen> {
                     },
                   ),
                 ),
-
                 const SizedBox(height: 15),
 
                 ElevatedButton.icon(
-                  onPressed:
-                      loadingNextQuestion ? null : restartGame,
-                  icon: const Icon(Icons.refresh, size: 28),
+                  onPressed: loadingNextQuestion ? null : restartGame,
+                  icon: const Icon(
+                    Icons.refresh_rounded,
+                    size: 28,
+                  ),
                   label: const Text(
                     "إعادة اللعب",
                     style: TextStyle(
@@ -418,10 +429,8 @@ class _GameScreenState extends State<GameScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.blue,
-                    
-  elevation: 8,
-  shadowColor: Colors.black45,
-
+                    elevation: 8,
+                    shadowColor: Colors.black45,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 35,
                       vertical: 12,
