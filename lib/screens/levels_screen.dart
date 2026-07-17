@@ -6,7 +6,7 @@ import 'match_image_screen.dart';
 import 'colors_screen.dart';
 import 'numbers_screen.dart';
 import 'letters_screen.dart';
-import 'memory_game_screen.dart';
+import 'memory_screen.dart';
 import 'sort_objects_screen.dart';
 import 'puzzle_order_screen.dart';
 import 'hard_puzzle_screen.dart';
