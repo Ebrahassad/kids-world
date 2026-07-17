@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
 import 'games_screen.dart';
+import 'progress_manager.dart';
 
 class ChooseImageScreen extends StatefulWidget {
   const ChooseImageScreen({super.key});
