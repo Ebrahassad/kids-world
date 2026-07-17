@@ -1,456 +1,195 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'win_screen.dart';
+import 'memory_game_screen.dart';
 
-class MemoryGameScreen extends StatefulWidget {
-  const MemoryGameScreen({super.key});
-
-  @override
-  State<MemoryGameScreen> createState() => _MemoryGameScreenState();
-}
-
-class _MemoryGameScreenState extends State<MemoryGameScreen> {
-
-  final AudioPlayer audioPlayer = AudioPlayer();
-
-  int stars = 0;
-  int matches = 0;
-
-  int? firstCard;
-  int? secondCard;
-
-  bool checking = false;
-
-
-  List<Map<String, dynamic>> cards = [];
-
+class LevelsScreen extends StatelessWidget {
+  const LevelsScreen({super.key});
 
   @override
-  void initState() {
-    super.initState();
-    startGame();
-  }
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+      appBar: AppBar(
+        title: const Text(
+          "اختيار المرحلة ⭐",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+      ),
 
 
-  void startGame() {
+      body: Container(
 
-    List<String> images = [
-
-      "🐶",
-      "🐱",
-      "🐮",
-      "🐑",
-      "🦁",
-      "🐼",
-
-    ];
-
-
-    List<String> allCards = [
-
-      ...images,
-      ...images,
-
-    ];
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.lightBlueAccent,
+              Colors.white,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
 
 
-    allCards.shuffle(Random());
+        child: Center(
+
+          child: Column(
+
+            mainAxisAlignment: MainAxisAlignment.center,
+
+            children: [
+
+              const Text(
+                "اختر اللعبة 🎮",
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
 
 
-    cards = allCards.map((e) {
-
-      return {
-
-        "image": e,
-        "open": false,
-        "done": false,
-
-      };
-
-    }).toList();
+              const SizedBox(height: 40),
 
 
-    stars = 0;
-    matches = 0;
+              SizedBox(
 
-    firstCard = null;
-    secondCard = null;
+                width: 250,
+                height: 70,
 
-    setState(() {});
+                child: ElevatedButton(
 
-  }
+                  style: ElevatedButton.styleFrom(
+
+                    backgroundColor: Colors.green,
+
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+
+                  ),
 
 
+                  onPressed: () {
 
-  void playSound(String file) {
+                    Navigator.push(
 
-    audioPlayer.play(
-      AssetSource('sounds/$file'),
+                      context,
+
+                      MaterialPageRoute(
+
+                        builder: (_) =>
+                        const MemoryGameScreen(),
+
+                      ),
+
+                    );
+
+                  },
+
+
+                  child: const Text(
+
+                    "لعبة الذاكرة 🧠",
+
+                    style: TextStyle(
+
+                      fontSize: 25,
+
+                      color: Colors.white,
+
+                      fontWeight: FontWeight.bold,
+
+                    ),
+
+                  ),
+
+                ),
+
+              ),
+
+
+              const SizedBox(height: 25),
+
+
+              levelButton(
+                "المستوى 1 ⭐",
+                Colors.orange,
+              ),
+
+
+              const SizedBox(height: 15),
+
+
+              levelButton(
+                "المستوى 2 ⭐⭐",
+                Colors.purple,
+              ),
+
+
+              const SizedBox(height: 15),
+
+
+              levelButton(
+                "المستوى 3 ⭐⭐⭐",
+                Colors.red,
+              ),
+
+            ],
+
+          ),
+
+        ),
+
+      ),
+
     );
 
   }
 
 
+  Widget levelButton(String text, Color color) {
 
-  void selectCard(int index) {
+    return SizedBox(
 
+      width: 250,
 
-    if(checking) return;
+      height: 60,
 
+      child: ElevatedButton(
 
-    if(cards[index]["open"] ||
-       cards[index]["done"]) {
-      return;
-    }
+        style: ElevatedButton.styleFrom(
 
+          backgroundColor: color,
 
-    setState(() {
+          shape: RoundedRectangleBorder(
 
-      cards[index]["open"] = true;
-
-    });
-
-
-    if(firstCard == null){
-
-      firstCard = index;
-
-    }else{
-
-      secondCard = index;
-
-      checking = true;
-
-
-      Future.delayed(
-        const Duration(seconds: 1),
-        checkMatch,
-      );
-
-    }
-
-  }
-
-
-
-  void checkMatch(){
-
-
-    if(cards[firstCard!]["image"] ==
-       cards[secondCard!]["image"]){
-
-
-      playSound("correct.mp3");
-
-
-      setState(() {
-
-        cards[firstCard!]["done"] = true;
-
-        cards[secondCard!]["done"] = true;
-
-        stars++;
-
-        matches++;
-
-      });
-
-
-      if(matches == cards.length ~/ 2){
-
-
-        Future.delayed(
-
-          const Duration(milliseconds:500),
-
-          (){
-
-            Navigator.pushReplacement(
-
-              context,
-
-              MaterialPageRoute(
-
-                builder: (_) =>
-                const WinScreen(),
-
-              ),
-
-            );
-
-          },
-
-        );
-
-
-      }
-
-
-    }else{
-
-
-      playSound("wrong.mp3");
-
-
-      setState(() {
-
-        cards[firstCard!]["open"] = false;
-
-        cards[secondCard!]["open"] = false;
-
-      });
-
-
-    }
-
-
-    firstCard = null;
-
-    secondCard = null;
-
-    checking = false;
-
-  }
-
-
-
-  @override
-  void dispose(){
-
-    audioPlayer.dispose();
-
-    super.dispose();
-
-  }
-
-
-
-  @override
-  Widget build(BuildContext context){
-
-    return Scaffold(
-
-      backgroundColor: Colors.lightBlue.shade50,
-
-
-      appBar: AppBar(
-
-        backgroundColor: Colors.blue,
-
-        centerTitle:true,
-
-
-        title: const Text(
-
-          "لعبة الذاكرة 🧠⭐",
-
-          style: TextStyle(
-
-            color: Colors.white,
-
-            fontWeight: FontWeight.bold,
+            borderRadius: BorderRadius.circular(30),
 
           ),
 
         ),
 
 
-        actions:[
+        onPressed: () {},
 
 
-          IconButton(
+        child: Text(
 
-            onPressed:startGame,
+          text,
 
-            icon:const Icon(
+          style: const TextStyle(
 
-              Icons.refresh,
+            fontSize: 22,
 
-              color:Colors.white,
+            color: Colors.white,
 
-            ),
+            fontWeight: FontWeight.bold,
 
           ),
-
-
-          Padding(
-
-            padding:
-            const EdgeInsets.only(right:15),
-
-
-            child:Row(
-
-              children:[
-
-                const Icon(
-
-                  Icons.star,
-
-                  color:Colors.yellow,
-
-                ),
-
-
-                Text(
-
-                  "$stars",
-
-                  style:const TextStyle(
-
-                    color:Colors.white,
-
-                    fontSize:20,
-
-                    fontWeight:
-                    FontWeight.bold,
-
-                  ),
-
-                ),
-
-              ],
-
-            ),
-
-          )
-
-        ],
-
-      ),
-
-
-
-      body:Padding(
-
-        padding:
-        const EdgeInsets.all(20),
-
-
-        child:Column(
-
-          children:[
-
-
-            const Text(
-
-              "ابحث عن الصور المتشابهة 🐾",
-
-              style:TextStyle(
-
-                fontSize:26,
-
-                fontWeight:
-                FontWeight.bold,
-
-              ),
-
-            ),
-
-
-            const SizedBox(height:25),
-
-
-
-            Expanded(
-
-              child:GridView.builder(
-
-                itemCount:cards.length,
-
-
-                gridDelegate:
-
-                const SliverGridDelegateWithFixedCrossAxisCount(
-
-                  crossAxisCount:3,
-
-                  crossAxisSpacing:15,
-
-                  mainAxisSpacing:15,
-
-                ),
-
-
-                itemBuilder:(context,index){
-
-
-                  bool show =
-                  cards[index]["open"] ||
-                  cards[index]["done"];
-
-
-                  return GestureDetector(
-
-                    onTap:(){
-
-                      selectCard(index);
-
-                    },
-
-
-                    child:Container(
-
-                      decoration:BoxDecoration(
-
-                        color:show
-                            ? Colors.white
-                            : Colors.green,
-
-
-                        borderRadius:
-                        BorderRadius.circular(20),
-
-
-                        boxShadow:[
-
-                          BoxShadow(
-
-                            color:
-                            Colors.black26,
-
-                            blurRadius:5,
-
-                          )
-
-                        ]
-
-                      ),
-
-
-                      child:Center(
-
-                        child:Text(
-
-                          show
-                          ? cards[index]["image"]
-                          : "❓",
-
-
-                          style:const TextStyle(
-
-                            fontSize:45,
-
-                          ),
-
-                        ),
-
-                      ),
-
-                    ),
-
-                  );
-
-
-                },
-
-              ),
-
-            ),
-
-
-          ],
 
         ),
 
