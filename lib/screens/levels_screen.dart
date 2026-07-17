@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'game_screen.dart';
+import 'choose_image_screen.dart';
+import 'match_image_screen.dart';
 
 class LevelsScreen extends StatelessWidget {
   const LevelsScreen({super.key});
@@ -48,7 +50,6 @@ class LevelsScreen extends StatelessWidget {
           ),
 
           itemBuilder: (context, index) {
-
             return ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
@@ -59,7 +60,6 @@ class LevelsScreen extends StatelessWidget {
 
               onPressed: () {
 
-                // المرحلة الأولى تعمل حاليا
                 if (index == 0) {
                   Navigator.push(
                     context,
@@ -69,11 +69,38 @@ class LevelsScreen extends StatelessWidget {
                   );
                 }
 
+                else if (index == 1) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ChooseImageScreen(),
+                    ),
+                  );
+                }
+
+                else if (index == 2) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MatchImageScreen(),
+                    ),
+                  );
+                }
+
+                else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "هذه المرحلة قيد التطوير 🚀",
+                      ),
+                    ),
+                  );
+                }
+
               },
 
               child: Column(
-                mainAxisAlignment:
-                    MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
 
                 children: [
 
