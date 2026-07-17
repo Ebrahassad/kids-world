@@ -197,13 +197,13 @@ class _LettersScreenState extends State<LettersScreen> {
         stars++;
       });
 
-      if (currentQuestion < questions.length - 1) {
+  if (currentQuestion < questions.length - 1) {
 
-        setState(() {
-          currentQuestion++;
-        });
+  setState(() {
+    currentQuestion++;
+  });
 
-      else {
+} else {
 
   Navigator.pushReplacement(
     context,
@@ -217,7 +217,6 @@ class _LettersScreenState extends State<LettersScreen> {
   );
 
 }
-
     } else {
 
       playSound("wrong.mp3");
