@@ -180,7 +180,8 @@ class _GameScreenState extends State<GameScreen> {
         loadingNextQuestion = false;
       });
 
-      Navigator.pushReplacement(
+   await playSound("win.mp3");   
+   Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => WinScreen(stars: stars),
@@ -291,9 +292,9 @@ class _GameScreenState extends State<GameScreen> {
                     minHeight: 8,
                     borderRadius: BorderRadius.circular(20),
                     backgroundColor: Colors.white,
-                    valueColor: const AlwaysStoppedAnimation(
-                      Colors.green,
-                    ),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+  Colors.lightGreen,
+),
                   ),
                 ),
 
@@ -312,23 +313,31 @@ class _GameScreenState extends State<GameScreen> {
                       ),
                     ],
                   ),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: Image.asset(
-                      data["image"],
-                      key: ValueKey(data["image"]),
-                      height: MediaQuery.of(context).size.height * 0.32,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(
-                          Icons.image_not_supported,
-                          size: 120,
-                          color: Colors.grey,
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                  child: child: AnimatedSwitcher(
+  duration: const Duration(milliseconds: 400),
+  transitionBuilder: (child, animation) {
+    return ScaleTransition(
+      scale: animation,
+      child: FadeTransition(
+        opacity: animation,
+        child: child,
+      ),
+    );
+  },
+  child: Image.asset(
+    data["image"],
+    key: ValueKey(data["image"]),
+    height: MediaQuery.of(context).size.height * 0.32,
+    fit: BoxFit.contain,
+    errorBuilder: (context, error, stackTrace) {
+      return const Icon(
+        Icons.image_not_supported,
+        size: 120,
+        color: Colors.grey,
+      );
+    },
+  ),
+),
 
                 const SizedBox(height: 20),
 
@@ -356,8 +365,9 @@ class _GameScreenState extends State<GameScreen> {
                       final String option = data["options"][index];
 
                       return AnimatedScale(
-                        duration: const Duration(milliseconds: 150),
-                        scale: 1,
+  duration: const Duration(milliseconds: 180),
+  curve: Curves.easeInOut,
+  scale: answered ? 0.95 : 1,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(20),
                           splashColor: Colors.blue.shade100,
@@ -408,7 +418,10 @@ class _GameScreenState extends State<GameScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.blue,
-                    elevation: 6,
+                    
+  elevation: 8,
+  shadowColor: Colors.black45,
+
                     padding: const EdgeInsets.symmetric(
                       horizontal: 35,
                       vertical: 12,
