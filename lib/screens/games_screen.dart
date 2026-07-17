@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'levels_screen.dart';
 import 'game_screen.dart';
+import 'choose_image_screen.dart';
 import 'letters_screen.dart';
 import 'numbers_screen.dart';
 import 'colors_screen.dart';
@@ -32,7 +33,6 @@ class GamesScreen extends StatelessWidget {
 
       body: Padding(
         padding: const EdgeInsets.all(16),
-
         child: GridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: 15,
@@ -57,28 +57,35 @@ class GamesScreen extends StatelessWidget {
 
             gameButton(
               context,
-              "🔤\nتعلم الحروف",
+              "📸\nاختر الصورة",
+              Colors.amber,
+              const ChooseImageScreen(),
+            ),
+
+            gameButton(
+              context,
+              "🔤\nالحروف",
               Colors.red,
               const LettersScreen(),
             ),
 
             gameButton(
               context,
-              "🔢\nتعلم الأرقام",
+              "🔢\nالأرقام",
               Colors.teal,
               const NumbersScreen(),
             ),
 
             gameButton(
               context,
-              "🎨\nتعلم الألوان",
+              "🎨\nالألوان",
               Colors.pink,
               const ColorsScreen(),
             ),
 
             gameButton(
               context,
-              "🖼️\nمطابقة الصور",
+              "🎯\nمطابقة الصور",
               Colors.indigo,
               const MatchImageScreen(),
             ),
@@ -92,7 +99,7 @@ class GamesScreen extends StatelessWidget {
 
             gameButton(
               context,
-              "🧩\nالبازل الصعب",
+              "⭐\nالبازل الصعب",
               Colors.deepPurple,
               const HardPuzzleScreen(),
             ),
@@ -102,13 +109,6 @@ class GamesScreen extends StatelessWidget {
               "🍎\nترتيب الأشياء",
               Colors.deepOrange,
               const SortObjectsScreen(),
-            ),
-
-            gameButton(
-              context,
-              "🔊\nالأصوات",
-              Colors.cyan,
-              null,
             ),
           ],
         ),
@@ -120,7 +120,7 @@ class GamesScreen extends StatelessWidget {
     BuildContext context,
     String title,
     Color color,
-    Widget? page,
+    Widget page,
   ) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
@@ -130,26 +130,14 @@ class GamesScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
       ),
-
       onPressed: () {
-        if (page != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => page,
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                "هذه اللعبة ستضاف قريبًا 🚀",
-              ),
-            ),
-          );
-        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => page,
+          ),
+        );
       },
-
       child: Text(
         title,
         textAlign: TextAlign.center,
