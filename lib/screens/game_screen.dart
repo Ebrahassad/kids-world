@@ -100,6 +100,7 @@ class _GameScreenState extends State<GameScreen> {
       item["options"] = options;
     }
   }
+
   Future<void> playSound(String fileName) async {
     try {
       await audioPlayer.stop();
@@ -107,37 +108,27 @@ class _GameScreenState extends State<GameScreen> {
       await audioPlayer.play(
         AssetSource("sounds/$fileName"),
       );
-
     } catch (e) {
       debugPrint("خطأ في تشغيل الصوت: $e");
     }
   }
 
-
-  void checkAnswer(String answer) {
-
-    // منع الضغط المتكرر أثناء الانتقال
+  Future<void> checkAnswer(String answer) async {
     if (answered || loadingNextQuestion) return;
-
 
     setState(() {
       answered = true;
     });
 
-
     final correctAnswer =
         questions[currentQuestion]["answer"];
 
-
     if (answer == correctAnswer) {
-
-      playSound("correct.mp3");
-
+      await playSound("correct.mp3");
 
       setState(() {
         stars++;
       });
-
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -147,15 +138,9 @@ class _GameScreenState extends State<GameScreen> {
         ),
       );
 
-
       goNextQuestion();
-
-
     } else {
-
-
-      playSound("wrong.mp3");
-
+      await playSound("wrong.mp3");
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -165,76 +150,47 @@ class _GameScreenState extends State<GameScreen> {
         ),
       );
 
-
       Future.delayed(
         const Duration(milliseconds: 800),
         () {
-
           if (!mounted) return;
-
 
           setState(() {
             answered = false;
           });
-
         },
       );
     }
   }
-
-
   Future<void> goNextQuestion() async {
-
-
     setState(() {
       loadingNextQuestion = true;
     });
-
 
     await Future.delayed(
       const Duration(seconds: 1),
     );
 
-
     if (!mounted) return;
 
-
-
     if (currentQuestion < questions.length - 1) {
-
-
       setState(() {
-
         currentQuestion++;
-
         answered = false;
-
         loadingNextQuestion = false;
-
       });
-
-
     } else {
-
-
       setState(() {
-
         loadingNextQuestion = false;
-
       });
-
-
 
       await playSound("win.mp3");
-
 
       await Future.delayed(
         const Duration(seconds: 2),
       );
 
-
       if (!mounted) return;
-
 
       Navigator.pushReplacement(
         context,
@@ -244,345 +200,212 @@ class _GameScreenState extends State<GameScreen> {
           ),
         ),
       );
-
     }
   }
+
+
   void restartGame() {
-
-    // إيقاف أي صوت يعمل عند إعادة اللعب
     audioPlayer.stop();
-
 
     prepareGame();
 
-
     setState(() {
-
       currentQuestion = 0;
-
       stars = 0;
-
       answered = false;
-
       loadingNextQuestion = false;
-
     });
   }
 
 
-
   @override
   Widget build(BuildContext context) {
-
-
     if (questions.isEmpty) {
-
       return const Scaffold(
-
         body: Center(
-
           child: CircularProgressIndicator(),
-
         ),
-
       );
-
     }
-
 
     final data = questions[currentQuestion];
 
-
     return Scaffold(
-
       body: Container(
-
         width: double.infinity,
-
         height: double.infinity,
-
-
         decoration: const BoxDecoration(
-
           image: DecorationImage(
-
             image: AssetImage(
               "assets/images/background.png",
             ),
-
             fit: BoxFit.cover,
-
           ),
-
         ),
 
-
         child: Container(
-
           color: Colors.white.withOpacity(0.25),
 
-
           child: SafeArea(
-
             child: Column(
-
               children: [
-
                 const SizedBox(height: 15),
 
-
-                // النجوم ورقم السؤال
-
                 Row(
-
                   mainAxisAlignment:
                       MainAxisAlignment.spaceEvenly,
 
-
                   children: [
 
-
                     Container(
-
                       padding:
                           const EdgeInsets.symmetric(
-
                         horizontal: 18,
-
                         vertical: 8,
-
                       ),
 
-
                       decoration: BoxDecoration(
-
                         color: Colors.white,
-
                         borderRadius:
                             BorderRadius.circular(20),
 
-
                         boxShadow: const [
-
                           BoxShadow(
-
                             color: Colors.black12,
-
                             blurRadius: 5,
-
                           ),
-
                         ],
-
                       ),
 
-
                       child: Text(
-
                         "⭐ $stars",
 
                         style: const TextStyle(
-
                           fontSize: 24,
-
                           fontWeight:
                               FontWeight.bold,
-
                           color: Colors.orange,
-
                         ),
-
                       ),
-
                     ),
-
 
 
                     Container(
-
                       padding:
                           const EdgeInsets.symmetric(
-
                         horizontal: 18,
-
                         vertical: 8,
-
                       ),
 
-
                       decoration: BoxDecoration(
-
                         color: Colors.white,
-
                         borderRadius:
                             BorderRadius.circular(20),
 
-
                         boxShadow: const [
-
                           BoxShadow(
-
                             color: Colors.black12,
-
                             blurRadius: 5,
-
                           ),
-
                         ],
-
                       ),
-
 
                       child: Text(
-
                         "السؤال ${currentQuestion + 1}/${questions.length}",
 
-
                         style: const TextStyle(
-
                           fontSize: 20,
-
                           fontWeight:
                               FontWeight.bold,
-
                         ),
-
                       ),
-
                     ),
-
                   ],
-
                 ),
-
 
 
                 const SizedBox(height: 20),
 
 
-
-                // شريط التقدم
-
                 Padding(
-
                   padding:
                       const EdgeInsets.symmetric(
                         horizontal: 20,
                       ),
 
-
                   child: LinearProgressIndicator(
-
                     value:
                         (currentQuestion + 1) /
                         questions.length,
 
-
                     minHeight: 8,
-
 
                     borderRadius:
                         BorderRadius.circular(20),
 
-
                     backgroundColor:
                         Colors.white,
-
 
                     valueColor:
                         const AlwaysStoppedAnimation(
                       Colors.lightGreen,
                     ),
-
                   ),
-
                 ),
 
 
-
                 const SizedBox(height: 20),
-                // صورة السؤال
-
                 Container(
-
                   margin:
                       const EdgeInsets.symmetric(
                         horizontal: 20,
                       ),
 
-
                   padding:
                       const EdgeInsets.all(15),
 
-
                   decoration: BoxDecoration(
-
                     color: Colors.white,
-
 
                     borderRadius:
                         BorderRadius.circular(25),
 
-
                     boxShadow: const [
-
                       BoxShadow(
-
                         color: Colors.black26,
-
                         blurRadius: 8,
-
-                        offset:
-                            Offset(0, 4),
-
+                        offset: Offset(0, 4),
                       ),
-
                     ],
-
                   ),
 
-
                   child: AnimatedSwitcher(
-
                     duration:
                         const Duration(
                           milliseconds: 400,
                         ),
 
-
                     transitionBuilder:
                         (child, animation) {
 
-
                       return ScaleTransition(
-
                         scale: animation,
 
-
                         child: FadeTransition(
-
                           opacity: animation,
 
-
                           child: child,
-
                         ),
-
                       );
-
                     },
 
-
                     child: Image.asset(
-
                       data["image"],
-
 
                       key:
                           ValueKey(
                             data["image"],
                           ),
-
 
                       height:
                           MediaQuery.of(context)
@@ -590,75 +413,50 @@ class _GameScreenState extends State<GameScreen> {
                               .height *
                           0.32,
 
-
                       fit:
                           BoxFit.contain,
-
 
                       errorBuilder:
                           (context, error, stackTrace) {
 
-
                         return const Icon(
-
-                          Icons
-                              .image_not_supported,
-
+                          Icons.image_not_supported,
 
                           size: 120,
 
-
-                          color:
-                              Colors.grey,
-
+                          color: Colors.grey,
                         );
-
                       },
-
                     ),
-
                   ),
-
                 ),
-
 
 
                 const SizedBox(height: 20),
 
 
-
                 const Text(
-
                   "اختر الإجابة الصحيحة 🎯",
 
-
                   style: TextStyle(
-
                     fontSize: 24,
-
 
                     fontWeight:
                         FontWeight.bold,
-
                   ),
-
                 ),
-
 
 
                 const SizedBox(height: 15),
 
 
-
                 Expanded(
-
                   child: GridView.builder(
 
                     padding:
                         const EdgeInsets.symmetric(
                           horizontal: 20,
                         ),
-
 
                     itemCount:
                         data["options"].length,
@@ -669,18 +467,13 @@ class _GameScreenState extends State<GameScreen> {
 
                       crossAxisCount: 2,
 
-
                       crossAxisSpacing: 15,
-
 
                       mainAxisSpacing: 15,
 
-
                       childAspectRatio: 2,
 
-
                     ),
-
 
 
                     itemBuilder:
@@ -691,7 +484,6 @@ class _GameScreenState extends State<GameScreen> {
                           data["options"][index];
 
 
-
                       return AnimatedScale(
 
                         duration:
@@ -699,14 +491,12 @@ class _GameScreenState extends State<GameScreen> {
                               milliseconds: 180,
                             ),
 
-
                         curve:
                             Curves.easeInOut,
 
 
                         scale:
                             answered ? 0.95 : 1,
-
 
 
                         child: InkWell(
@@ -725,8 +515,8 @@ class _GameScreenState extends State<GameScreen> {
 
                                   ? null
 
-                                  : () =>
-                                      checkAnswer(
+                                  : () async =>
+                                      await checkAnswer(
                                         option,
                                       ),
 
@@ -780,10 +570,14 @@ class _GameScreenState extends State<GameScreen> {
                               ],
 
                             ),
+
+
                             child: Padding(
 
                               padding:
-                                  const EdgeInsets.all(8),
+                                  const EdgeInsets.all(
+                                    8,
+                                  ),
 
 
                               child: Text(
@@ -795,7 +589,8 @@ class _GameScreenState extends State<GameScreen> {
                                     TextAlign.center,
 
 
-                                maxLines: 2,
+                                maxLines:
+                                    2,
 
 
                                 overflow:
@@ -811,155 +606,94 @@ class _GameScreenState extends State<GameScreen> {
                                   fontWeight:
                                       FontWeight.bold,
 
-
                                 ),
-
                               ),
-
                             ),
-
                           ),
-
                         ),
-
                       );
-
                     },
-
                   ),
-
                 ),
 
 
-
                 const SizedBox(height: 15),
-
-
-
-                // زر إعادة اللعب
-
                 ElevatedButton.icon(
-
                   onPressed:
                       loadingNextQuestion
                           ? null
                           : restartGame,
 
-
-                  icon:
-                      const Icon(
-
+                  icon: const Icon(
                     Icons.refresh_rounded,
-
-
                     size: 28,
-
                   ),
 
-
-
-                  label:
-                      const Text(
-
+                  label: const Text(
                     "إعادة اللعب",
 
-
-                    style:
-                        TextStyle(
-
+                    style: TextStyle(
                       fontSize: 20,
-
 
                       fontWeight:
                           FontWeight.bold,
-
-
                     ),
-
                   ),
-
-
 
                   style:
                       ElevatedButton.styleFrom(
 
-
                     backgroundColor:
                         Colors.white,
-
 
                     foregroundColor:
                         Colors.blue,
 
-
                     elevation:
                         8,
 
-
                     shadowColor:
                         Colors.black45,
-
 
                     padding:
                         const EdgeInsets.symmetric(
 
                       horizontal: 35,
 
-
                       vertical: 12,
-
 
                     ),
 
-
-
                     shape:
                         RoundedRectangleBorder(
-
 
                       borderRadius:
                           BorderRadius.circular(
                             25,
                           ),
 
-
                     ),
-
-
                   ),
-
                 ),
 
 
-
                 const SizedBox(height: 20),
-
-
               ],
-
             ),
-
           ),
-
         ),
-
       ),
-
     );
-
   }
+
+
   @override
   void dispose() {
-
-    // تنظيف مشغل الصوت عند مغادرة اللعبة
 
     audioPlayer.stop();
 
     audioPlayer.dispose();
 
-
     super.dispose();
-
   }
-
 }
