@@ -18,7 +18,6 @@ class GamesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlue.shade50,
-
       appBar: AppBar(
         backgroundColor: Colors.blue,
         centerTitle: true,
@@ -30,7 +29,6 @@ class GamesScreen extends StatelessWidget {
           ),
         ),
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: GridView.count(
@@ -38,16 +36,9 @@ class GamesScreen extends StatelessWidget {
           crossAxisSpacing: 15,
           mainAxisSpacing: 15,
           childAspectRatio: 1,
-
           children: [
 
-            gameButton(
-              context,
-              "🧠\nلعبة الذاكرة",
-              Colors.green,
-              const LevelsScreen(),
-            ),
-
+            // 1
             gameButton(
               context,
               "🖼️\nالتعرف على الصورة",
@@ -55,6 +46,7 @@ class GamesScreen extends StatelessWidget {
               const GameScreen(),
             ),
 
+            // 2
             gameButton(
               context,
               "📸\nاختر الصورة",
@@ -62,27 +54,7 @@ class GamesScreen extends StatelessWidget {
               const ChooseImageScreen(),
             ),
 
-            gameButton(
-              context,
-              "🔤\nالحروف",
-              Colors.red,
-              const LettersScreen(),
-            ),
-
-            gameButton(
-              context,
-              "🔢\nالأرقام",
-              Colors.teal,
-              const NumbersScreen(),
-            ),
-
-            gameButton(
-              context,
-              "🎨\nالألوان",
-              Colors.pink,
-              const ColorsScreen(),
-            ),
-
+            // 3
             gameButton(
               context,
               "🎯\nمطابقة الصور",
@@ -90,6 +62,47 @@ class GamesScreen extends StatelessWidget {
               const MatchImageScreen(),
             ),
 
+            // 4
+            gameButton(
+              context,
+              "🎨\nالألوان",
+              Colors.pink,
+              const ColorsScreen(),
+            ),
+
+            // 5
+            gameButton(
+              context,
+              "🔢\nالأرقام",
+              Colors.teal,
+              const NumbersScreen(),
+            ),
+
+            // 6
+            gameButton(
+              context,
+              "🔤\nالحروف",
+              Colors.red,
+              const LettersScreen(),
+            ),
+
+            // 7
+            gameButton(
+              context,
+              "🧠\nلعبة الذاكرة",
+              Colors.green,
+              const LevelsScreen(),
+            ),
+
+            // 8
+            gameButton(
+              context,
+              "🍎\nترتيب الأشياء",
+              Colors.deepOrange,
+              const SortObjectsScreen(),
+            ),
+
+            // 9
             gameButton(
               context,
               "🧩\nترتيب الصورة",
@@ -97,18 +110,12 @@ class GamesScreen extends StatelessWidget {
               const PuzzleOrderScreen(),
             ),
 
+            // 10
             gameButton(
               context,
               "⭐\nالبازل الصعب",
               Colors.deepPurple,
               const HardPuzzleScreen(),
-            ),
-
-            gameButton(
-              context,
-              "🍎\nترتيب الأشياء",
-              Colors.deepOrange,
-              const SortObjectsScreen(),
             ),
           ],
         ),
