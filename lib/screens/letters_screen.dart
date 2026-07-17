@@ -203,20 +203,20 @@ class _LettersScreenState extends State<LettersScreen> {
           currentQuestion++;
         });
 
-      } else {
+      else {
 
-        Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(
-    builder: (_) => WinScreen(
-      stars: stars,
-      nextGame: const LettersScreen(),
-      gamesPage: const GamesScreen(),
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (_) => WinScreen(
+        stars: stars + 1,
+        nextGame: const LettersScreen(),
+        gamesPage: const GamesScreen(),
+      ),
     ),
-  ),
-);
+  );
 
-      }
+}
 
     } else {
 
