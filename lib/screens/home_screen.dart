@@ -30,13 +30,15 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
 
-                // شعار اللعبة
+                // صورة شعار التطبيق
                 Container(
                   width: 170,
                   height: 170,
+
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
+
                     boxShadow: [
                       BoxShadow(
                         color: Colors.blue.withOpacity(0.25),
@@ -46,11 +48,13 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
 
-                  child: const Center(
-                    child: Text(
-                      "🧩🌎",
-                      style: TextStyle(
-                        fontSize: 80,
+                  child: Center(
+                    child: ClipOval(
+                      child: Image.asset(
+                        "assets/icon/app_icon.png",
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
