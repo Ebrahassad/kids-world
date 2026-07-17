@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import 'win_screen.dart';
+import 'levels_screen.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -193,13 +194,15 @@ class _GameScreenState extends State<GameScreen> {
       if (!mounted) return;
 
       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => WinScreen(
-            stars: stars,
-          ),
-        ),
-      );
+  context,
+  MaterialPageRoute(
+    builder: (_) => WinScreen(
+      stars: stars,
+      nextGame: const GameScreen(),
+      gamesPage: const LevelsScreen(),
+    ),
+  ),
+);
     }
   }
 
