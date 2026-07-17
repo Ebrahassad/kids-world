@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'win_screen.dart';
 
 class ChooseImageScreen extends StatefulWidget {
   const ChooseImageScreen({super.key});
@@ -10,15 +11,12 @@ class ChooseImageScreen extends StatefulWidget {
 }
 
 class _ChooseImageScreenState extends State<ChooseImageScreen> {
-
   final AudioPlayer audioPlayer = AudioPlayer();
 
   int currentQuestion = 0;
   int stars = 0;
 
-
   final List<Map<String, dynamic>> questions = [
-
     {
       "question": "أين الأطفال؟ 🧒",
       "answer": "assets/images/Puzzle/kids_puzzle.png",
@@ -29,7 +27,6 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         "assets/images/Puzzle/fish_puzzle.png",
       ],
     },
-
     {
       "question": "أين القرد؟ 🐒",
       "answer": "assets/images/Puzzle/monkey_puzzle.png",
@@ -40,7 +37,6 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         "assets/images/Puzzle/lion_puzzle.png",
       ],
     },
-
     {
       "question": "أين الدب؟ 🐻",
       "answer": "assets/images/Puzzle/bear_puzzle.png",
@@ -51,7 +47,6 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         "assets/images/Puzzle/butterfly_puzzle.png",
       ],
     },
-
     {
       "question": "أين السمكة؟ 🐟",
       "answer": "assets/images/Puzzle/fish_puzzle.png",
@@ -62,7 +57,6 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         "assets/images/Puzzle/cat_puzzle.png",
       ],
     },
-
     {
       "question": "أين الديناصور؟ 🦖",
       "answer": "assets/images/Puzzle/dinosaur_puzzle.png",
@@ -73,7 +67,6 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         "assets/images/Puzzle/monkey_puzzle.png",
       ],
     },
-
     {
       "question": "أين الفراشة؟ 🦋",
       "answer": "assets/images/Puzzle/butterfly_puzzle.png",
@@ -84,7 +77,6 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         "assets/images/Puzzle/rabbit_puzzle.png",
       ],
     },
-
     {
       "question": "أين الكلب؟ 🐶",
       "answer": "assets/images/Puzzle/dog_puzzle.png",
@@ -95,7 +87,6 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         "assets/images/Puzzle/kids_puzzle.png",
       ],
     },
-
     {
       "question": "أين القطة؟ 🐱",
       "answer": "assets/images/Puzzle/cat_puzzle.png",
@@ -106,7 +97,6 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         "assets/images/Puzzle/fish_puzzle.png",
       ],
     },
-
     {
       "question": "أين الأرنب؟ 🐰",
       "answer": "assets/images/Puzzle/rabbit_puzzle.png",
@@ -117,7 +107,6 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         "assets/images/Puzzle/lion_puzzle.png",
       ],
     },
-
     {
       "question": "أين الأسد؟ 🦁",
       "answer": "assets/images/Puzzle/lion_puzzle.png",
@@ -128,58 +117,34 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         "assets/images/Puzzle/bear_puzzle.png",
       ],
     },
-
   ];
-
-
   void playSound(String fileName) {
     audioPlayer.play(
       AssetSource('sounds/$fileName'),
     );
   }
 
-
   void checkAnswer(String image) {
-
     if (image == questions[currentQuestion]["answer"]) {
-
       playSound("correct.mp3");
 
       setState(() {
         stars++;
       });
 
-
       if (currentQuestion < questions.length - 1) {
-
         setState(() {
           currentQuestion++;
         });
-
       } else {
-
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text("أحسنت 🎉"),
-            content: const Text(
-              "أنهيت مرحلة اختيار الصورة الصحيحة",
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("حسناً"),
-              ),
-            ],
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const WinScreen(),
           ),
         );
-
       }
-
     } else {
-
       playSound("wrong.mp3");
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -187,33 +152,24 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
           content: Text("حاول مرة أخرى ⭐"),
         ),
       );
-
     }
-
   }
-
 
   @override
   void dispose() {
     audioPlayer.dispose();
     super.dispose();
   }
-
-
   @override
   Widget build(BuildContext context) {
-
     final data = questions[currentQuestion];
 
-
     return Scaffold(
-
       backgroundColor: Colors.lightBlue.shade50,
 
       appBar: AppBar(
         backgroundColor: Colors.blue,
         centerTitle: true,
-
         title: Text(
           "اختيار الصورة ${currentQuestion + 1}/${questions.length}",
           style: const TextStyle(
@@ -221,25 +177,22 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 15),
-
             child: Row(
               children: [
                 const Icon(
                   Icons.star,
                   color: Colors.yellow,
                 ),
-
                 const SizedBox(width: 5),
-
                 Text(
                   "$stars",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
@@ -248,88 +201,55 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         ],
       ),
 
-
       body: Column(
-
         children: [
-
           const SizedBox(height: 25),
 
           Text(
             data["question"],
+            textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
           ),
 
-
           Expanded(
-
             child: GridView.builder(
-
               padding: const EdgeInsets.all(20),
-
               itemCount: data["options"].length,
-
               gridDelegate:
                   const SliverGridDelegateWithFixedCrossAxisCount(
-
                 crossAxisCount: 2,
-
                 crossAxisSpacing: 15,
-
                 mainAxisSpacing: 15,
-
               ),
-
-
               itemBuilder: (context, index) {
-
-                String image = data["options"][index];
-
+                final String image = data["options"][index];
 
                 return GestureDetector(
-
                   onTap: () {
                     checkAnswer(image);
                   },
-
-
-                  child: Container(
-
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius:
-                          BorderRadius.circular(20),
+                  child: Card(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-
-
-                    padding:
-                        const EdgeInsets.all(10),
-
-
-                    child: Image.asset(
-                      image,
-                      fit: BoxFit.contain,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Image.asset(
+                        image,
+                        fit: BoxFit.contain,
+                      ),
                     ),
-
                   ),
-
                 );
-
               },
-
             ),
-
           ),
-
         ],
-
       ),
-
     );
-
   }
-
 }
