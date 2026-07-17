@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
-import 'levels_screen.dart';
+import 'games_screen.dart';
 
 class ColorsScreen extends StatefulWidget {
   const ColorsScreen({super.key});
@@ -158,7 +158,7 @@ class _ColorsScreenState extends State<ColorsScreen> {
     builder: (_) => WinScreen(
   stars: stars + 1,
   nextGame: const ColorsScreen(),
-  gamesPage: const LevelsScreen(),
+  gamesPage: const GamesScreen(),
 ),
   ),
 );
