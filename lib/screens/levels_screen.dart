@@ -6,6 +6,7 @@ import 'colors_screen.dart';
 import 'numbers_screen.dart';
 import 'letters_screen.dart';
 import 'memory_game_screen.dart';
+import 'sort_objects_screen.dart';
 
 class LevelsScreen extends StatelessWidget {
   const LevelsScreen({super.key});
@@ -64,7 +65,6 @@ class LevelsScreen extends StatelessWidget {
 
           itemBuilder: (context, index) {
 
-
             return ElevatedButton(
 
               style: ElevatedButton.styleFrom(
@@ -82,7 +82,6 @@ class LevelsScreen extends StatelessWidget {
 
               onPressed: () {
 
-
                 if (index == 0) {
 
                   Navigator.push(
@@ -91,7 +90,6 @@ class LevelsScreen extends StatelessWidget {
                       builder: (_) => const GameScreen(),
                     ),
                   );
-
 
                 } else if (index == 1) {
 
@@ -102,7 +100,6 @@ class LevelsScreen extends StatelessWidget {
                     ),
                   );
 
-
                 } else if (index == 2) {
 
                   Navigator.push(
@@ -111,7 +108,6 @@ class LevelsScreen extends StatelessWidget {
                       builder: (_) => const MatchImageScreen(),
                     ),
                   );
-
 
                 } else if (index == 3) {
 
@@ -122,7 +118,6 @@ class LevelsScreen extends StatelessWidget {
                     ),
                   );
 
-
                 } else if (index == 4) {
 
                   Navigator.push(
@@ -131,7 +126,6 @@ class LevelsScreen extends StatelessWidget {
                       builder: (_) => const NumbersScreen(),
                     ),
                   );
-
 
                 } else if (index == 5) {
 
@@ -142,7 +136,6 @@ class LevelsScreen extends StatelessWidget {
                     ),
                   );
 
-
                 } else if (index == 6) {
 
                   Navigator.push(
@@ -152,6 +145,14 @@ class LevelsScreen extends StatelessWidget {
                     ),
                   );
 
+                } else if (index == 7) {
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const SortObjectsScreen(),
+                    ),
+                  );
 
                 } else {
 
@@ -178,43 +179,27 @@ class LevelsScreen extends StatelessWidget {
                 mainAxisAlignment:
                     MainAxisAlignment.center,
 
-
                 children: [
 
-
                   const Icon(
-
                     Icons.star,
-
                     color: Colors.yellow,
-
                     size: 45,
-
                   ),
-
 
                   const SizedBox(height: 10),
 
-
                   Text(
-
                     levels[index],
-
                     textAlign: TextAlign.center,
 
-
                     style: const TextStyle(
-
                       fontSize: 20,
-
                       color: Colors.white,
-
                       fontWeight: FontWeight.bold,
-
                     ),
 
                   ),
-
 
                 ],
 
