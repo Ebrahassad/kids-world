@@ -7,130 +7,241 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightBlue.shade50,
-
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-        elevation: 0,
-        title: const Text(
-          "Kids World",
-          style: TextStyle(
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ),
 
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
 
-                // صورة شعار التطبيق
-                Container(
-                  width: 170,
-                  height: 170,
+        child: Container(
 
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
+          decoration: const BoxDecoration(
 
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blue.withOpacity(0.25),
-                        blurRadius: 20,
-                        spreadRadius: 5,
-                      ),
-                    ],
-                  ),
+            image: DecorationImage(
 
-                  child: Center(
-                    child: ClipOval(
-                      child: Image.asset(
-                        "assets/icon/app_icon.png",
-                        width: 150,
-                        height: 150,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
+              image: AssetImage(
+                "assets/images/Picture/background.png",
+              ),
 
-                const SizedBox(height: 30),
+              fit: BoxFit.cover,
 
-                const Text(
-                  "Kids World",
-                  style: TextStyle(
-                    fontSize: 38,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                const Text(
-                  "عالم الاطفال",
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                const Text(
-                  "تعلم ⭐ العب ⭐ اجمع النجوم",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black54,
-                  ),
-                ),
-
-                const SizedBox(height: 45),
-
-                SizedBox(
-                  width: 260,
-                  height: 65,
-
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      elevation: 6,
-
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const LevelsScreen(),
-                        ),
-                      );
-                    },
-
-                    child: const Text(
-                      "ابدأ اللعب 🎮",
-                      style: TextStyle(
-                        fontSize: 28,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
             ),
+
           ),
+
+
+          child: Center(
+
+            child: SingleChildScrollView(
+
+              child: Column(
+
+                mainAxisAlignment: MainAxisAlignment.center,
+
+                children: [
+
+
+                  // شعار التطبيق
+
+                  Container(
+
+                    width: 170,
+
+                    height: 170,
+
+
+                    decoration: BoxDecoration(
+
+                      color: Colors.white,
+
+                      shape: BoxShape.circle,
+
+
+                      boxShadow: [
+
+                        BoxShadow(
+
+                          color: Colors.blueAccent,
+
+                          blurRadius: 20,
+
+                          spreadRadius: 5,
+
+                        ),
+
+                      ],
+
+                    ),
+
+
+                    child: Center(
+
+                      child: ClipOval(
+
+                        child: Image.asset(
+
+                          "assets/icon/app_icon.png",
+
+                          width: 150,
+
+                          height: 150,
+
+                          fit: BoxFit.cover,
+
+                        ),
+
+                      ),
+
+                    ),
+
+                  ),
+
+
+
+                  const SizedBox(height: 30),
+
+
+
+                  const Text(
+
+                    "Kids World",
+
+                    style: TextStyle(
+
+                      fontSize: 38,
+
+                      fontWeight: FontWeight.bold,
+
+                      color: Colors.blue,
+
+                    ),
+
+                  ),
+
+
+
+                  const SizedBox(height: 10),
+
+
+
+                  const Text(
+
+                    "عالم الاطفال",
+
+                    style: TextStyle(
+
+                      fontSize: 26,
+
+                      fontWeight: FontWeight.bold,
+
+                      color: Colors.black87,
+
+                    ),
+
+                  ),
+
+
+
+                  const SizedBox(height: 12),
+
+
+
+                  const Text(
+
+                    "تعلم ⭐ العب ⭐ اجمع النجوم",
+
+                    style: TextStyle(
+
+                      fontSize: 20,
+
+                      color: Colors.black54,
+
+                    ),
+
+                  ),
+
+
+
+                  const SizedBox(height: 45),
+
+
+
+                  SizedBox(
+
+                    width: 260,
+
+                    height: 65,
+
+
+                    child: ElevatedButton(
+
+                      style: ElevatedButton.styleFrom(
+
+                        backgroundColor: Colors.green,
+
+                        elevation: 6,
+
+
+                        shape: RoundedRectangleBorder(
+
+                          borderRadius: BorderRadius.circular(30),
+
+                        ),
+
+                      ),
+
+
+                      onPressed: () {
+
+
+                        Navigator.push(
+
+                          context,
+
+                          MaterialPageRoute(
+
+                            builder: (_) => const LevelsScreen(),
+
+                          ),
+
+                        );
+
+
+                      },
+
+
+                      child: const Text(
+
+                        "ابدأ من هنا 🎮",
+
+                        style: TextStyle(
+
+                          fontSize: 28,
+
+                          color: Colors.white,
+
+                          fontWeight: FontWeight.bold,
+
+                        ),
+
+                      ),
+
+                    ),
+
+                  ),
+
+
+                ],
+
+              ),
+
+            ),
+
+          ),
+
         ),
+
       ),
+
     );
+
   }
+
 }
