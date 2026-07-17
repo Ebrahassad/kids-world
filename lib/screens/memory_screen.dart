@@ -5,6 +5,8 @@ import 'package:audioplayers/audioplayers.dart';
 
 import 'win_screen.dart';
 
+import 'games_screen.dart';
+
 
 class MemoryGameScreen extends StatefulWidget {
   const MemoryGameScreen({super.key});
@@ -257,20 +259,15 @@ if (cards.isEmpty) return;
          if (!mounted) return;
 
             Navigator.pushReplacement(
-
-              context,
-
-              MaterialPageRoute(
-
-                builder: (_) => WinScreen(
-
-                  stars: stars,
-
-                ),
-
-              ),
-
-            );
+  context,
+  MaterialPageRoute(
+    builder: (_) => WinScreen(
+      stars: stars,
+      nextGame: const MemoryGameScreen(),
+      gamesPage: const GamesScreen(),
+    ),
+  ),
+);
 
 
           },
