@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
+import 'games_screen.dart';
 
 class MatchImageScreen extends StatefulWidget {
   const MatchImageScreen({super.key});
@@ -136,11 +137,15 @@ class _MatchImageScreenState extends State<MatchImageScreen> {
         });
       } else {
         Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const WinScreen(),
-          ),
-        );
+  context,
+  MaterialPageRoute(
+    builder: (_) => WinScreen(
+      stars: stars,
+      nextGame: const MatchImageScreen(),
+      gamesPage: const GamesScreen(),
+    ),
+  ),
+);
       }
     } else {
       playSound("wrong.mp3");
