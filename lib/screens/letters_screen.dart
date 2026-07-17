@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
+import 'games_screen.dart';
 
 class LettersScreen extends StatefulWidget {
   const LettersScreen({super.key});
@@ -205,11 +206,15 @@ class _LettersScreenState extends State<LettersScreen> {
       } else {
 
         Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const WinScreen(),
-          ),
-        );
+  context,
+  MaterialPageRoute(
+    builder: (_) => WinScreen(
+      stars: stars,
+      nextGame: const LettersScreen(),
+      gamesPage: const GamesScreen(),
+    ),
+  ),
+);
 
       }
 
