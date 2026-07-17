@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProgressManager {
@@ -13,6 +14,7 @@ class ProgressManager {
       gameName,
       question,
     );
+
   }
 
 
@@ -23,6 +25,7 @@ class ProgressManager {
     final prefs = await SharedPreferences.getInstance();
 
     return prefs.getInt(gameName) ?? 0;
+
   }
 
 
@@ -36,6 +39,7 @@ class ProgressManager {
       "${gameName}_completed",
       true,
     );
+
   }
 
 
@@ -48,6 +52,7 @@ class ProgressManager {
     return prefs.getBool(
       "${gameName}_completed",
     ) ?? false;
+
   }
 
 
@@ -58,6 +63,7 @@ class ProgressManager {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.remove(gameName);
+
   }
 
 }
