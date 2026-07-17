@@ -5,6 +5,7 @@ import 'match_image_screen.dart';
 import 'colors_screen.dart';
 import 'numbers_screen.dart';
 import 'letters_screen.dart';
+import 'memory_game_screen.dart';
 
 class LevelsScreen extends StatelessWidget {
   const LevelsScreen({super.key});
@@ -43,7 +44,6 @@ class LevelsScreen extends StatelessWidget {
 
 
       body: Padding(
-
         padding: const EdgeInsets.all(20),
 
         child: GridView.builder(
@@ -143,9 +143,20 @@ class LevelsScreen extends StatelessWidget {
                   );
 
 
+                } else if (index == 6) {
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MemoryGameScreen(),
+                    ),
+                  );
+
+
                 } else {
 
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(
 
                     const SnackBar(
 
@@ -158,7 +169,6 @@ class LevelsScreen extends StatelessWidget {
                   );
 
                 }
-
 
               },
 
