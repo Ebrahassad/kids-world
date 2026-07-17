@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
+import 'games_screen.dart';
 
 class SortObjectsScreen extends StatefulWidget {
   const SortObjectsScreen({super.key});
@@ -74,16 +75,15 @@ class _SortObjectsScreenState extends State<SortObjectsScreen> {
 
 
       Navigator.pushReplacement(
-
-        context,
-
-        MaterialPageRoute(
-
-          builder: (_) => const WinScreen(),
-
-        ),
-
-      );
+  context,
+  MaterialPageRoute(
+    builder: (_) => WinScreen(
+      stars: stars,
+      nextGame: const SortObjectsScreen(),
+      gamesPage: const GamesScreen(),
+    ),
+  ),
+);
 
 
     } else {
