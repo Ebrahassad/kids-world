@@ -23,89 +23,108 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
 
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
 
-            // شعار مؤقت للعبة
-            Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.blue.withOpacity(0.2),
-                    blurRadius: 15,
-                    spreadRadius: 3,
-                  ),
-                ],
-              ),
-              child: const Center(
-                child: Text(
-                  "🧩⭐",
-                  style: TextStyle(
-                    fontSize: 70,
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 35),
-
-            const Text(
-              "لعبة تركيب الصور",
-              style: TextStyle(
-                fontSize: 34,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-            const Text(
-              "تعلم والعب واجمع النجوم ⭐",
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-
-            const SizedBox(height: 45),
-
-            SizedBox(
-              width: 240,
-              height: 65,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                ),
-
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const GameScreen(),
-                    ),
-                  );
-                },
-
-                child: const Text(
-                  "ابدأ اللعب 🎮",
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
+                // شعار اللعبة
+                Container(
+                  width: 170,
+                  height: 170,
+                  decoration: BoxDecoration(
                     color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blue.withOpacity(0.25),
+                        blurRadius: 20,
+                        spreadRadius: 5,
+                      ),
+                    ],
+                  ),
+
+                  child: const Center(
+                    child: Text(
+                      "🧩🌎",
+                      style: TextStyle(
+                        fontSize: 80,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+
+                const SizedBox(height: 30),
+
+                const Text(
+                  "Kids World",
+                  style: TextStyle(
+                    fontSize: 38,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                const Text(
+                  "لعبة تركيب الصور للأطفال",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                const Text(
+                  "تعلم ⭐ العب ⭐ اجمع النجوم",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black54,
+                  ),
+                ),
+
+                const SizedBox(height: 45),
+
+                SizedBox(
+                  width: 260,
+                  height: 65,
+
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      elevation: 6,
+
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const GameScreen(),
+                        ),
+                      );
+                    },
+
+                    child: const Text(
+                      "ابدأ اللعب 🎮",
+                      style: TextStyle(
+                        fontSize: 28,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
