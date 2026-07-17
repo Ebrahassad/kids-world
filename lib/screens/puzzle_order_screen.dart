@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
+import 'games_screen.dart';
+
 
 class PuzzleOrderScreen extends StatefulWidget {
   const PuzzleOrderScreen({super.key});
@@ -52,11 +54,15 @@ Future.delayed(
     if (!mounted) return;
 
     Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const WinScreen(),
-      ),
-    );
+  context,
+  MaterialPageRoute(
+    builder: (_) => WinScreen(
+      stars: stars,
+      nextGame: const PuzzleOrderScreen(),
+      gamesPage: const GamesScreen(),
+    ),
+  ),
+);
 
   },
 );
