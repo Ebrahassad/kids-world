@@ -34,8 +34,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   ];
 
 
-  late List<Map<String, dynamic>> cards;
-
+  List<Map<String, dynamic>> cards = [];
 
   int stars = 0;
 
@@ -51,56 +50,55 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
 
 
-  @override
-  void initState() {
+@override
+void initState() {
+  super.initState();
 
-    super.initState();
-
+  WidgetsBinding.instance.addPostFrameCallback((_) {
     startGame();
+  });
+}
+
+
+void startGame() {
+
+  final List<Map<String, dynamic>> newCards = [];
+
+
+  for (String animal in animals) {
+
+    newCards.add({
+
+      "image": animal,
+
+      "open": false,
+
+      "done": false,
+
+    });
+
+
+    newCards.add({
+
+      "image": animal,
+
+      "open": false,
+
+      "done": false,
+
+    });
 
   }
 
 
-
-  void startGame() {
-
-
-    cards = [];
-
-
-    for (String animal in animals) {
-
-
-      cards.add({
-
-        "image": animal,
-
-        "open": false,
-
-        "done": false,
-
-      });
+  // خلط الكروت عشوائياً
+  newCards.shuffle(random);
 
 
 
-      cards.add({
+  setState(() {
 
-        "image": animal,
-
-        "open": false,
-
-        "done": false,
-
-      });
-
-
-    }
-
-
-
-    cards.shuffle(random);
-
-
+    cards = newCards;
 
     stars = 0;
 
@@ -112,12 +110,9 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
     checking = false;
 
+  });
 
-
-    setState(() {});
-
-  }
-
+}
 
 
   Future<void> playSound(String file) async {
@@ -258,6 +253,8 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
           () {
 
+
+         if (!mounted) return;
 
             Navigator.pushReplacement(
 
@@ -699,7 +696,9 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                 ElevatedButton.icon(
 
 
-                  onPressed: startGame,
+                  onPressed: () {
+  startGame();
+},
 
 
 
