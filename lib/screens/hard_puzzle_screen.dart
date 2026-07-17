@@ -93,14 +93,10 @@ class _HardPuzzleScreenState extends State<HardPuzzleScreen> {
   MaterialPageRoute(
 
     builder: (_) => WinScreen(
-
-      stars: stars,
-
-      nextGame: const HardPuzzleScreen(),
-
-      gamesPage: const GamesScreen(),
-
-    ),
+  stars: stars + 1,
+  nextGame: const HardPuzzleScreen(),
+  gamesPage: const GamesScreen(),
+),
 
   ),
 
