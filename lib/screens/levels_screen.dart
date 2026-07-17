@@ -9,6 +9,7 @@ import 'letters_screen.dart';
 import 'memory_game_screen.dart';
 import 'sort_objects_screen.dart';
 import 'puzzle_order_screen.dart';
+import 'hard_puzzle_screen.dart';
 
 
 class LevelsScreen extends StatelessWidget {
@@ -121,15 +122,10 @@ class LevelsScreen extends StatelessWidget {
 
 
                   Navigator.push(
-
                     context,
-
                     MaterialPageRoute(
-
                       builder: (_) => const GameScreen(),
-
                     ),
-
                   );
 
 
@@ -137,15 +133,10 @@ class LevelsScreen extends StatelessWidget {
 
 
                   Navigator.push(
-
                     context,
-
                     MaterialPageRoute(
-
                       builder: (_) => const ChooseImageScreen(),
-
                     ),
-
                   );
 
 
@@ -153,15 +144,10 @@ class LevelsScreen extends StatelessWidget {
 
 
                   Navigator.push(
-
                     context,
-
                     MaterialPageRoute(
-
                       builder: (_) => const MatchImageScreen(),
-
                     ),
-
                   );
 
 
@@ -169,15 +155,10 @@ class LevelsScreen extends StatelessWidget {
 
 
                   Navigator.push(
-
                     context,
-
                     MaterialPageRoute(
-
                       builder: (_) => const ColorsScreen(),
-
                     ),
-
                   );
 
 
@@ -185,15 +166,10 @@ class LevelsScreen extends StatelessWidget {
 
 
                   Navigator.push(
-
                     context,
-
                     MaterialPageRoute(
-
                       builder: (_) => const NumbersScreen(),
-
                     ),
-
                   );
 
 
@@ -201,15 +177,10 @@ class LevelsScreen extends StatelessWidget {
 
 
                   Navigator.push(
-
                     context,
-
                     MaterialPageRoute(
-
                       builder: (_) => const LettersScreen(),
-
                     ),
-
                   );
 
 
@@ -217,15 +188,10 @@ class LevelsScreen extends StatelessWidget {
 
 
                   Navigator.push(
-
                     context,
-
                     MaterialPageRoute(
-
                       builder: (_) => const MemoryGameScreen(),
-
                     ),
-
                   );
 
 
@@ -233,15 +199,10 @@ class LevelsScreen extends StatelessWidget {
 
 
                   Navigator.push(
-
                     context,
-
                     MaterialPageRoute(
-
                       builder: (_) => const SortObjectsScreen(),
-
                     ),
-
                   );
 
 
@@ -249,33 +210,21 @@ class LevelsScreen extends StatelessWidget {
 
 
                   Navigator.push(
-
                     context,
-
                     MaterialPageRoute(
-
                       builder: (_) => const PuzzleOrderScreen(),
-
                     ),
-
                   );
 
 
-                } else {
+                } else if (index == 9) {
 
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-
-                    const SnackBar(
-
-                      content: Text(
-
-                        "هذه المرحلة قيد التطوير 🚀",
-
-                      ),
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const HardPuzzleScreen(),
                     ),
-
                   );
 
 
@@ -288,7 +237,6 @@ class LevelsScreen extends StatelessWidget {
               child: Column(
 
                 mainAxisAlignment:
-
                     MainAxisAlignment.center,
 
 
