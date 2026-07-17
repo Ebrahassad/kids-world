@@ -197,10 +197,10 @@ class _GameScreenState extends State<GameScreen> {
   context,
   MaterialPageRoute(
     builder: (_) => WinScreen(
-      stars: stars,
-      nextGame: const GameScreen(),
-      gamesPage: const LevelsScreen(),
-    ),
+  stars: stars + 1,
+  nextGame: const GameScreen(),
+  gamesPage: const LevelsScreen(),
+),
   ),
 );
     }
