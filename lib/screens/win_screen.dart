@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:confetti/confetti.dart';
-
-import 'game_screen.dart';
+import 'package:flutter/services.dart';
 
 
 class WinScreen extends StatefulWidget {
 
   final int stars;
 
+  final Widget nextGame;
+
+  final Widget gamesPage;
+
 
   const WinScreen({
+
     super.key,
+
     required this.stars,
+
+    required this.nextGame,
+
+    required this.gamesPage,
+
   });
+
 
 
   @override
@@ -55,6 +66,7 @@ class _WinScreenState extends State<WinScreen> {
 
 
 
+
   Future<void> playWinSound() async {
 
     try {
@@ -67,6 +79,7 @@ class _WinScreenState extends State<WinScreen> {
 
       );
 
+
     } catch(e) {
 
       debugPrint(
@@ -76,6 +89,7 @@ class _WinScreenState extends State<WinScreen> {
     }
 
   }
+
 
 
 
@@ -95,6 +109,89 @@ class _WinScreenState extends State<WinScreen> {
 
 
 
+  Widget actionButton({
+
+    required String text,
+
+    required IconData icon,
+
+    required Color color,
+
+    required VoidCallback onPressed,
+
+  }) {
+
+
+    return SizedBox(
+
+      width: 270,
+
+      height: 60,
+
+
+      child: ElevatedButton.icon(
+
+
+        onPressed: onPressed,
+
+
+        icon: Icon(
+
+          icon,
+
+          color: Colors.white,
+
+          size: 30,
+
+        ),
+
+
+        label: Text(
+
+          text,
+
+          style: const TextStyle(
+
+            fontSize: 22,
+
+            color: Colors.white,
+
+            fontWeight: FontWeight.bold,
+
+          ),
+
+        ),
+
+
+
+        style: ElevatedButton.styleFrom(
+
+          backgroundColor: color,
+
+
+          shape: RoundedRectangleBorder(
+
+            borderRadius:
+                BorderRadius.circular(25),
+
+          ),
+
+
+        ),
+
+
+      ),
+
+    );
+
+  }
+
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -102,7 +199,8 @@ class _WinScreenState extends State<WinScreen> {
     return Scaffold(
 
 
-      backgroundColor: const Color(0xffB3E5FC),
+      backgroundColor:
+          const Color(0xffB3E5FC),
 
 
 
@@ -123,7 +221,8 @@ class _WinScreenState extends State<WinScreen> {
 
             child: ConfettiWidget(
 
-              confettiController: confettiController,
+              confettiController:
+                  confettiController,
 
 
               blastDirectionality:
@@ -134,7 +233,6 @@ class _WinScreenState extends State<WinScreen> {
 
 
               numberOfParticles: 50,
-
 
             ),
 
@@ -169,7 +267,6 @@ class _WinScreenState extends State<WinScreen> {
 
 
 
-
                     const Text(
 
                       "🎉🏆⭐",
@@ -185,8 +282,8 @@ class _WinScreenState extends State<WinScreen> {
 
 
 
-                    const SizedBox(height: 20),
 
+                    const SizedBox(height:20),
 
 
 
@@ -197,12 +294,12 @@ class _WinScreenState extends State<WinScreen> {
 
                       style: TextStyle(
 
-                        fontSize: 42,
+                        fontSize:42,
 
                         fontWeight:
                             FontWeight.bold,
 
-                        color: Colors.green,
+                        color:Colors.green,
 
                       ),
 
@@ -212,14 +309,14 @@ class _WinScreenState extends State<WinScreen> {
 
 
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height:20),
 
 
 
 
                     const Text(
 
-                      "لقد أكملت جميع الأسئلة بنجاح",
+                      "أكملت اللعبة بنجاح 👏",
 
                       textAlign:
                           TextAlign.center,
@@ -227,7 +324,7 @@ class _WinScreenState extends State<WinScreen> {
 
                       style: TextStyle(
 
-                        fontSize: 23,
+                        fontSize:23,
 
                         fontWeight:
                             FontWeight.bold,
@@ -240,44 +337,58 @@ class _WinScreenState extends State<WinScreen> {
 
 
 
-                    const SizedBox(height: 25),
-
+                    const SizedBox(height:25),
 
 
 
 
                     Container(
 
+
                       padding:
                           const EdgeInsets.all(15),
 
 
+
                       decoration: BoxDecoration(
 
-                        color: Colors.white,
+
+                        color:Colors.white,
+
 
                         borderRadius:
                             BorderRadius.circular(20),
 
+
                       ),
+
 
 
                       child: Text(
 
+
                         "جمعت ⭐ ${widget.stars} نجوم",
+
+
 
                         style: const TextStyle(
 
-                          fontSize: 32,
+
+                          fontSize:32,
+
 
                           fontWeight:
                               FontWeight.bold,
 
-                          color: Colors.orange,
+
+                          color:Colors.orange,
+
 
                         ),
 
+
                       ),
+
 
                     ),
 
@@ -285,153 +396,112 @@ class _WinScreenState extends State<WinScreen> {
 
 
 
-                    const SizedBox(height: 40),
+                    const SizedBox(height:40),
 
 
 
 
 
-                    SizedBox(
+                    // زر إعادة اللعب
 
-                      width: 250,
+                    actionButton(
 
-                      height: 60,
+                      text:"إعادة اللعب 🔄",
 
+                      icon:Icons.refresh,
 
-                      child: ElevatedButton.icon(
-
-
-                        icon: const Icon(
-
-                          Icons.refresh,
-
-                          color: Colors.white,
-
-                          size: 30,
-
-                        ),
-
-
-
-                        style:
-                            ElevatedButton.styleFrom(
-
-
-                          backgroundColor:
-                              Colors.green,
-
-
-                          shape:
-                              RoundedRectangleBorder(
-
-
-                            borderRadius:
-                                BorderRadius.circular(25),
-
-
-                          ),
-
-
-                        ),
-
-
-
-
-                        onPressed: () {
-
-
-                          Navigator.pushReplacement(
-
-                            context,
-
-
-                            MaterialPageRoute(
-
-                              builder: (_) =>
-                                  const GameScreen(),
-
-                            ),
-
-
-                          );
-
-
-                        },
-
-
-
-
-                        label: const Text(
-
-                          "إعادة اللعب",
-
-                          style: TextStyle(
-
-                            fontSize: 23,
-
-                            color: Colors.white,
-
-                            fontWeight:
-                                FontWeight.bold,
-
-                          ),
-
-                        ),
-
-                      ),
-
-                    ),
-
-
-
-
-
-
-                    const SizedBox(height: 15),
-
-
-
-
-
-
-                    TextButton(
-
+                      color:Colors.green,
 
                       onPressed: () {
 
 
-                        Navigator.popUntil(
+                        Navigator.pushReplacement(
 
                           context,
 
-                          (route) =>
-                              route.isFirst,
+                          MaterialPageRoute(
+
+                            builder: (_) =>
+                                widget.nextGame,
+
+                          ),
 
                         );
 
 
                       },
 
+                    ),
 
 
-                      child: const Text(
 
-                        "العودة للرئيسية 🏠",
 
-                        style: TextStyle(
+                    const SizedBox(height:15),
 
-                          fontSize: 21,
 
-                          color: Colors.blue,
 
-                          fontWeight:
-                              FontWeight.bold,
 
-                        ),
 
-                      ),
+                    // زر صفحة الألعاب
+
+                    actionButton(
+
+                      text:"صفحة الألعاب 🎮",
+
+                      icon:Icons.games,
+
+                      color:Colors.blue,
+
+                      onPressed: () {
+
+
+                        Navigator.pushReplacement(
+
+                          context,
+
+                          MaterialPageRoute(
+
+                            builder: (_) =>
+                                widget.gamesPage,
+
+                          ),
+
+                        );
+
+
+                      },
 
                     ),
+
+
+
+
+                    const SizedBox(height:15),
+
+
+
+
+
+                    // زر إغلاق التطبيق
+
+                    actionButton(
+
+                      text:"إغلاق التطبيق 🚪",
+
+                      icon:Icons.exit_to_app,
+
+                      color:Colors.red,
+
+                      onPressed: () {
+
+
+                        SystemNavigator.pop();
+
+
+                      },
+
+                    ),
+
 
 
 
@@ -439,16 +509,21 @@ class _WinScreenState extends State<WinScreen> {
 
                 ),
 
+
               ),
 
+
             ),
+
 
           ),
 
 
         ],
 
+
       ),
+
 
     );
 
