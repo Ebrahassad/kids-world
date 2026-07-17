@@ -142,10 +142,10 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
   context,
   MaterialPageRoute(
     builder: (_) => WinScreen(
-      stars: stars,
-      nextGame: const ChooseImageScreen(),
-      gamesPage: const LevelsScreen(),
-    ),
+  stars: stars + 1,
+  nextGame: const ChooseImageScreen(),
+  gamesPage: const LevelsScreen(),
+),
   ),
 );
       }
