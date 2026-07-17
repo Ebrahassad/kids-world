@@ -107,7 +107,7 @@ class HomeScreen extends StatelessWidget {
                           context,
 
                           MaterialPageRoute(
-                            builder: (_) => LevelsScreen(),
+                            builder: (_) => const LevelsScreen(),
                           ),
 
                         );
