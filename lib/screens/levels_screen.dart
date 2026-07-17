@@ -4,6 +4,19 @@ import 'game_screen.dart';
 class LevelsScreen extends StatelessWidget {
   const LevelsScreen({super.key});
 
+  final List<String> levels = const [
+    "تعرف على الصور",
+    "اختيار الصورة الصحيحة",
+    "مطابقة الصور",
+    "تعلم الألوان",
+    "تعلم الأرقام",
+    "تعلم الحروف",
+    "لعبة الذاكرة",
+    "ترتيب الأشياء",
+    "رتّب الصورة",
+    "تجميع الصورة الصعبة 🧩",
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +38,7 @@ class LevelsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
 
         child: GridView.builder(
-          itemCount: 10,
+          itemCount: levels.length,
 
           gridDelegate:
               const SliverGridDelegateWithFixedCrossAxisCount(
@@ -46,12 +59,15 @@ class LevelsScreen extends StatelessWidget {
 
               onPressed: () {
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const GameScreen(),
-                  ),
-                );
+                // المرحلة الأولى تعمل حاليا
+                if (index == 0) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const GameScreen(),
+                    ),
+                  );
+                }
 
               },
 
@@ -70,9 +86,10 @@ class LevelsScreen extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   Text(
-                    "المرحلة ${index + 1}",
+                    levels[index],
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 22,
+                      fontSize: 20,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
