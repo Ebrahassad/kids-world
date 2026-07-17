@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'levels_screen.dart';
+import 'games_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -27,12 +27,10 @@ class HomeScreen extends StatelessWidget {
                   Container(
                     width: 170,
                     height: 170,
-
                     decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
-
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.blueAccent,
                           blurRadius: 20,
@@ -67,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   const Text(
-                    "عالم الاطفال",
+                    "عالم الأطفال",
                     style: TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
@@ -95,38 +93,29 @@ class HomeScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
                         elevation: 6,
-
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
 
                       onPressed: () {
-
                         Navigator.push(
                           context,
-
                           MaterialPageRoute(
-                            builder: (_) => const LevelsScreen(),
+                            builder: (_) => const GamesScreen(),
                           ),
-
                         );
-
                       },
 
                       child: const Text(
                         "ابدأ من هنا 🎮",
-
                         style: TextStyle(
                           fontSize: 28,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
-
                       ),
-
                     ),
-
                   ),
 
                 ],
