@@ -100,23 +100,40 @@ class _PuzzleOrderScreenState
 
 
 
-  @override
+@override
 void initState() {
 
   super.initState();
 
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-
-    restartGame();
-
-  });
+  loadProgress();
 
 }
 
 
+Future<void> loadProgress() async {
 
+  final savedStars =
+      await ProgressManager.getStars(
+        gameName,
+      );
 
+  if(!mounted) return;
 
+  setState(() {
+
+    stars = savedStars;
+
+    shufflePieces();
+
+    attempts = 0;
+
+    checking = false;
+
+    finished = false;
+
+  });
+
+}
 
 
 
@@ -224,7 +241,7 @@ await playSound("win.mp3");
 
   shufflePieces();
 
-  stars = 0;
+  
 
   attempts = 0;
 
@@ -251,14 +268,11 @@ await playSound("win.mp3");
 
     setState(() {
 
+  checking = true;
 
-      checking = true;
+  attempts++;
 
-
-      attempts++;
-
-
-    });
+});
 
 
 
@@ -275,71 +289,45 @@ await playSound("win.mp3");
 
     if(isCorrect){
 
+if(stars == 0){
+  stars = 1;
+}
+
+  setState(() {
+
+    finished = true;
+
+  });
 
 
-      setState(() {
+  
 
 
-        stars = 1;
+  await ProgressManager.saveStars(
+    gameName,
+    stars,
+  );
 
 
-        finished = true;
+  await ProgressManager.saveCompletedGame(
+    gameName,
+  );
 
 
-      });
+  await ProgressManager.saveCompletedLevel(
+    gameName,
+    1,
+  );
 
 
+  await ProgressManager.addWinCount(
+    gameName,
+  );
 
 
-
-      await ProgressManager.saveStars(
-
-        gameName,
-
-        stars,
-
-      );
-
-
-
-
-
-      await ProgressManager.saveCompletedGame(
-
-        gameName,
-
-      );
-
-
-
-
-
-      await ProgressManager.addTotalStars(
-
-        stars,
-
-      );
-
-
-
-
-
-      await ProgressManager.addWinCount(
-
-        gameName,
-
-      );
-
-
-
-
-
-      await ProgressManager.saveLastPlayed(
-
-        gameName,
-
-      );
-
+  await ProgressManager.saveLastPlayed(
+    gameName,
+  );
 
 
 
