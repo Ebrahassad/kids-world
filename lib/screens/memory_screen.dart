@@ -90,7 +90,39 @@ void startGame() {
   final List<Map<String, dynamic>> newCards = [];
 
 // عدد الأزواج حسب المستوى
-int pairs = 4 + (widget.level - 1) * 2;
+int pairs;
+
+switch (widget.level) {
+  case 1:
+    pairs = 4;
+    break;
+  case 2:
+    pairs = 5;
+    break;
+  case 3:
+    pairs = 6;
+    break;
+  case 4:
+    pairs = 7;
+    break;
+  case 5:
+    pairs = 8;
+    break;
+  case 6:
+    pairs = 9;
+    break;
+  case 7:
+    pairs = 10;
+    break;
+  case 8:
+    pairs = 11;
+    break;
+  case 9:
+    pairs = 12;
+    break;
+  default:
+    pairs = 12;
+}
 
 // لا يتجاوز عدد الحيوانات الموجودة
 if (pairs > allAnimals.length) {
