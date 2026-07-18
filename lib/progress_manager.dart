@@ -2,7 +2,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ProgressManager {
 
-  // حفظ تقدم اللعبة (رقم السؤال أو المرحلة)
+  // =========================
+  // حفظ تقدم اللعبة
+  // =========================
+
   static Future<void> saveProgress(
     String gameName,
     int value,
@@ -17,7 +20,6 @@ class ProgressManager {
 
   }
 
-  // جلب تقدم اللعبة
   static Future<int> getProgress(
     String gameName,
   ) async {
@@ -25,12 +27,15 @@ class ProgressManager {
     final prefs = await SharedPreferences.getInstance();
 
     return prefs.getInt(
-      "${gameName}_progress",
-    ) ?? 0;
-
+          "${gameName}_progress",
+        ) ??
+        0;
   }
 
+  // =========================
   // حفظ نجوم اللعبة
+  // =========================
+
   static Future<void> saveStars(
     String gameName,
     int stars,
@@ -45,7 +50,6 @@ class ProgressManager {
 
   }
 
-  // جلب نجوم اللعبة
   static Future<int> getStars(
     String gameName,
   ) async {
@@ -53,12 +57,15 @@ class ProgressManager {
     final prefs = await SharedPreferences.getInstance();
 
     return prefs.getInt(
-      "${gameName}_stars",
-    ) ?? 0;
-
+          "${gameName}_stars",
+        ) ??
+        0;
   }
 
-  // حفظ مجموع النجوم لكل الألعاب
+  // =========================
+  // مجموع النجوم
+  // =========================
+
   static Future<void> saveTotalStars(
     int stars,
   ) async {
@@ -72,18 +79,20 @@ class ProgressManager {
 
   }
 
-  // جلب مجموع النجوم
   static Future<int> getTotalStars() async {
 
     final prefs = await SharedPreferences.getInstance();
 
     return prefs.getInt(
-      "total_stars",
-    ) ?? 0;
-
+          "total_stars",
+        ) ??
+        0;
   }
 
-  // تسجيل أن اللعبة اكتملت
+  // =========================
+  // اكتمال اللعبة
+  // =========================
+
   static Future<void> saveCompletedGame(
     String gameName,
   ) async {
@@ -97,7 +106,6 @@ class ProgressManager {
 
   }
 
-  // هل اللعبة مكتملة؟
   static Future<bool> isGameCompleted(
     String gameName,
   ) async {
@@ -105,12 +113,15 @@ class ProgressManager {
     final prefs = await SharedPreferences.getInstance();
 
     return prefs.getBool(
-      "${gameName}_completed",
-    ) ?? false;
-
+          "${gameName}_completed",
+        ) ??
+        false;
   }
 
-  // حفظ آخر مستوى مفتوح
+  // =========================
+  // آخر مستوى مفتوح
+  // =========================
+
   static Future<void> saveUnlockedLevel(
     String gameName,
     int level,
@@ -118,9 +129,11 @@ class ProgressManager {
 
     final prefs = await SharedPreferences.getInstance();
 
-    final currentLevel = prefs.getInt(
-      "${gameName}_unlocked_level",
-    ) ?? 1;
+    final currentLevel =
+        prefs.getInt(
+              "${gameName}_unlocked_level",
+            ) ??
+            1;
 
     if (level > currentLevel) {
 
@@ -133,7 +146,6 @@ class ProgressManager {
 
   }
 
-  // جلب آخر مستوى مفتوح
   static Future<int> getUnlockedLevel(
     String gameName,
   ) async {
@@ -141,12 +153,46 @@ class ProgressManager {
     final prefs = await SharedPreferences.getInstance();
 
     return prefs.getInt(
-      "${gameName}_unlocked_level",
-    ) ?? 1;
+          "${gameName}_unlocked_level",
+        ) ??
+        1;
+  }
+
+  // =========================
+  // عدد المستويات المكتملة
+  // =========================
+
+  static Future<void> saveCompletedLevel(
+    String gameName,
+    int level,
+  ) async {
+
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setBool(
+      "${gameName}_level_$level",
+      true,
+    );
 
   }
 
+  static Future<bool> isLevelCompleted(
+    String gameName,
+    int level,
+  ) async {
+
+    final prefs = await SharedPreferences.getInstance();
+
+    return prefs.getBool(
+          "${gameName}_level_$level",
+        ) ??
+        false;
+  }
+
+  // =========================
   // إعادة تعيين تقدم اللعبة
+  // =========================
+
   static Future<void> resetProgress(
     String gameName,
   ) async {
@@ -168,6 +214,15 @@ class ProgressManager {
     await prefs.remove(
       "${gameName}_unlocked_level",
     );
+
+    // حذف حالة المستويات (حتى 100 مستوى)
+    for (int i = 1; i <= 100; i++) {
+
+      await prefs.remove(
+        "${gameName}_level_$i",
+      );
+
+    }
 
   }
 
