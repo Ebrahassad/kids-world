@@ -77,6 +77,17 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         "assets/images/Puzzle/monkey_puzzle.png",
       ],
     },
+
+    {
+      "question": "أين الفراشة؟ 🦋",
+      "answer": "assets/images/Puzzle/butterfly_puzzle.png",
+      "options": [
+        "assets/images/Puzzle/cat_puzzle.png",
+        "assets/images/Puzzle/butterfly_puzzle.png",
+        "assets/images/Puzzle/fish_puzzle.png",
+        "assets/images/Puzzle/rabbit_puzzle.png",
+      ],
+    },
     {
       "question": "أين الكلب؟ 🐶",
       "answer": "assets/images/Puzzle/dog_puzzle.png",
@@ -131,6 +142,7 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
   }
 
 
+
   Future<void> loadProgress() async {
 
     currentQuestion =
@@ -140,7 +152,9 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
 
 
     stars =
-        await ProgressManager.getStars();
+        await ProgressManager.getStars(
+          "choose_image",
+        );
 
 
     setState(() {
@@ -153,25 +167,31 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
 
 
 
+
   void playSound(String fileName) {
 
     audioPlayer.play(
+
       AssetSource(
         'sounds/$fileName',
       ),
+
     );
 
   }
 
 
 
-  void checkAnswer(String image) {
+
+
+  void checkAnswer(String image) async {
 
 
     if (image == questions[currentQuestion]["answer"]) {
 
 
       playSound("correct.mp3");
+
 
 
       setState(() {
@@ -181,7 +201,11 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
       });
 
 
-      awaitSaveStars();
+
+      await ProgressManager.saveStars(
+        "choose_image",
+        stars,
+      );
 
 
 
@@ -195,18 +219,26 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
         });
 
 
-        ProgressManager.saveProgress(
+
+        await ProgressManager.saveProgress(
           "choose_image",
           currentQuestion,
         );
 
 
+
       } else {
 
 
-        ProgressManager.saveCompletedGame(
-          "choose_image",
-        );
+        await ProgressManager.saveCompletedGame(
+  "choose_image",
+);
+
+await ProgressManager.saveProgress(
+  "choose_image",
+  0,
+);
+
 
 
         Navigator.pushReplacement(
@@ -259,24 +291,7 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
 
 
 
-  Future<void> awaitSaveStars() async {
 
-    await ProgressManager.saveStars(
-      stars,
-    );
-
-  }
-
-    {
-      "question": "أين الفراشة؟ 🦋",
-      "answer": "assets/images/Puzzle/butterfly_puzzle.png",
-      "options": [
-        "assets/images/Puzzle/cat_puzzle.png",
-        "assets/images/Puzzle/butterfly_puzzle.png",
-        "assets/images/Puzzle/fish_puzzle.png",
-        "assets/images/Puzzle/rabbit_puzzle.png",
-      ],
-    },
   @override
   void dispose() {
 
@@ -285,9 +300,6 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
     super.dispose();
 
   }
-
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -315,127 +327,180 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
 
     return Scaffold(
 
+
       backgroundColor:
           Colors.lightBlue.shade50,
 
 
+
       appBar: AppBar(
+
 
         backgroundColor:
             Colors.blue,
 
+
         centerTitle: true,
+
 
 
         title: Text(
 
+
           "اختيار الصورة ${currentQuestion + 1}/${questions.length}",
 
+
+
           style: const TextStyle(
+
 
             color:
                 Colors.white,
 
+
             fontWeight:
                 FontWeight.bold,
 
+
           ),
 
+
         ),
+
 
 
         actions: [
 
 
+
           Padding(
+
 
             padding:
                 const EdgeInsets.only(right: 15),
 
 
+
             child: Row(
+
 
               children: [
 
 
+
                 const Icon(
 
+
                   Icons.star,
+
 
                   color:
                       Colors.yellow,
 
+
                 ),
 
 
-                const SizedBox(
-                  width: 5,
-                ),
+
+                const SizedBox(width: 5),
+
 
 
                 Text(
 
+
                   "$stars",
 
+
+
                   style: const TextStyle(
+
 
                     color:
                         Colors.white,
 
+
                     fontSize:
                         20,
+
 
                     fontWeight:
                         FontWeight.bold,
 
+
                   ),
+
+
 
                 ),
 
+
+
               ],
 
+
+
             ),
+
+
 
           ),
 
 
+
         ],
 
+
+
       ),
+
+
 
 
 
       body: Column(
 
 
+
         children: [
 
 
-          const SizedBox(
-            height: 25,
-          ),
+
+          const SizedBox(height: 25),
+
 
 
 
           Text(
 
+
             data["question"],
+
+
 
             textAlign:
                 TextAlign.center,
 
 
+
             style: const TextStyle(
+
 
               fontSize:
                   28,
 
+
               fontWeight:
                   FontWeight.bold,
 
+
+
             ),
 
+
+
           ),
+
 
 
 
@@ -443,12 +508,15 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
           Expanded(
 
 
-            child:
-                GridView.builder(
+
+            child: GridView.builder(
+
 
 
               padding:
                   const EdgeInsets.all(20),
+
+
 
 
               itemCount:
@@ -456,23 +524,30 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
 
 
 
+
+
               gridDelegate:
                   const SliverGridDelegateWithFixedCrossAxisCount(
+
 
 
                 crossAxisCount:
                     2,
 
 
+
                 crossAxisSpacing:
                     15,
+
 
 
                 mainAxisSpacing:
                     15,
 
 
+
               ),
+
 
 
 
@@ -481,45 +556,60 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
                   (context, index) {
 
 
+
                 final String image =
                     data["options"][index];
+
+
 
 
 
                 return GestureDetector(
 
 
+
                   onTap: () {
 
 
+
                     checkAnswer(image);
+
 
 
                   },
 
 
 
+
+
                   child: Card(
+
 
 
                     elevation:
                         5,
 
 
+
+
                     shape:
                         RoundedRectangleBorder(
+
 
 
                       borderRadius:
                           BorderRadius.circular(20),
 
 
+
                     ),
 
 
 
-                    child:
-                        Padding(
+
+
+                    child: Padding(
+
 
 
                       padding:
@@ -527,47 +617,61 @@ class _ChooseImageScreenState extends State<ChooseImageScreen> {
 
 
 
-                      child:
-                          Image.asset(
+
+
+                      child: Image.asset(
+
 
 
                         image,
+
 
 
                         fit:
                             BoxFit.contain,
 
 
+
                       ),
+
 
 
                     ),
 
 
+
                   ),
+
 
 
                 );
 
 
+
               },
+
 
 
             ),
 
 
+
           ),
+
 
 
         ],
 
 
+
       ),
+
 
 
     );
 
 
   }
+
 
 }
