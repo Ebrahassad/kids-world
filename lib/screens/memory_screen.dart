@@ -5,7 +5,6 @@ import 'package:audioplayers/audioplayers.dart';
 
 import 'win_screen.dart';
 
-import 'levels_screen.dart';
 import 'progress_manager.dart';
 import 'memory_levels_screen.dart';
 
@@ -292,10 +291,12 @@ if (cards.isEmpty) return;
     () async {
 
       // حفظ أعلى مستوى تم فتحه
-      await ProgressManager.saveUnlockedLevel(
-        "memory_game",
-        widget.level + 1,
-      );
+      if (widget.level < 10) {
+  await ProgressManager.saveUnlockedLevel(
+    "memory_game",
+    widget.level + 1,
+  );
+}
 
       if (!mounted) return;
 
@@ -303,15 +304,26 @@ if (cards.isEmpty) return;
         context,
         MaterialPageRoute(
           builder: (_) => WinScreen(
-            stars: stars,
+  stars: stars,
 
-            // مؤقتاً يبقى نفس المستوى
-            nextGame: MemoryGameScreen(
-              level: widget.level,
-            ),
+  nextGame: MemoryGameScreen(
+    level: widget.level,
+  ),
 
-            gamesPage: const MemoryLevelsScreen(),
-          ),
+  gamesPage: const MemoryLevelsScreen(),
+
+  hasLevels: true,
+
+  currentLevel: widget.level,
+
+  maxLevels: 10,
+
+  nextLevelPage: widget.level < 10
+      ? MemoryGameScreen(
+          level: widget.level + 1,
+        )
+      : null,
+),
         ),
       );
 
