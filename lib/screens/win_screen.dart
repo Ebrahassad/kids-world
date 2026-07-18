@@ -3,7 +3,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/services.dart';
 
-import 'star_manager.dart';
 
 class WinScreen extends StatefulWidget {
 
@@ -69,17 +68,11 @@ class _WinScreenState extends State<WinScreen> {
 
     confettiController.play();
 
-    saveStars();
+    
 
   }
 
-  Future<void> saveStars() async {
-
-    await StarManager.addStars(
-      widget.stars,
-    );
-
-  }
+  
 
   Future<void> playWinSound() async {
 
