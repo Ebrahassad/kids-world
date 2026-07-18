@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -6,9 +8,12 @@ import 'games_screen.dart';
 import 'progress_manager.dart';
 
 
+
 class PuzzleOrderScreen extends StatefulWidget {
 
-  const PuzzleOrderScreen({super.key});
+  const PuzzleOrderScreen({
+    super.key,
+  });
 
 
   @override
@@ -19,12 +24,15 @@ class PuzzleOrderScreen extends StatefulWidget {
 
 
 
+
 class _PuzzleOrderScreenState
     extends State<PuzzleOrderScreen> {
 
 
+
   static const String gameName =
       "puzzle_order";
+
 
 
   final AudioPlayer audioPlayer =
@@ -32,30 +40,51 @@ class _PuzzleOrderScreenState
 
 
 
+  final Random random =
+      Random();
+
+
+
+
   int stars = 0;
+
+
+  int attempts = 0;
+
 
 
   bool checking = false;
 
 
+  bool finished = false;
 
-  List<String> pieces = [
+
+
+
+
+  final List<String> startPieces = [
+
 
     "🐑",
     "🌳",
     "☀️",
     "🏠",
 
+
   ];
+
+
 
 
 
   final List<String> correctOrder = [
 
+
     "☀️",
     "🌳",
     "🏠",
     "🐑",
+
 
   ];
 
@@ -63,30 +92,163 @@ class _PuzzleOrderScreenState
 
 
 
-  Future<void> playSound(String fileName) async {
+  late List<String> pieces;
+
+
+
+
+
+
+
+  @override
+void initState() {
+
+  super.initState();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+
+    restartGame();
+
+  });
+
+}
+
+
+
+
+
+
+
+
+  Future<void> playSound(
+      String fileName,
+      ) async {
+
 
     try {
 
+
       await audioPlayer.stop();
+
+
 
       await audioPlayer.play(
 
+
         AssetSource(
+
           "sounds/$fileName",
+
         ),
 
+
       );
+
 
 
     } catch(e) {
 
+
       debugPrint(
-        "خطأ الصوت: $e",
+
+        "خطأ تشغيل الصوت: $e",
+
       );
+
 
     }
 
+
   }
+
+
+
+
+
+
+
+
+  Future<void> playCorrectAndWinSound()
+  async {
+
+
+    await playSound("correct.mp3");
+
+await Future.delayed(
+  const Duration(milliseconds:300),
+);
+
+await playSound("win.mp3");
+
+  }
+
+
+
+
+
+
+
+
+  void shufflePieces(){
+
+
+    do {
+
+
+      pieces =
+          List<String>.from(
+            startPieces,
+          );
+
+
+
+      pieces.shuffle(
+        random,
+      );
+
+
+
+    } while (
+
+      pieces.toString() ==
+          correctOrder.toString()
+
+    );
+
+
+
+    finished = false;
+
+
+  }
+
+
+
+
+
+
+
+
+  void restartGame(){
+
+
+    setState(() {
+
+  shufflePieces();
+
+  stars = 0;
+
+  attempts = 0;
+
+  checking = false;
+
+});
+
+
+  }
+
+
+
 
 
 
@@ -95,34 +257,49 @@ class _PuzzleOrderScreenState
   Future<void> checkPuzzle() async {
 
 
-    if(checking) return;
+    if(checking || finished) return;
+
 
 
     setState(() {
 
+
       checking = true;
+
+
+      attempts++;
+
 
     });
 
 
 
 
-    if(pieces.toString() ==
-        correctOrder.toString()) {
+
+    final bool isCorrect =
+
+        pieces.toString() ==
+            correctOrder.toString();
 
 
 
-      await playSound(
-        "correct.mp3",
-      );
+
+
+    if(isCorrect){
 
 
 
       setState(() {
 
+
         stars = 1;
 
+
+        finished = true;
+
+
       });
+
 
 
 
@@ -138,6 +315,7 @@ class _PuzzleOrderScreenState
 
 
 
+
       await ProgressManager.saveCompletedGame(
 
         gameName,
@@ -148,10 +326,48 @@ class _PuzzleOrderScreenState
 
 
 
+      await ProgressManager.addTotalStars(
+
+        stars,
+
+      );
+
+
+
+
+
+      await ProgressManager.addWinCount(
+
+        gameName,
+
+      );
+
+
+
+
+
+      await ProgressManager.saveLastPlayed(
+
+        gameName,
+
+      );
+
+
+
+
+
+      await playCorrectAndWinSound();
+
+
+
+
+
       await Future.delayed(
 
         const Duration(
-          milliseconds: 700,
+
+          milliseconds: 500,
+
         ),
 
       );
@@ -159,7 +375,9 @@ class _PuzzleOrderScreenState
 
 
 
+
       if(!mounted) return;
+
 
 
 
@@ -174,11 +392,23 @@ class _PuzzleOrderScreenState
 
             stars: stars,
 
+
             nextGame:
+
                 const PuzzleOrderScreen(),
 
+
+
             gamesPage:
+
                 const GamesScreen(),
+
+
+
+            hasLevels:
+
+                false,
+
 
           ),
 
@@ -189,7 +419,7 @@ class _PuzzleOrderScreenState
 
 
 
-    } else {
+    }else{
 
 
 
@@ -201,34 +431,41 @@ class _PuzzleOrderScreenState
 
 
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
+      if(mounted){
 
 
-        const SnackBar(
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
 
-          content:
+          const SnackBar(
 
-          Text(
+            content:
 
-            "❌ رتب الصورة بشكل صحيح",
+            Text(
+
+              "❌ رتب الصورة بشكل صحيح",
+
+            ),
+
+
+            backgroundColor:
+
+            Colors.red,
 
           ),
 
-          backgroundColor:
-
-          Colors.red,
-
-        ),
+        );
 
 
-      );
+      }
 
 
 
       setState(() {
 
+
         checking = false;
+
 
       });
 
@@ -237,179 +474,168 @@ class _PuzzleOrderScreenState
 
 
   }
+@override
+Widget build(BuildContext context) {
+
+  return Scaffold(
+
+    backgroundColor:
+        Colors.lightBlue.shade50,
 
 
-
-
-
-
-  void restartGame(){
-
-
-    setState(() {
-
-
-      pieces = [
-
-        "🐑",
-        "🌳",
-        "☀️",
-        "🏠",
-
-      ];
-
-      stars = 0;
-
-      checking = false;
-
-
-    });
-
-
-  }
-
-
-
-
-
-  @override
-  Widget build(BuildContext context) {
-
-
-    return Scaffold(
-
-
+    appBar: AppBar(
 
       backgroundColor:
-          Colors.lightBlue.shade50,
+          Colors.blue,
+
+      centerTitle:
+          true,
 
 
+      leading:
+          IconButton(
 
-      appBar: AppBar(
-
-
-        backgroundColor:
-            Colors.blue,
-
-
-        centerTitle:
-            true,
-
-
-        title:
-            const Text(
-
-          "رتّب الصورة ⭐",
-
-          style:
-              TextStyle(
-
-            color:
-                Colors.white,
-
-            fontWeight:
-                FontWeight.bold,
-
-          ),
-
-        ),
-
-
-
-        actions: [
-
-
-          Padding(
-
-            padding:
-                const EdgeInsets.only(
-                  right: 15,
-                ),
-
-
-            child:
-                Row(
-
-              children: [
-
-
-                const Icon(
-
-                  Icons.star,
-
-                  color:
-                      Colors.yellow,
-
-                ),
-
-
-                const SizedBox(
-                  width:5,
-                ),
-
-
-                Text(
-
-                  "$stars",
-
-                  style:
-                      const TextStyle(
-
-                    color:
-                        Colors.white,
-
-                    fontSize:
-                        22,
-
-                    fontWeight:
-                        FontWeight.bold,
-
-                  ),
-
-                ),
-
-
-              ],
-
+        icon:
+            const Icon(
+              Icons.arrow_back,
             ),
 
-          ),
+
+        onPressed: () {
+
+          Navigator.pop(context);
+
+        },
+
+      ),
 
 
-        ],
+      title:
+          const Text(
 
+        "رتّب الصورة 🧩",
+
+        style:
+            TextStyle(
+
+          color:
+              Colors.white,
+
+          fontWeight:
+              FontWeight.bold,
+
+          fontSize:
+              22,
+
+        ),
 
       ),
 
 
 
+      actions: [
 
-      body:
-          Padding(
+        Padding(
 
+          padding:
+              const EdgeInsets.only(
+                right: 15,
+              ),
+
+
+          child:
+              Row(
+
+            children: [
+
+
+              const Icon(
+
+                Icons.star,
+
+                color:
+                    Colors.yellow,
+
+                size:
+                    30,
+
+              ),
+
+
+
+              const SizedBox(
+                width: 5,
+              ),
+
+
+
+              Text(
+
+                "$stars",
+
+                style:
+                    const TextStyle(
+
+                  color:
+                      Colors.white,
+
+                  fontSize:
+                      22,
+
+                  fontWeight:
+                      FontWeight.bold,
+
+                ),
+
+              ),
+
+
+            ],
+
+          ),
+
+        ),
+
+      ],
+
+
+    ),
+
+
+
+    body:
+
+    SafeArea(
+
+      child:
+
+      Padding(
 
         padding:
             const EdgeInsets.all(20),
 
 
-
         child:
-            Column(
 
+        Column(
 
           children: [
 
 
-
             const Text(
 
-              "اسحب القطع ورتب الصورة 🧩",
+              "اسحب القطع حتى تصبح الصورة صحيحة ⭐",
+
+              textAlign:
+                  TextAlign.center,
+
 
               style:
-                  TextStyle(
+
+              TextStyle(
 
                 fontSize:
-                    28,
+                    25,
 
                 fontWeight:
                     FontWeight.bold,
@@ -421,25 +647,108 @@ class _PuzzleOrderScreenState
 
 
             const SizedBox(
-              height:25,
+
+              height:
+
+              20,
+
             ),
 
+
+
+            Container(
+
+              padding:
+                  const EdgeInsets.all(15),
+
+
+              decoration:
+                  BoxDecoration(
+
+                color:
+                    Colors.white,
+
+                borderRadius:
+                    BorderRadius.circular(
+                      20,
+                    ),
+
+                boxShadow: const [
+
+                  BoxShadow(
+
+                    color:
+                        Colors.black12,
+
+                    blurRadius:
+                        8,
+
+                    offset:
+                        Offset(0,4),
+
+                  ),
+
+                ],
+
+              ),
+
+
+              child:
+
+              const Text(
+
+                "🧩 رتب المشهد من الأعلى إلى الأسفل",
+
+                textAlign:
+                    TextAlign.center,
+
+
+                style:
+
+                TextStyle(
+
+                  fontSize:
+                      20,
+
+                  fontWeight:
+                      FontWeight.bold,
+
+                ),
+
+              ),
+
+            ),
+
+
+
+            const SizedBox(
+
+              height:
+                  20,
+
+            ),
 
 
 
             Expanded(
 
-
               child:
-                  ReorderableListView(
 
+              ReorderableListView(
+
+                buildDefaultDragHandles:
+                    false,
 
 
                 onReorder:
-                    (oldIndex,newIndex){
+
+                (oldIndex,newIndex){
 
 
-                  setState(() {
+                  if(finished) return;
+
+
+                  setState((){
 
 
                     if(newIndex > oldIndex){
@@ -449,10 +758,11 @@ class _PuzzleOrderScreenState
                     }
 
 
+
                     final item =
-                        pieces.removeAt(
-                          oldIndex,
-                        );
+                    pieces.removeAt(
+                      oldIndex,
+                    );
 
 
                     pieces.insert(
@@ -474,23 +784,37 @@ class _PuzzleOrderScreenState
                 children: [
 
 
-                  for(int i=0;i<pieces.length;i++)
+                  for(int i=0;
+                  i<pieces.length;
+                  i++)
+
 
                     Card(
 
-
                       key:
-                          ValueKey(
-                            pieces[i],
-                          ),
+
+                      ValueKey(
+                        pieces[i],
+                      ),
+
 
 
                       elevation:
-                          5,
+                          6,
+
+
+
+                      margin:
+
+                      const EdgeInsets.symmetric(
+                        vertical: 8,
+                      ),
+
 
 
                       shape:
-                          RoundedRectangleBorder(
+
+                      RoundedRectangleBorder(
 
                         borderRadius:
                             BorderRadius.circular(
@@ -502,36 +826,47 @@ class _PuzzleOrderScreenState
 
 
                       child:
-                          ListTile(
 
-
+                      ListTile(
 
                         leading:
-                            const Icon(
 
-                          Icons.drag_handle,
+                        ReorderableDragStartListener(
 
-                          color:
-                              Colors.blue,
+                          index:
+                              i,
+
+                          child:
+
+                          const Icon(
+
+                            Icons.drag_handle,
+
+                            color:
+                                Colors.blue,
+
+                            size:
+                                35,
+
+                          ),
 
                         ),
 
 
 
-
                         title:
-                            Text(
 
+                        Text(
 
                           pieces[i],
-
 
                           textAlign:
                               TextAlign.center,
 
 
                           style:
-                              const TextStyle(
+
+                          const TextStyle(
 
                             fontSize:
                                 45,
@@ -542,147 +877,364 @@ class _PuzzleOrderScreenState
                         ),
 
 
-
                       ),
-
-
 
                     ),
 
 
-
                 ],
 
+              ),
 
+            ),
+            const SizedBox(
+
+              height:
+                  15,
+
+            ),
+
+
+
+            Container(
+
+              padding:
+                  const EdgeInsets.symmetric(
+
+                horizontal:
+                    20,
+
+                vertical:
+                    10,
 
               ),
 
 
 
-            ),
+              decoration:
 
+              BoxDecoration(
 
+                color:
+                    Colors.white,
 
-
-            const SizedBox(
-              height:20,
-            ),
-
-
-
-
-            ElevatedButton(
-
-
-
-              onPressed:
-                  checking
-                      ? null
-                      : checkPuzzle,
-
-
-
-              style:
-                  ElevatedButton.styleFrom(
-
-
-
-                backgroundColor:
-                    Colors.green,
-
-
-
-                padding:
-                    const EdgeInsets.symmetric(
-
-                  horizontal:
-                      50,
-
-                  vertical:
-                      15,
-
-                ),
-
-
-
-                shape:
-                    RoundedRectangleBorder(
-
-                  borderRadius:
-                      BorderRadius.circular(
-                        20,
-                      ),
-
-                ),
-
-
+                borderRadius:
+                    BorderRadius.circular(
+                      20,
+                    ),
 
               ),
 
 
 
               child:
-                  const Text(
 
+              Text(
 
-
-                "تحقق ✅",
-
-
+                "🎯 المحاولات: $attempts",
 
                 style:
-                    TextStyle(
 
-                  fontSize:
-                      25,
-
-                  color:
-                      Colors.white,
-
-                  fontWeight:
-                      FontWeight.bold,
-
-                ),
-
-
-              ),
-
-
-
-            ),
-
-
-
-
-            const SizedBox(
-              height:15,
-            ),
-
-
-
-
-            TextButton(
-
-              onPressed:
-                  restartGame,
-
-
-              child:
-                  const Text(
-
-                "إعادة اللعب 🔄",
-
-                style:
-                    TextStyle(
+                const TextStyle(
 
                   fontSize:
                       20,
 
+                  fontWeight:
+                      FontWeight.bold,
+
+                  color:
+                      Colors.blue,
+
                 ),
 
               ),
 
+
+
             ),
+
+
+
+
+
+            const SizedBox(
+
+              height:
+                  20,
+
+            ),
+
+
+
+
+
+            SizedBox(
+
+              width:
+                  double.infinity,
+
+
+              child:
+
+              ElevatedButton.icon(
+
+
+
+                onPressed:
+
+                checking || finished
+
+                    ? null
+
+                    : checkPuzzle,
+
+
+
+                icon:
+
+                Icon(
+
+                  finished
+
+                      ? Icons.done_all
+
+                      : Icons.check_circle,
+
+                  size:
+                      30,
+
+                ),
+
+
+
+
+                label:
+
+                Text(
+
+                  finished
+
+                      ? "تم الإنجاز 🎉"
+
+                      : checking
+
+                      ? "جاري التحقق..."
+
+                      : "تحقق من الترتيب ✅",
+
+
+
+                  style:
+
+                  const TextStyle(
+
+                    fontSize:
+                        22,
+
+                    fontWeight:
+                        FontWeight.bold,
+
+                  ),
+
+                ),
+
+
+
+                style:
+
+                ElevatedButton.styleFrom(
+
+
+
+                  backgroundColor:
+
+                  finished
+
+                      ? Colors.orange
+
+                      : Colors.green,
+
+
+
+                  foregroundColor:
+
+                  Colors.white,
+
+
+
+                  padding:
+
+                  const EdgeInsets.symmetric(
+
+                    vertical:
+                        15,
+
+                  ),
+
+
+
+                  shape:
+
+                  RoundedRectangleBorder(
+
+                    borderRadius:
+
+                    BorderRadius.circular(
+
+                      25,
+
+                    ),
+
+                  ),
+
+
+
+                  elevation:
+                      8,
+
+
+                ),
+
+
+
+              ),
+
+            ),
+
+
+
+
+
+            const SizedBox(
+
+              height:
+                  15,
+
+            ),
+
+
+
+
+
+            SizedBox(
+
+              width:
+                  double.infinity,
+
+
+              child:
+
+              OutlinedButton.icon(
+
+
+
+                onPressed:
+
+                restartGame,
+
+
+
+                icon:
+
+                const Icon(
+
+                  Icons.refresh,
+
+                  size:
+                      28,
+
+                ),
+
+
+
+
+                label:
+
+                const Text(
+
+                  "إعادة اللعب 🔄",
+
+                  style:
+
+                  TextStyle(
+
+                    fontSize:
+                        21,
+
+                    fontWeight:
+                        FontWeight.bold,
+
+                  ),
+
+                ),
+
+
+
+                style:
+
+                OutlinedButton.styleFrom(
+
+
+
+                  foregroundColor:
+                      Colors.blue,
+
+
+                  backgroundColor:
+                      Colors.white,
+
+
+
+                  padding:
+
+                  const EdgeInsets.symmetric(
+
+                    vertical:
+                        13,
+
+                  ),
+
+
+
+                  shape:
+
+                  RoundedRectangleBorder(
+
+                    borderRadius:
+
+                    BorderRadius.circular(
+
+                      25,
+
+                    ),
+
+                  ),
+
+
+
+                  side:
+
+                  const BorderSide(
+
+                    color:
+                        Colors.blue,
+
+                    width:
+                        2,
+
+                  ),
+
+
+                ),
+
+
+
+              ),
+
+            ),
+
+
 
 
 
@@ -691,30 +1243,29 @@ class _PuzzleOrderScreenState
 
         ),
 
-
       ),
 
+    ),
 
-    );
+  );
 
-
-  }
-
-
+}
 
 
 
-  @override
-  void dispose(){
 
 
-    audioPlayer.dispose();
+
+@override
+void dispose() {
 
 
-    super.dispose();
+  audioPlayer.dispose();
 
 
-  }
+  super.dispose();
 
+
+}
 
 }
