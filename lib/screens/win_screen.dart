@@ -328,9 +328,15 @@ class _WinScreenState extends State<WinScreen> {
 
                             MaterialPageRoute(
 
-                              builder: (_) => isLastLevel
-                                  ? widget.gamesPage
-                                  : widget.nextLevelPage!,
+                              builder: (_) {
+
+  if (isLastLevel || widget.nextLevelPage == null) {
+    return widget.gamesPage;
+  }
+
+  return widget.nextLevelPage!;
+
+},
 
                             ),
 
