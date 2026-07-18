@@ -948,8 +948,8 @@ class _MatchImageScreenState
                           2,
 
 
-                      crossSpacing:
-                          15,
+                      crossAxisSpacing:
+    15,
 
 
                       mainAxisSpacing:
