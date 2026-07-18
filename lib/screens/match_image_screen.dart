@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+
+import 'progress_manager.dart';
 import 'win_screen.dart';
 import 'games_screen.dart';
 
@@ -11,10 +13,34 @@ class MatchImageScreen extends StatefulWidget {
 }
 
 class _MatchImageScreenState extends State<MatchImageScreen> {
+  static const String gameName = "match_image";
+
   final AudioPlayer audioPlayer = AudioPlayer();
 
   int currentQuestion = 0;
   int stars = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadProgress();
+  }
+
+  Future<void> loadProgress() async {
+    currentQuestion =
+        await ProgressManager.getProgress(gameName);
+
+    stars =
+        await ProgressManager.getStars(gameName);
+
+    if (currentQuestion >= questions.length) {
+      currentQuestion = 0;
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   final List<Map<String, dynamic>> questions = [
     {
@@ -120,10 +146,12 @@ class _MatchImageScreenState extends State<MatchImageScreen> {
   ];
 
   void playSound(String fileName) {
-    audioPlayer.play(AssetSource('sounds/$fileName'));
+    audioPlayer.play(
+      AssetSource('sounds/$fileName'),
+    );
   }
 
-  void checkAnswer(String image) {
+  Future<void> checkAnswer(String image) async {
     if (image == questions[currentQuestion]["answer"]) {
       playSound("correct.mp3");
 
@@ -131,21 +159,49 @@ class _MatchImageScreenState extends State<MatchImageScreen> {
         stars++;
       });
 
+      await ProgressManager.saveStars(
+        gameName,
+        stars,
+      );
+
       if (currentQuestion < questions.length - 1) {
         setState(() {
           currentQuestion++;
         });
+
+        await ProgressManager.saveProgress(
+          gameName,
+          currentQuestion,
+        );
       } else {
+        bool completed =
+            await ProgressManager.isGameCompleted(
+          gameName,
+        );
+
+        if (!completed) {
+          int total =
+              await ProgressManager.getTotalStars();
+
+          await ProgressManager.saveTotalStars(
+            total + stars,
+          );
+
+          await ProgressManager.saveCompletedGame(
+            gameName,
+          );
+        }
+
         Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(
-    builder: (_) => WinScreen(
-      stars: stars,
-      nextGame: const MatchImageScreen(),
-      gamesPage: const GamesScreen(),
-    ),
-  ),
-);
+          context,
+          MaterialPageRoute(
+            builder: (_) => WinScreen(
+              stars: stars,
+              nextGame: const MatchImageScreen(),
+              gamesPage: const GamesScreen(),
+            ),
+          ),
+        );
       }
     } else {
       playSound("wrong.mp3");
@@ -163,10 +219,10 @@ class _MatchImageScreenState extends State<MatchImageScreen> {
     audioPlayer.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final data = questions[currentQuestion];
-
     return Scaffold(
       backgroundColor: Colors.lightBlue.shade50,
 
@@ -236,8 +292,10 @@ class _MatchImageScreenState extends State<MatchImageScreen> {
                 ),
                 itemBuilder: (context, index) {
                   return InkWell(
-                    onTap: () {
-                      checkAnswer(data["options"][index]);
+                    onTap: () async {
+                      await checkAnswer(
+                        data["options"][index],
+                      );
                     },
                     borderRadius: BorderRadius.circular(15),
                     child: Card(
