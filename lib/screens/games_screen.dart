@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'levels_screen.dart';
+import 'memory_levels_screen.dart';
 import 'game_screen.dart';
 import 'choose_image_screen.dart';
 import 'letters_screen.dart';
@@ -88,11 +88,11 @@ class GamesScreen extends StatelessWidget {
 
             // 7
             gameButton(
-              context,
-              "🧠\nلعبة الذاكرة",
-              Colors.green,
-              const LevelsScreen(),
-            ),
+  context,
+  "🧠\nلعبة الذاكرة",
+  Colors.green,
+  const MemoryLevelsScreen(),
+),
 
             // 8
             gameButton(
