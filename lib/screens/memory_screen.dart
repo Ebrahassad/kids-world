@@ -88,6 +88,16 @@ void startGame() {
 
   final List<Map<String, dynamic>> newCards = [];
 
+// عدد الأزواج حسب المستوى
+int pairs = 4 + (widget.level - 1) * 2;
+
+// لا يتجاوز عدد الحيوانات الموجودة
+if (pairs > allAnimals.length) {
+  pairs = allAnimals.length;
+}
+
+// اختيار الحيوانات لهذا المستوى
+animals = allAnimals.take(pairs).toList();
 
   for (String animal in animals) {
 
@@ -335,8 +345,39 @@ if (cards.isEmpty) return;
 
   }
 
+int getCrossAxisCount() {
 
+  if (widget.level <= 2) {
+    return 4;
+  }
 
+  if (widget.level <= 5) {
+    return 5;
+  }
+
+  if (widget.level <= 8) {
+    return 6;
+  }
+
+  return 7;
+}
+
+double getCardFontSize() {
+
+  if (widget.level <= 2) {
+    return 55;
+  }
+
+  if (widget.level <= 5) {
+    return 48;
+  }
+
+  if (widget.level <= 8) {
+    return 42;
+  }
+
+  return 36;
+}
 
   Widget buildCard(int index) {
 
@@ -434,11 +475,11 @@ if (cards.isEmpty) return;
 
 
 
-              style: const TextStyle(
+              style: TextStyle(
 
-                fontSize: 55,
+  fontSize: getCardFontSize(),
 
-              ),
+),
 
             ),
 
@@ -681,19 +722,15 @@ if (cards.isEmpty) return;
 
 
                     gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+    SliverGridDelegateWithFixedCrossAxisCount(
 
+  crossAxisCount: getCrossAxisCount(),
 
-                      crossAxisCount: 4,
+  crossAxisSpacing: 12,
 
+  mainAxisSpacing: 12,
 
-                      crossAxisSpacing: 12,
-
-
-                      mainAxisSpacing: 12,
-
-
-                    ),
+),
 
 
 
