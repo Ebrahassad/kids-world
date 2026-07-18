@@ -6,6 +6,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
 
 import 'levels_screen.dart';
+import 'progress_manager.dart';
+import 'memory_levels_screen.dart';
 
 
 class MemoryGameScreen extends StatefulWidget {
@@ -283,34 +285,41 @@ if (cards.isEmpty) return;
 
       if (matches == animals.length) {
 
+  Future.delayed(
 
-        Future.delayed(
+    const Duration(milliseconds: 700),
 
-          const Duration(milliseconds: 700),
+    () async {
 
-          () {
+      // حفظ أعلى مستوى تم فتحه
+      await ProgressManager.saveUnlockedLevel(
+        "memory_game",
+        widget.level + 1,
+      );
 
+      if (!mounted) return;
 
-         if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => WinScreen(
+            stars: stars,
 
-            Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(
-    builder: (_) => WinScreen(
-      stars: stars,
-      nextGame: const MemoryGameScreen(),
-      gamesPage: const GamesScreen(),
-    ),
-  ),
-);
+            // مؤقتاً يبقى نفس المستوى
+            nextGame: MemoryGameScreen(
+              level: widget.level,
+            ),
 
+            gamesPage: const MemoryLevelsScreen(),
+          ),
+        ),
+      );
 
-          },
+    },
 
-        );
+  );
 
-      }
-
+}
 
 
     } else {
