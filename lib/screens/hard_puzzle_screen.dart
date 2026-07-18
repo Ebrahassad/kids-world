@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import 'progress_manager.dart';
+import '../progress_manager.dart';
 import 'games_screen.dart';
 import 'win_screen.dart';
 
