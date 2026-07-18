@@ -7,6 +7,7 @@ import 'win_screen.dart';
 import 'games_screen.dart';
 import 'progress_manager.dart';
 
+
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
 
@@ -14,6 +15,7 @@ class GameScreen extends StatefulWidget {
   State<GameScreen> createState() =>
       _GameScreenState();
 }
+
 
 class _GameScreenState extends State<GameScreen> {
 
@@ -142,11 +144,8 @@ class _GameScreenState extends State<GameScreen> {
   int currentQuestion = 0;
   int stars = 0;
 
-
   bool answered = false;
   bool loadingNextQuestion = false;
-  bool loading = true;
-
 
 
   @override
@@ -161,11 +160,9 @@ class _GameScreenState extends State<GameScreen> {
   }
 
 
-
   void prepareGame() {
 
-    questions =
-        originalQuestions.map((item) {
+    questions = originalQuestions.map((item){
 
       return {
 
@@ -174,9 +171,9 @@ class _GameScreenState extends State<GameScreen> {
         "answer": item["answer"],
 
         "options":
-            List<String>.from(
-              item["options"],
-            ),
+        List<String>.from(
+          item["options"],
+        ),
 
       };
 
@@ -186,12 +183,12 @@ class _GameScreenState extends State<GameScreen> {
     questions.shuffle(random);
 
 
-    for (final item in questions) {
+    for(final item in questions){
 
       final options =
-          List<String>.from(
-            item["options"],
-          );
+      List<String>.from(
+        item["options"],
+      );
 
       options.shuffle(random);
 
@@ -200,7 +197,6 @@ class _GameScreenState extends State<GameScreen> {
     }
 
   }
-
 
 
   Future<void> loadProgress() async {
@@ -217,48 +213,46 @@ class _GameScreenState extends State<GameScreen> {
         );
 
 
-    if (currentQuestion >= questions.length) {
+    if(currentQuestion >= questions.length){
 
       currentQuestion = 0;
 
     }
 
 
-    setState(() {
+    if(mounted){
 
-      loading = false;
-
-    });
-
-  }
-  Future<void> playSound(String fileName) async {
-
-    try {
-
-      await audioPlayer.stop();
-
-      await audioPlayer.play(
-        AssetSource(
-          "sounds/$fileName",
-        ),
-      );
-
-    } catch (e) {
-
-      debugPrint(
-        "خطأ في تشغيل الصوت: $e",
-      );
+      setState((){});
 
     }
 
   }
 
 
+  Future<void> playSound(String file) async {
 
+    try{
+
+      await audioPlayer.stop();
+
+      await audioPlayer.play(
+        AssetSource(
+          "sounds/$file",
+        ),
+      );
+
+    }catch(e){
+
+      debugPrint(
+        "خطأ الصوت: $e",
+      );
+
+    }
+
+  }
   Future<void> checkAnswer(String answer) async {
 
-    if (answered || loadingNextQuestion) return;
-
+    if(answered || loadingNextQuestion) return;
 
 
     setState(() {
@@ -268,19 +262,15 @@ class _GameScreenState extends State<GameScreen> {
     });
 
 
-
     final correctAnswer =
         questions[currentQuestion]["answer"];
 
 
-
-    if (answer == correctAnswer) {
-
+    if(answer == correctAnswer){
 
       await playSound(
         "correct.mp3",
       );
-
 
 
       setState(() {
@@ -290,42 +280,29 @@ class _GameScreenState extends State<GameScreen> {
       });
 
 
-
       await ProgressManager.saveStars(
         "puzzle_game",
         stars,
       );
 
 
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
 
         const SnackBar(
-
           content:
-              Text("🎉 إجابة صحيحة"),
-
+          Text("🎉 إجابة صحيحة"),
           backgroundColor:
-              Colors.green,
-
-          duration:
-              Duration(
-                milliseconds: 700,
-              ),
-
+          Colors.green,
         ),
 
       );
 
 
-
-      await goNextQuestion();
-
+      await nextQuestion();
 
 
-    } else {
-
+    }else{
 
 
       await playSound(
@@ -333,41 +310,27 @@ class _GameScreenState extends State<GameScreen> {
       );
 
 
-
       ScaffoldMessenger.of(context)
           .showSnackBar(
 
         const SnackBar(
-
           content:
-              Text("❌ حاول مرة أخرى"),
-
+          Text("❌ حاول مرة أخرى"),
           backgroundColor:
-              Colors.red,
-
-          duration:
-              Duration(
-                milliseconds: 800,
-              ),
-
+          Colors.red,
         ),
 
       );
 
 
-
       Future.delayed(
-
         const Duration(
           milliseconds: 800,
         ),
 
-        () {
+            (){
 
-
-          if (!mounted) return;
-
-
+          if(!mounted) return;
 
           setState(() {
 
@@ -375,9 +338,7 @@ class _GameScreenState extends State<GameScreen> {
 
           });
 
-
         },
-
       );
 
     }
@@ -386,35 +347,21 @@ class _GameScreenState extends State<GameScreen> {
 
 
 
-
-
-  Future<void> goNextQuestion() async {
-
-
-    setState(() {
-
-      loadingNextQuestion = true;
-
-    });
-
+  Future<void> nextQuestion() async {
 
 
     await Future.delayed(
-
       const Duration(
-        seconds: 1,
+        milliseconds: 800,
       ),
-
     );
 
 
-
-    if (!mounted) return;
-
+    if(!mounted) return;
 
 
-    if (currentQuestion < questions.length - 1) {
-
+    if(currentQuestion <
+        questions.length - 1){
 
 
       setState(() {
@@ -423,51 +370,27 @@ class _GameScreenState extends State<GameScreen> {
 
         answered = false;
 
-        loadingNextQuestion = false;
-
-
       });
-
 
 
       await ProgressManager.saveProgress(
-
         "puzzle_game",
-
         currentQuestion,
-
       );
 
 
-
-    } else {
-
-
-
-      setState(() {
-
-        loadingNextQuestion = false;
-
-      });
-
+    }else{
 
 
       await ProgressManager.saveCompletedGame(
-
         "puzzle_game",
-
       );
-
 
 
       await ProgressManager.saveProgress(
-
         "puzzle_game",
-
         0,
-
       );
-
 
 
       await playSound(
@@ -475,19 +398,7 @@ class _GameScreenState extends State<GameScreen> {
       );
 
 
-
-      await Future.delayed(
-
-        const Duration(
-          seconds: 2,
-        ),
-
-      );
-
-
-
-      if (!mounted) return;
-
+      if(!mounted) return;
 
 
       Navigator.pushReplacement(
@@ -500,11 +411,13 @@ class _GameScreenState extends State<GameScreen> {
 
             stars: stars,
 
+            // إعادة نفس اللعبة
             nextGame:
-                const ColorsScreen(),
+            const GameScreen(),
 
+            // صفحة كل الألعاب
             gamesPage:
-                const GamesScreen(),
+            const GamesScreen(),
 
           ),
 
@@ -518,15 +431,12 @@ class _GameScreenState extends State<GameScreen> {
 
 
 
-
-  void restartGame() {
-
+  void restartGame(){
 
     audioPlayer.stop();
 
 
     prepareGame();
-
 
 
     setState(() {
@@ -539,9 +449,7 @@ class _GameScreenState extends State<GameScreen> {
 
       loadingNextQuestion = false;
 
-
     });
-
 
 
     ProgressManager.resetProgress(
@@ -549,244 +457,226 @@ class _GameScreenState extends State<GameScreen> {
     );
 
   }
-  void restartGame() {
-    audioPlayer.stop();
-
-    prepareGame();
-
-    setState(() {
-      currentQuestion = 0;
-      stars = 0;
-      answered = false;
-      loadingNextQuestion = false;
-    });
-  }
-
-
   @override
   Widget build(BuildContext context) {
-    if (questions.isEmpty) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
 
-    final data = questions[currentQuestion];
+    final data =
+        questions[currentQuestion];
+
 
     return Scaffold(
+
       body: Container(
+
         width: double.infinity,
+
         height: double.infinity,
 
+
         decoration: const BoxDecoration(
+
           image: DecorationImage(
+
             image: AssetImage(
-              "assets/images/background.png",
+              "assets/images/Picture/background.png",
             ),
+
             fit: BoxFit.cover,
+
           ),
+
         ),
 
+
         child: Container(
-          color: Colors.white.withOpacity(0.25),
+
+          color:
+          Colors.white.withOpacity(0.25),
+
 
           child: SafeArea(
+
             child: Column(
+
               children: [
 
-                const SizedBox(height: 15),
+
+                const SizedBox(height:15),
+
 
                 Row(
+
                   mainAxisAlignment:
-                      MainAxisAlignment.spaceEvenly,
+                  MainAxisAlignment.spaceEvenly,
 
                   children: [
 
-                    Container(
-                      padding:
-                          const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 8,
-                      ),
-
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            BorderRadius.circular(20),
-
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 5,
-                          ),
-                        ],
-                      ),
-
-                      child: Text(
-                        "⭐ $stars",
-
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight:
-                              FontWeight.bold,
-                          color: Colors.orange,
-                        ),
-                      ),
-                    ),
-
 
                     Container(
+
                       padding:
-                          const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 8,
-                      ),
+                      const EdgeInsets.all(10),
 
-                      decoration: BoxDecoration(
+                      decoration:
+                      BoxDecoration(
+
                         color: Colors.white,
+
                         borderRadius:
-                            BorderRadius.circular(20),
-
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 5,
-                          ),
-                        ],
-                      ),
-
-                      child: Text(
-                        "السؤال ${currentQuestion + 1}/${questions.length}",
-
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight:
-                              FontWeight.bold,
-                        ),
-                      ),
-                    ),
-
-                  ],
-                ),
-
-
-                const SizedBox(height: 20),
-
-
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(
-                    horizontal: 20,
-                  ),
-
-                  child: LinearProgressIndicator(
-                    value:
-                        (currentQuestion + 1) /
-                        questions.length,
-
-                    minHeight: 8,
-
-                    borderRadius:
                         BorderRadius.circular(20),
 
-                    backgroundColor:
-                        Colors.white,
+                      ),
 
-                    valueColor:
-                        const AlwaysStoppedAnimation(
-                      Colors.lightGreen,
+                      child: Text(
+
+                        "⭐ $stars",
+
+                        style:
+                        const TextStyle(
+
+                          fontSize:24,
+
+                          fontWeight:
+                          FontWeight.bold,
+
+                          color:
+                          Colors.orange,
+
+                        ),
+
+                      ),
+
                     ),
-                  ),
+
+
+                    Container(
+
+                      padding:
+                      const EdgeInsets.all(10),
+
+                      decoration:
+                      BoxDecoration(
+
+                        color: Colors.white,
+
+                        borderRadius:
+                        BorderRadius.circular(20),
+
+                      ),
+
+                      child: Text(
+
+                        "السؤال ${currentQuestion + 1}/${questions.length}",
+
+                        style:
+                        const TextStyle(
+
+                          fontSize:20,
+
+                          fontWeight:
+                          FontWeight.bold,
+
+                        ),
+
+                      ),
+
+                    ),
+
+
+                  ],
+
                 ),
 
 
-                const SizedBox(height: 20),
+
+                const SizedBox(height:20),
+
 
 
                 Container(
+
                   margin:
-                      const EdgeInsets.symmetric(
-                    horizontal: 20,
+                  const EdgeInsets.symmetric(
+                    horizontal:20,
                   ),
 
                   padding:
-                      const EdgeInsets.all(15),
+                  const EdgeInsets.all(15),
 
-                  decoration: BoxDecoration(
-                    color: Colors.white,
+
+                  decoration:
+                  BoxDecoration(
+
+                    color:Colors.white,
 
                     borderRadius:
-                        BorderRadius.circular(25),
+                    BorderRadius.circular(25),
 
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 8,
-                        offset: Offset(0,4),
-                      ),
-                    ],
                   ),
 
-                  child: AnimatedSwitcher(
-                    duration:
-                        const Duration(
-                      milliseconds: 400,
-                    ),
 
-                    child: Image.asset(
-                      data["image"],
+                  child:
+                  Image.asset(
 
-                      key:
-                          ValueKey(
-                        data["image"],
-                      ),
+                    data["image"],
 
-                      height:
-                          MediaQuery.of(context)
-                              .size
-                              .height *
-                          0.32,
+                    height:
+                    MediaQuery.of(context)
+                        .size.height *
+                        0.30,
 
-                      fit:
-                          BoxFit.contain,
-                    ),
+                    fit:
+                    BoxFit.contain,
+
                   ),
+
                 ),
 
 
-                const SizedBox(height: 20),
+
+                const SizedBox(height:20),
+
 
 
                 const Text(
+
                   "اختر الإجابة الصحيحة 🎯",
 
-                  style: TextStyle(
-                    fontSize: 24,
+                  style:
+                  TextStyle(
+
+                    fontSize:24,
+
                     fontWeight:
-                        FontWeight.bold,
+                    FontWeight.bold,
+
                   ),
+
                 ),
 
 
-                const SizedBox(height: 15),
+
+                const SizedBox(height:15),
+
 
 
                 Expanded(
-                  child: GridView.builder(
+
+                  child:
+                  GridView.builder(
 
                     padding:
-                        const EdgeInsets.symmetric(
+                    const EdgeInsets.symmetric(
                       horizontal:20,
                     ),
 
+
                     itemCount:
-                        data["options"].length,
+                    data["options"].length,
 
 
                     gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+                    const SliverGridDelegateWithFixedCrossAxisCount(
 
                       crossAxisCount:2,
 
@@ -799,75 +689,79 @@ class _GameScreenState extends State<GameScreen> {
                     ),
 
 
+
                     itemBuilder:
                         (context,index){
 
-                      final String option =
-                          data["options"][index];
+
+                      final option =
+                      data["options"][index];
 
 
                       return InkWell(
 
-                        borderRadius:
-                            BorderRadius.circular(20),
-
                         onTap:
-                            (loadingNextQuestion ||
-                                    answered)
-                                ? null
-                                : () async =>
-                                    await checkAnswer(
-                                      option,
-                                    ),
+                        (answered)
+                            ? null
+                            : (){
+
+                          checkAnswer(
+                            option,
+                          );
+
+                        },
 
 
                         child: Container(
 
                           alignment:
-                              Alignment.center,
+                          Alignment.center,
+
 
                           decoration:
-                              BoxDecoration(
+                          BoxDecoration(
 
                             color:
-                                Colors.white,
+                            Colors.white,
 
                             borderRadius:
-                                BorderRadius.circular(
-                                  20,
-                                ),
+                            BorderRadius.circular(20),
+
 
                             boxShadow:
-                                const [
+                            const [
 
                               BoxShadow(
+
                                 color:
-                                    Colors.black26,
+                                Colors.black26,
+
                                 blurRadius:
-                                    5,
-                                offset:
-                                    Offset(0,3),
+                                5,
+
                               ),
 
                             ],
 
                           ),
 
-                          child: Text(
+
+                          child:
+                          Text(
 
                             option,
 
                             textAlign:
-                                TextAlign.center,
+                            TextAlign.center,
+
 
                             style:
-                                const TextStyle(
+                            const TextStyle(
 
-                              fontSize:
-                                  22,
+                              fontSize:22,
 
                               fontWeight:
-                                  FontWeight.bold,
+                              FontWeight.bold,
 
                             ),
 
@@ -877,51 +771,59 @@ class _GameScreenState extends State<GameScreen> {
 
                       );
 
+
                     },
 
                   ),
+
                 ),
 
-
-                const SizedBox(height:15),
 
 
                 ElevatedButton.icon(
 
                   onPressed:
-                      loadingNextQuestion
-                          ? null
-                          : restartGame,
+                  restartGame,
+
 
                   icon:
-                      const Icon(
+                  const Icon(
                     Icons.refresh,
                   ),
 
+
                   label:
-                      const Text(
+                  const Text(
+
                     "إعادة اللعب",
+
                     style:
-                        TextStyle(
+                    TextStyle(
                       fontSize:20,
                       fontWeight:
-                          FontWeight.bold,
+                      FontWeight.bold,
                     ),
+
                   ),
 
                   style:
-                      ElevatedButton.styleFrom(
+                  ElevatedButton.styleFrom(
 
                     padding:
-                        const EdgeInsets.symmetric(
+                    const EdgeInsets.symmetric(
+
                       horizontal:35,
+
                       vertical:12,
+
                     ),
 
                     shape:
-                        RoundedRectangleBorder(
+                    RoundedRectangleBorder(
+
                       borderRadius:
-                          BorderRadius.circular(25),
+                      BorderRadius.circular(25),
+
                     ),
 
                   ),
@@ -929,19 +831,28 @@ class _GameScreenState extends State<GameScreen> {
                 ),
 
 
+
                 const SizedBox(height:20),
 
+
               ],
+
             ),
+
           ),
+
         ),
+
       ),
+
     );
+
   }
 
 
+
   @override
-  void dispose() {
+  void dispose(){
 
     audioPlayer.stop();
 
