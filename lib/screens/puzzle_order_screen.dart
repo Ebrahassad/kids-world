@@ -191,29 +191,20 @@ await playSound("win.mp3");
 
   void shufflePieces(){
 
+  pieces = List<String>.from(startPieces);
 
-    do {
+  do {
 
+    pieces.shuffle(random);
 
-      pieces =
-          List<String>.from(
-            startPieces,
-          );
+  } while (
+    pieces.toString() ==
+    correctOrder.toString()
+  );
 
+  finished = false;
 
-
-      pieces.shuffle(
-        random,
-      );
-
-
-
-    } while (
-
-      pieces.toString() ==
-          correctOrder.toString()
-
-    );
+}
 
 
 
