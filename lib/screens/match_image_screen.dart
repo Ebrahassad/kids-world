@@ -615,25 +615,22 @@ class _MatchImageScreenState
   }
   void restartGame() {
 
-    prepareGame();
+  prepareGame();
 
-    setState(() {
+  setState(() {
 
-      currentQuestion = 0;
+    currentQuestion = 0;
 
-      
+    answering = false;
 
-      answering = false;
-
-    });
+  });
 
 
-    ProgressManager.resetProgress(
-      gameName,
-    );
+  ProgressManager.resetGameRound(
+    gameName,
+  );
 
-  }
-
+}
 
 
 
