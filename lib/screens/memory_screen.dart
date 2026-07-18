@@ -5,7 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 
 import 'win_screen.dart';
 import 'memory_levels_screen.dart';
-import 'progress_manager.dart';
+import '../progress_manager.dart';
 
 
 class MemoryGameScreen extends StatefulWidget {
