@@ -75,25 +75,31 @@ class _SortObjectsScreenState extends State<SortObjectsScreen> {
     });
 
 
-    // حفظ تقدم لعبة ترتيب الأشياء
     await ProgressManager.saveCompletedGame(
-      "sort_objects",
-    );
+  "sort_objects",
+);
 
 
-    // زيادة عدد مرات الفوز
-    await ProgressManager.addWinCount();
+await ProgressManager.saveCompletedLevel(
+  "sort_objects",
+  1,
+);
 
 
-    // حفظ آخر لعبة
-    await ProgressManager.saveLastPlayed(
-      "ترتيب الأشياء",
-    );
+await ProgressManager.addWinCount(
+  "sort_objects",
+);
 
 
-    // حفظ النجوم
-    await ProgressManager.addStars(1);
+await ProgressManager.saveLastPlayed(
+  "sort_objects",
+);
 
+
+await ProgressManager.saveStars(
+  "sort_objects",
+  stars,
+);
 
     Navigator.pushReplacement(
       context,
