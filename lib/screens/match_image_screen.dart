@@ -621,7 +621,7 @@ class _MatchImageScreenState
 
       currentQuestion = 0;
 
-      stars = 0;
+      
 
       answering = false;
 
