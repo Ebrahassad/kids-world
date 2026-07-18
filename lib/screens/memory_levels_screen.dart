@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'memory_game_screen.dart';
+
+import 'memory_screen.dart';
 import 'progress_manager.dart';
 
 class MemoryLevelsScreen extends StatefulWidget {
@@ -18,15 +19,18 @@ class _MemoryLevelsScreenState
   @override
   void initState() {
     super.initState();
-    loadUnlockedLevel();
+    loadProgress();
   }
 
-  Future<void> loadUnlockedLevel() async {
-
+  Future<void> loadProgress() async {
     unlockedLevel =
         await ProgressManager.getUnlockedLevel(
       "memory_game",
     );
+
+    if (unlockedLevel < 1) {
+      unlockedLevel = 1;
+    }
 
     if (mounted) {
       setState(() {});
@@ -42,10 +46,6 @@ class _MemoryLevelsScreenState
 
       appBar: AppBar(
 
-        backgroundColor: Colors.blue,
-
-        centerTitle: true,
-
         title: const Text(
           "مراحل لعبة الذاكرة 🧠",
           style: TextStyle(
@@ -53,6 +53,10 @@ class _MemoryLevelsScreenState
             fontWeight: FontWeight.bold,
           ),
         ),
+
+        centerTitle: true,
+
+        backgroundColor: Colors.blue,
 
       ),
 
@@ -73,7 +77,7 @@ class _MemoryLevelsScreenState
 
             mainAxisSpacing: 15,
 
-            childAspectRatio: 1.1,
+            childAspectRatio: 1.2,
 
           ),
 
@@ -81,142 +85,88 @@ class _MemoryLevelsScreenState
 
             final level = index + 1;
 
-            final bool unlocked =
+            final unlocked =
                 level <= unlockedLevel;
 
-            String difficulty;
+            return ElevatedButton(
 
-            if (level <= 3) {
-              difficulty = "🟢 سهل";
-            } else if (level <= 6) {
-              difficulty = "🟡 متوسط";
-            } else {
-              difficulty = "🔴 صعب";
-            }
+              style: ElevatedButton.styleFrom(
 
-            return Card(
+                backgroundColor: unlocked
+                    ? Colors.white
+                    : Colors.grey.shade300,
 
-              elevation: 6,
+                foregroundColor: unlocked
+                    ? Colors.blue
+                    : Colors.grey,
 
-              shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(20),
+                elevation: unlocked ? 5 : 1,
+
+                shape: RoundedRectangleBorder(
+
+                  borderRadius:
+                      BorderRadius.circular(20),
+
+                ),
+
               ),
 
-              child: InkWell(
+              onPressed: unlocked
+                  ? () {
 
-                borderRadius:
-                    BorderRadius.circular(20),
+                      Navigator.push(
 
-                onTap: () {
+                        context,
 
-                  if (!unlocked) {
+                        MaterialPageRoute(
 
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(
-
-                      const SnackBar(
-
-                        content: Text(
-                          "🔒 أكمل المستوى السابق أولاً",
-                        ),
-
-                      ),
-
-                    );
-
-                    return;
-                  }
-
-                  Navigator.push(
-
-                    context,
-
-                    MaterialPageRoute(
-
-                      builder: (_) =>
-                          MemoryGameScreen(
-                        level: level,
-                      ),
-
-                    ),
-
-                  ).then((_) {
-                    loadUnlockedLevel();
-                  });
-
-                },
-
-                child: Padding(
-
-                  padding:
-                      const EdgeInsets.all(12),
-
-                  child: Column(
-
-                    mainAxisAlignment:
-                        MainAxisAlignment.center,
-
-                    children: [
-
-                      Icon(
-
-                        unlocked
-                            ? Icons.extension
-                            : Icons.lock,
-
-                        size: 45,
-
-                        color: unlocked
-                            ? Colors.blue
-                            : Colors.grey,
-
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      Text(
-
-                        "المستوى $level",
-
-                        style: TextStyle(
-
-                          fontSize: 20,
-
-                          fontWeight:
-                              FontWeight.bold,
-
-                          color: unlocked
-                              ? Colors.black
-                              : Colors.grey,
+                          builder: (_) =>
+                              MemoryGameScreen(
+                            level: level,
+                          ),
 
                         ),
 
-                      ),
+                      );
 
-                      const SizedBox(height: 8),
+                    }
+                  : null,
 
-                      Text(
+              child: Column(
 
-                        difficulty,
+                mainAxisAlignment:
+                    MainAxisAlignment.center,
 
-                        style: TextStyle(
+                children: [
 
-                          fontSize: 16,
+                  Icon(
 
-                          color: unlocked
-                              ? Colors.black
-                              : Colors.grey,
+                    unlocked
+                        ? Icons.extension
+                        : Icons.lock,
 
-                        ),
-
-                      ),
-
-                    ],
+                    size: 40,
 
                   ),
 
-                ),
+                  const SizedBox(height: 10),
+
+                  Text(
+
+                    "المستوى $level",
+
+                    style: const TextStyle(
+
+                      fontSize: 18,
+
+                      fontWeight:
+                          FontWeight.bold,
+
+                    ),
+
+                  ),
+
+                ],
 
               ),
 
