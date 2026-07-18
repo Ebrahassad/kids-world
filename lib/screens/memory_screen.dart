@@ -1,114 +1,25 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-import 'win_screen.dart';
-import 'games_screen.dart';
+import 'memory_screen.dart';
 import 'progress_manager.dart';
-import 'memory_levels_screen.dart';
 
 
-class MemoryGameScreen extends StatefulWidget {
+class MemoryLevelsScreen extends StatefulWidget {
 
-  final int level;
-
-
-  const MemoryGameScreen({
-    super.key,
-    required this.level,
-  });
-
+  const MemoryLevelsScreen({super.key});
 
   @override
-  State<MemoryGameScreen> createState() =>
-      _MemoryGameScreenState();
+  State<MemoryLevelsScreen> createState() =>
+      _MemoryLevelsScreenState();
 
 }
 
 
+class _MemoryLevelsScreenState
+    extends State<MemoryLevelsScreen> {
 
 
-class _MemoryGameScreenState
-    extends State<MemoryGameScreen> {
-
-
-  static const String gameName =
-      "memory_game";
-
-
-
-  final AudioPlayer audioPlayer =
-      AudioPlayer();
-
-
-
-  final Random random =
-      Random();
-
-
-
-
-  final List<String> allAnimals = [
-
-
-    "🐶",
-    "🐱",
-    "🐮",
-    "🐑",
-    "🦁",
-    "🐸",
-    "🐷",
-    "🐵",
-    "🐰",
-    "🦊",
-    "🐼",
-    "🐨",
-    "🐯",
-    "🐭",
-    "🐹",
-    "🐔",
-    "🦆",
-    "🦉",
-    "🐢",
-    "🐙",
-    "🐬",
-    "🐠",
-    "🦋",
-    "🐞",
-
-
-  ];
-
-
-
-  late List<String> animals;
-
-
-
-  List<Map<String,dynamic>> cards = [];
-
-
-
-  int stars = 0;
-
-
-  int matches = 0;
-
-
-
-  int? firstCard;
-
-
-  int? secondCard;
-
-
-
-  bool checking = false;
-
-
-  bool loading = true;
-
+  int unlockedLevel = 1;
 
 
   @override
@@ -116,805 +27,32 @@ class _MemoryGameScreenState
 
     super.initState();
 
-
     loadProgress();
 
-
-    startGame();
-
   }
 
 
 
-
-
-  int getPairsCount(){
-
-
-    switch(widget.level){
-
-
-      case 1:
-        return 4;
-
-
-      case 2:
-        return 5;
-
-
-      case 3:
-        return 6;
-
-
-      case 4:
-        return 7;
-
-
-      case 5:
-        return 8;
-
-
-      case 6:
-        return 9;
-
-
-      case 7:
-        return 10;
-
-
-      case 8:
-        return 11;
-
-
-      case 9:
-      case 10:
-        return 12;
-
-
-      default:
-        return 4;
-
-    }
-
-
-  }
-
-
-
-
-
-  void startGame(){
-
-
-    int pairs =
-        getPairsCount();
-
-
-
-    if(pairs > allAnimals.length){
-
-      pairs = allAnimals.length;
-
-    }
-
-
-
-
-    animals =
-        List<String>.from(
-          allAnimals.take(pairs),
-        );
-
-
-
-
-    List<Map<String,dynamic>> newCards = [];
-
-
-
-
-    for(final animal in animals){
-
-
-
-      newCards.add({
-
-        "image": animal,
-
-        "open": false,
-
-        "done": false,
-
-      });
-
-
-
-
-      newCards.add({
-
-        "image": animal,
-
-        "open": false,
-
-        "done": false,
-
-      });
-
-
-
-    }
-
-
-
-
-    newCards.shuffle(random);
-
-
-
-
-    setState((){
-
-
-      cards = newCards;
-
-
-      matches = 0;
-
-
-      firstCard = null;
-
-
-      secondCard = null;
-
-
-      checking = false;
-
-
-      loading = false;
-
-
-    });
-
-
-  }
   Future<void> loadProgress() async {
 
-
-    stars = await ProgressManager.getStars(
-      gameName,
+    final level =
+        await ProgressManager.getUnlockedLevel(
+      "memory_game",
     );
 
 
-    if(mounted){
+    if (mounted) {
 
       setState(() {
 
-        loading = false;
+        unlockedLevel =
+            level < 1 ? 1 : level;
 
       });
 
     }
 
   }
-
-
-
-
-
-  Future<void> playSound(String fileName) async {
-
-
-    try{
-
-
-      await audioPlayer.stop();
-
-
-
-      await audioPlayer.play(
-
-        AssetSource(
-          "sounds/$fileName",
-        ),
-
-      );
-
-
-    }catch(e){
-
-
-      debugPrint(
-        "خطأ الصوت: $e",
-      );
-
-
-    }
-
-
-  }
-
-
-
-
-
-
-  Future<void> saveGameProgress() async {
-
-
-    await ProgressManager.saveStars(
-
-      gameName,
-
-      stars,
-
-    );
-
-
-  }
-
-
-
-
-
-  void selectCard(int index){
-
-
-    if(checking) return;
-
-
-
-    if(cards[index]["open"] ||
-       cards[index]["done"]){
-
-      return;
-
-    }
-
-
-
-
-    setState((){
-
-      cards[index]["open"] = true;
-
-    });
-
-
-
-
-
-    if(firstCard == null){
-
-
-      firstCard = index;
-
-
-
-    }else{
-
-
-
-      secondCard = index;
-
-
-      checking = true;
-
-
-
-      Future.delayed(
-
-        const Duration(
-          milliseconds: 900,
-        ),
-
-
-        checkMatch,
-
-
-      );
-
-
-    }
-
-
-  }
-
-
-
-
-
-
-
-  Future<void> checkMatch() async {
-
-
-
-    if(firstCard == null ||
-       secondCard == null){
-
-      checking = false;
-
-      return;
-
-    }
-
-
-
-
-
-    final first =
-        cards[firstCard!]["image"];
-
-
-
-    final second =
-        cards[secondCard!]["image"];
-
-
-
-
-
-    if(first == second){
-
-
-
-      await playSound(
-        "correct.mp3",
-      );
-
-
-
-      setState((){
-
-
-        cards[firstCard!]["done"] =
-            true;
-
-
-
-        cards[secondCard!]["done"] =
-            true;
-
-
-
-        matches++;
-
-
-
-        stars++;
-
-
-
-      });
-
-
-
-
-      await saveGameProgress();
-
-
-
-
-
-      if(matches == animals.length){
-
-
-
-        await Future.delayed(
-
-          const Duration(
-            milliseconds:700,
-          ),
-
-        );
-
-
-
-
-        if(widget.level < 10){
-
-
-          await ProgressManager
-              .saveUnlockedLevel(
-
-            gameName,
-
-            widget.level + 1,
-
-          );
-
-
-        }
-
-
-
-
-
-
-        if(!mounted) return;
-
-
-
-
-        Navigator.pushReplacement(
-
-
-          context,
-
-
-          MaterialPageRoute(
-
-
-            builder: (_) => WinScreen(
-
-
-
-              stars: stars,
-
-
-
-              nextGame:
-                  MemoryGameScreen(
-
-                    level:
-                        widget.level,
-
-                  ),
-
-
-
-              gamesPage:
-                  const MemoryLevelsScreen(),
-
-
-
-
-              hasLevels:
-                  true,
-
-
-
-              currentLevel:
-                  widget.level,
-
-
-
-              maxLevels:
-                  10,
-
-
-
-              nextLevelPage:
-
-                  widget.level < 10
-
-                  ? MemoryGameScreen(
-
-                      level:
-                          widget.level + 1,
-
-                    )
-
-                  : null,
-
-
-
-            ),
-
-
-
-          ),
-
-
-
-        );
-
-
-
-      }
-
-
-
-
-    }else{
-
-
-
-      await playSound(
-        "wrong.mp3",
-      );
-
-
-
-      setState((){
-
-
-        cards[firstCard!]["open"] =
-            false;
-
-
-
-        cards[secondCard!]["open"] =
-            false;
-
-
-
-      });
-
-
-
-    }
-
-
-
-
-
-
-    firstCard = null;
-
-
-    secondCard = null;
-
-
-    checking = false;
-
-
-
-  }
-
-
-
-
-
-
-
-  void restartGame(){
-
-
-    startGame();
-
-
-
-  }
-  int getCrossAxisCount(){
-
-
-    if(widget.level <= 2){
-
-      return 4;
-
-    }
-
-
-    if(widget.level <= 5){
-
-      return 5;
-
-    }
-
-
-    if(widget.level <= 8){
-
-      return 6;
-
-    }
-
-
-    return 7;
-
-
-  }
-
-
-
-
-
-  double getCardFontSize(){
-
-
-    if(widget.level <= 2){
-
-      return 55;
-
-    }
-
-
-    if(widget.level <= 5){
-
-      return 48;
-
-    }
-
-
-    if(widget.level <= 8){
-
-      return 42;
-
-    }
-
-
-    return 36;
-
-
-  }
-
-
-
-
-
-
-  Widget buildCard(int index){
-
-
-
-    final bool show =
-
-        cards[index]["open"] ||
-
-        cards[index]["done"];
-
-
-
-
-
-    return GestureDetector(
-
-
-      onTap: (){
-
-        selectCard(index);
-
-      },
-
-
-
-      child: AnimatedContainer(
-
-
-
-        duration:
-
-            const Duration(
-              milliseconds:300,
-            ),
-
-
-
-        decoration:
-
-            BoxDecoration(
-
-
-
-          color:
-
-              show
-
-              ? Colors.white
-
-              : Colors.green,
-
-
-
-          borderRadius:
-
-              BorderRadius.circular(25),
-
-
-
-
-          boxShadow:
-
-              const [
-
-
-
-            BoxShadow(
-
-
-              color:
-
-                  Colors.black26,
-
-
-              blurRadius:
-
-                  8,
-
-
-              offset:
-
-                  Offset(0,4),
-
-
-            ),
-
-
-
-          ],
-
-
-
-        ),
-
-
-
-
-        child:
-
-            Center(
-
-
-
-          child:
-
-              AnimatedSwitcher(
-
-
-
-            duration:
-
-                const Duration(
-                  milliseconds:300,
-                ),
-
-
-
-            child:
-
-                Text(
-
-
-
-              show
-
-              ? cards[index]["image"]
-
-              : "❓",
-
-
-
-
-              key:
-
-                  ValueKey(show),
-
-
-
-
-              style:
-
-                  TextStyle(
-
-                fontSize:
-                    getCardFontSize(),
-
-              ),
-
-
-
-            ),
-
-
-
-          ),
-
-
-
-        ),
-
-
-
-      ),
-
-
-
-    );
-
-
-  }
-
-
 
 
 
@@ -924,773 +62,265 @@ class _MemoryGameScreenState
   Widget build(BuildContext context) {
 
 
-
-    if(loading){
-
-
-      return const Scaffold(
-
-        body:
-
-            Center(
-
-          child:
-
-              CircularProgressIndicator(),
-
-        ),
-
-      );
-
-
-    }
-
-
-
-
     return Scaffold(
 
 
-
-      body:
-
-          Container(
+      backgroundColor:
+          Colors.lightBlue.shade50,
 
 
 
-        width:
-
-            double.infinity,
+      appBar: AppBar(
 
 
-
-        height:
-
-            double.infinity,
+        backgroundColor:
+            Colors.blue,
 
 
-
-        decoration:
-
-            const BoxDecoration(
+        centerTitle: true,
 
 
+        title: const Text(
 
-          image:
+          "مراحل لعبة الذاكرة 🧠",
 
-              DecorationImage(
+          style: TextStyle(
 
+            color: Colors.white,
 
-
-            image:
-
-                AssetImage(
-
-              "assets/images/background.png",
-
-            ),
-
-
-
-            fit:
-
-                BoxFit.cover,
-
-
+            fontWeight:
+                FontWeight.bold,
 
           ),
 
-
-
         ),
-
-
-
-
-
-
-        child:
-
-            Container(
-
-
-
-          color:
-
-              Colors.white.withOpacity(0.25),
-
-
-
-
-
-          child:
-
-              SafeArea(
-
-
-
-            child:
-
-                Column(
-
-
-
-              children: [
-
-
-
-                const SizedBox(
-                  height:15,
-                ),
-
-
-
-
-
-                Row(
-
-
-
-                  mainAxisAlignment:
-
-                      MainAxisAlignment.spaceEvenly,
-
-
-
-                  children: [
-
-
-
-
-
-                    Container(
-
-
-
-                      padding:
-
-                          const EdgeInsets.symmetric(
-
-                        horizontal:20,
-
-                        vertical:10,
-
-                      ),
-
-
-
-
-                      decoration:
-
-                          BoxDecoration(
-
-
-
-                        color:
-
-                            Colors.white,
-
-
-
-                        borderRadius:
-
-                            BorderRadius.circular(20),
-
-
-
-                      ),
-
-
-
-
-                      child:
-
-                          Text(
-
-
-
-                        "⭐ $stars",
-
-
-
-                        style:
-
-                            const TextStyle(
-
-
-
-                          fontSize:
-
-                              24,
-
-
-
-                          fontWeight:
-
-                              FontWeight.bold,
-
-
-
-                          color:
-
-                              Colors.orange,
-
-
-
-                        ),
-
-
-
-                      ),
-
-
-
-                    ),
-
-
-
-
-
-                    Container(
-
-
-
-                      padding:
-
-                          const EdgeInsets.symmetric(
-
-                        horizontal:20,
-
-                        vertical:10,
-
-                      ),
-
-
-
-                      decoration:
-
-                          BoxDecoration(
-
-
-
-                        color:
-
-                            Colors.white,
-
-
-
-                        borderRadius:
-
-                            BorderRadius.circular(20),
-
-
-
-                      ),
-
-
-
-                      child:
-
-                          Text(
-
-
-
-                        "المستوى ${widget.level}",
-
-
-
-                        style:
-
-                            const TextStyle(
-
-
-
-                          fontSize:
-
-                              22,
-
-
-
-                          fontWeight:
-
-                              FontWeight.bold,
-
-
-
-                          color:
-
-                              Colors.blue,
-
-
-
-                        ),
-
-
-
-                      ),
-
-
-
-                    ),
-
-
-
-
-                    Container(
-
-
-
-                      padding:
-
-                          const EdgeInsets.symmetric(
-
-                        horizontal:15,
-
-                        vertical:10,
-
-                      ),
-
-
-
-
-                      decoration:
-
-                          BoxDecoration(
-
-
-
-                        color:
-
-                            Colors.white,
-
-
-
-                        borderRadius:
-
-                            BorderRadius.circular(20),
-
-
-
-                      ),
-
-
-
-
-                      child:
-
-                          Text(
-
-
-
-                        "🧩 $matches/${animals.length}",
-
-
-
-                        style:
-
-                            const TextStyle(
-
-
-
-                          fontSize:
-
-                              20,
-
-
-
-                          fontWeight:
-
-                              FontWeight.bold,
-
-
-
-                        ),
-
-
-
-                      ),
-
-
-
-                    ),
-
-
-
-                  ],
-
-
-
-                ),
-
-
-
-
-                const SizedBox(
-                  height:25,
-                ),
-
-
-
-
-                const Text(
-
-
-
-                  "لعبة الذاكرة 🧠",
-
-
-
-                  style:
-
-                      TextStyle(
-
-
-
-                    fontSize:
-
-                        30,
-
-
-
-                    fontWeight:
-
-                        FontWeight.bold,
-
-
-
-                  ),
-
-
-
-                ),
-
-
-
-
-                const SizedBox(
-                  height:10,
-                ),
-
-
-
-
-
-                const Text(
-
-
-
-                  "ابحث عن الصور المتشابهة 🎯",
-
-
-
-                  style:
-
-                      TextStyle(
-
-
-
-                    fontSize:
-
-                        22,
-
-
-
-                    fontWeight:
-
-                        FontWeight.bold,
-
-
-
-                  ),
-
-
-
-                ),
-                const SizedBox(
-                  height:20,
-                ),
-
-
-
-
-                Expanded(
-
-
-                  child: GridView.builder(
-
-
-
-                    padding:
-
-                        const EdgeInsets.all(20),
-
-
-
-
-                    itemCount:
-
-                        cards.length,
-
-
-
-
-
-                    gridDelegate:
-
-                        SliverGridDelegateWithFixedCrossAxisCount(
-
-
-
-                      crossAxisCount:
-
-                          getCrossAxisCount(),
-
-
-
-
-                      crossAxisSpacing:
-
-                          12,
-
-
-
-                      mainAxisSpacing:
-
-                          12,
-
-
-
-                    ),
-
-
-
-
-
-                    itemBuilder:
-
-                        (context,index){
-
-
-
-                      return buildCard(index);
-
-
-
-                    },
-
-
-
-                  ),
-
-
-
-                ),
-
-
-
-
-
-
-                ElevatedButton.icon(
-
-
-
-                  onPressed:
-
-                      (){
-
-                    startGame();
-
-                  },
-
-
-
-
-                  icon:
-
-                      const Icon(
-
-                    Icons.refresh_rounded,
-
-                  ),
-
-
-
-
-
-                  label:
-
-                      const Text(
-
-
-
-                    "إعادة اللعب",
-
-
-
-
-                    style:
-
-                        TextStyle(
-
-
-
-                      fontSize:
-
-                          20,
-
-
-
-                      fontWeight:
-
-                          FontWeight.bold,
-
-
-
-                    ),
-
-
-
-                  ),
-
-
-
-
-
-                  style:
-
-                      ElevatedButton.styleFrom(
-
-
-
-                    backgroundColor:
-
-                        Colors.white,
-
-
-
-                    foregroundColor:
-
-                        Colors.blue,
-
-
-
-                    elevation:
-
-                        8,
-
-
-
-                    padding:
-
-                        const EdgeInsets.symmetric(
-
-
-
-                      horizontal:
-
-                          35,
-
-
-
-                      vertical:
-
-                          12,
-
-
-
-                    ),
-
-
-
-
-                    shape:
-
-                        RoundedRectangleBorder(
-
-
-
-                      borderRadius:
-
-                          BorderRadius.circular(25),
-
-
-
-                    ),
-
-
-
-                  ),
-
-
-
-                ),
-
-
-
-
-
-
-                const SizedBox(
-
-                  height:20,
-
-                ),
-
-
-
-
-              ],
-
-
-
-            ),
-
-
-
-          ),
-
-
-
-        ),
-
-
 
       ),
 
 
 
+
+      body: Padding(
+
+
+        padding:
+            const EdgeInsets.all(16),
+
+
+
+        child: GridView.builder(
+
+
+          itemCount: 10,
+
+
+
+          gridDelegate:
+              const SliverGridDelegateWithFixedCrossAxisCount(
+
+
+            crossAxisCount: 2,
+
+
+            crossAxisSpacing: 15,
+
+
+            mainAxisSpacing: 15,
+
+
+            childAspectRatio: 1.2,
+
+
+          ),
+
+
+
+
+          itemBuilder: (context,index){
+
+
+
+            final level =
+                index + 1;
+
+
+
+            final unlocked =
+                level <= unlockedLevel;
+
+
+
+            return ElevatedButton(
+
+
+              style:
+                  ElevatedButton.styleFrom(
+
+
+                backgroundColor:
+
+                    unlocked
+                        ? Colors.white
+                        : Colors.grey.shade300,
+
+
+
+                foregroundColor:
+
+                    unlocked
+                        ? Colors.blue
+                        : Colors.grey,
+
+
+
+                elevation:
+
+                    unlocked ? 8 : 1,
+
+
+
+                shape:
+                    RoundedRectangleBorder(
+
+                  borderRadius:
+                      BorderRadius.circular(20),
+
+                ),
+
+              ),
+
+
+
+
+              onPressed: unlocked
+
+                  ? () async {
+
+
+                      await Navigator.push(
+
+                        context,
+
+                        MaterialPageRoute(
+
+                          builder: (_) =>
+
+                              MemoryGameScreen(
+
+                            level: level,
+
+                          ),
+
+                        ),
+
+                      );
+
+
+                      // تحديث المستويات بعد الرجوع
+
+                    await loadProgress();
+
+                    }
+
+                  : null,
+
+
+
+
+              child: Column(
+
+
+                mainAxisAlignment:
+                    MainAxisAlignment.center,
+
+
+
+                children: [
+
+
+
+                  Text(
+
+                    unlocked
+                        ? "🧠"
+                        : "🔒",
+
+                    style:
+                        const TextStyle(
+
+                      fontSize: 45,
+
+                    ),
+
+                  ),
+
+
+
+
+                  const SizedBox(height: 10),
+
+
+
+
+                  Text(
+
+                    "المستوى $level",
+
+                    style:
+                        const TextStyle(
+
+                      fontSize: 20,
+
+                      fontWeight:
+                          FontWeight.bold,
+
+                    ),
+
+                  ),
+
+
+
+
+                  if (unlocked)
+
+                    const Text(
+
+                      "ابدأ اللعب ⭐",
+
+                      style:
+                          TextStyle(
+
+                        color: Colors.green,
+
+                        fontWeight:
+                            FontWeight.bold,
+
+                      ),
+
+                    ),
+
+
+
+                ],
+
+              ),
+
+
+            );
+
+
+          },
+
+
+        ),
+
+
+      ),
+
+
     );
 
 
-
   }
-
-
-
-
-
-
-
-  @override
-  void dispose(){
-
-
-
-    audioPlayer.stop();
-
-
-
-    audioPlayer.dispose();
-
-
-
-    super.dispose();
-
-
-
-  }
-
-
 
 }
