@@ -120,9 +120,11 @@ switch (widget.level) {
   case 9:
     pairs = 12;
     break;
-  default:
-    pairs = 12;
-}
+  case 10:
+  pairs = 12;
+  break;
+default:
+  pairs = 4;
 
 // لا يتجاوز عدد الحيوانات الموجودة
 if (pairs > allAnimals.length) {
