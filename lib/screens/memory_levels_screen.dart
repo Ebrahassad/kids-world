@@ -218,8 +218,7 @@ class _MemoryLevelsScreenState
 
                       // تحديث المستويات بعد الرجوع
 
-                      loadProgress();
-
+                    await loadProgress();
 
                     }
 
