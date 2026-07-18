@@ -5,208 +5,550 @@ import 'package:flutter/material.dart';
 
 import 'win_screen.dart';
 import 'games_screen.dart';
+import 'progress_manager.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
 
   @override
-  State<GameScreen> createState() => _GameScreenState();
+  State<GameScreen> createState() =>
+      _GameScreenState();
 }
 
 class _GameScreenState extends State<GameScreen> {
+
   final AudioPlayer audioPlayer = AudioPlayer();
   final Random random = Random();
 
+
   final List<Map<String, dynamic>> originalQuestions = [
+
     {
       "image": "assets/images/Puzzle/kids_puzzle.png",
       "answer": "أطفال",
-      "options": ["أطفال", "قرد", "أسد", "سمكة"],
+      "options": [
+        "أطفال",
+        "قرد",
+        "أسد",
+        "سمكة",
+      ],
     },
+
     {
       "image": "assets/images/Puzzle/monkey_puzzle.png",
       "answer": "قرد",
-      "options": ["دب", "قرد", "قطة", "كلب"],
+      "options": [
+        "دب",
+        "قرد",
+        "قطة",
+        "كلب",
+      ],
     },
+
     {
       "image": "assets/images/Puzzle/bear_puzzle.png",
       "answer": "دب",
-      "options": ["سمكة", "دب", "أرنب", "أسد"],
+      "options": [
+        "سمكة",
+        "دب",
+        "أرنب",
+        "أسد",
+      ],
     },
+
     {
       "image": "assets/images/Puzzle/fish_puzzle.png",
       "answer": "سمكة",
-      "options": ["فراشة", "سمكة", "كلب", "ديناصور"],
+      "options": [
+        "فراشة",
+        "سمكة",
+        "كلب",
+        "ديناصور",
+      ],
     },
+
     {
       "image": "assets/images/Puzzle/dinosaur_puzzle.png",
       "answer": "ديناصور",
-      "options": ["قرد", "ديناصور", "أسد", "دب"],
+      "options": [
+        "قرد",
+        "ديناصور",
+        "أسد",
+        "دب",
+      ],
     },
+
     {
       "image": "assets/images/Puzzle/butterfly_puzzle.png",
       "answer": "فراشة",
-      "options": ["قطة", "كلب", "فراشة", "سمكة"],
+      "options": [
+        "قطة",
+        "كلب",
+        "فراشة",
+        "سمكة",
+      ],
     },
+
     {
       "image": "assets/images/Puzzle/dog_puzzle.png",
       "answer": "كلب",
-      "options": ["كلب", "أرنب", "دب", "أسد"],
+      "options": [
+        "كلب",
+        "أرنب",
+        "دب",
+        "أسد",
+      ],
     },
+
     {
       "image": "assets/images/Puzzle/cat_puzzle.png",
       "answer": "قطة",
-      "options": ["قطة", "سمكة", "قرد", "ديناصور"],
+      "options": [
+        "قطة",
+        "سمكة",
+        "قرد",
+        "ديناصور",
+      ],
     },
+
     {
       "image": "assets/images/Puzzle/rabbit_puzzle.png",
       "answer": "أرنب",
-      "options": ["فراشة", "كلب", "أرنب", "أسد"],
+      "options": [
+        "فراشة",
+        "كلب",
+        "أرنب",
+        "أسد",
+      ],
     },
+
     {
       "image": "assets/images/Puzzle/lion_puzzle.png",
       "answer": "أسد",
-      "options": ["دب", "أسد", "قطة", "سمكة"],
+      "options": [
+        "دب",
+        "أسد",
+        "قطة",
+        "سمكة",
+      ],
     },
+
   ];
 
+
   late List<Map<String, dynamic>> questions;
+
 
   int currentQuestion = 0;
   int stars = 0;
 
+
   bool answered = false;
   bool loadingNextQuestion = false;
+  bool loading = true;
+
+
 
   @override
   void initState() {
+
     super.initState();
+
     prepareGame();
+
+    loadProgress();
+
   }
 
+
+
   void prepareGame() {
-    questions = originalQuestions.map((item) {
+
+    questions =
+        originalQuestions.map((item) {
+
       return {
+
         "image": item["image"],
+
         "answer": item["answer"],
-        "options": List<String>.from(item["options"]),
+
+        "options":
+            List<String>.from(
+              item["options"],
+            ),
+
       };
+
     }).toList();
+
 
     questions.shuffle(random);
 
+
     for (final item in questions) {
-      final options = List<String>.from(item["options"]);
+
+      final options =
+          List<String>.from(
+            item["options"],
+          );
+
       options.shuffle(random);
+
       item["options"] = options;
+
     }
+
   }
 
+
+
+  Future<void> loadProgress() async {
+
+    currentQuestion =
+        await ProgressManager.getProgress(
+          "puzzle_game",
+        );
+
+
+    stars =
+        await ProgressManager.getStars(
+          "puzzle_game",
+        );
+
+
+    if (currentQuestion >= questions.length) {
+
+      currentQuestion = 0;
+
+    }
+
+
+    setState(() {
+
+      loading = false;
+
+    });
+
+  }
   Future<void> playSound(String fileName) async {
+
     try {
+
       await audioPlayer.stop();
 
       await audioPlayer.play(
-        AssetSource("sounds/$fileName"),
+        AssetSource(
+          "sounds/$fileName",
+        ),
       );
+
     } catch (e) {
-      debugPrint("خطأ في تشغيل الصوت: $e");
+
+      debugPrint(
+        "خطأ في تشغيل الصوت: $e",
+      );
+
     }
+
   }
 
+
+
   Future<void> checkAnswer(String answer) async {
+
     if (answered || loadingNextQuestion) return;
 
+
+
     setState(() {
+
       answered = true;
+
     });
+
+
 
     final correctAnswer =
         questions[currentQuestion]["answer"];
 
+
+
     if (answer == correctAnswer) {
-      await playSound("correct.mp3");
+
+
+      await playSound(
+        "correct.mp3",
+      );
+
+
 
       setState(() {
+
         stars++;
+
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("🎉 إجابة صحيحة"),
-          backgroundColor: Colors.green,
-          duration: Duration(milliseconds: 700),
-        ),
+
+
+      await ProgressManager.saveStars(
+        "puzzle_game",
+        stars,
       );
 
-      goNextQuestion();
+
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+
+          content:
+              Text("🎉 إجابة صحيحة"),
+
+          backgroundColor:
+              Colors.green,
+
+          duration:
+              Duration(
+                milliseconds: 700,
+              ),
+
+        ),
+
+      );
+
+
+
+      await goNextQuestion();
+
+
+
     } else {
-      await playSound("wrong.mp3");
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("❌ حاول مرة أخرى"),
-          backgroundColor: Colors.red,
-          duration: Duration(milliseconds: 800),
-        ),
+
+
+      await playSound(
+        "wrong.mp3",
       );
+
+
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+
+          content:
+              Text("❌ حاول مرة أخرى"),
+
+          backgroundColor:
+              Colors.red,
+
+          duration:
+              Duration(
+                milliseconds: 800,
+              ),
+
+        ),
+
+      );
+
+
 
       Future.delayed(
-        const Duration(milliseconds: 800),
+
+        const Duration(
+          milliseconds: 800,
+        ),
+
         () {
+
+
           if (!mounted) return;
 
+
+
           setState(() {
+
             answered = false;
+
           });
+
+
         },
+
       );
+
     }
+
   }
+
+
+
+
+
   Future<void> goNextQuestion() async {
+
+
     setState(() {
+
       loadingNextQuestion = true;
+
     });
 
+
+
     await Future.delayed(
-      const Duration(seconds: 1),
+
+      const Duration(
+        seconds: 1,
+      ),
+
     );
+
+
 
     if (!mounted) return;
 
+
+
     if (currentQuestion < questions.length - 1) {
+
+
+
       setState(() {
+
         currentQuestion++;
+
         answered = false;
+
         loadingNextQuestion = false;
-      });
-    } else {
-      setState(() {
-        loadingNextQuestion = false;
+
+
       });
 
-      await playSound("win.mp3");
+
+
+      await ProgressManager.saveProgress(
+
+        "puzzle_game",
+
+        currentQuestion,
+
+      );
+
+
+
+    } else {
+
+
+
+      setState(() {
+
+        loadingNextQuestion = false;
+
+      });
+
+
+
+      await ProgressManager.saveCompletedGame(
+
+        "puzzle_game",
+
+      );
+
+
+
+      await ProgressManager.saveProgress(
+
+        "puzzle_game",
+
+        0,
+
+      );
+
+
+
+      await playSound(
+        "win.mp3",
+      );
+
+
 
       await Future.delayed(
-        const Duration(seconds: 2),
+
+        const Duration(
+          seconds: 2,
+        ),
+
       );
+
+
 
       if (!mounted) return;
 
+
+
       Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(
-    builder: (_) => WinScreen(
-  stars: stars + 1,
-  nextGame: const ColorsScreen(),
-  gamesPage: const GamesScreen(),
-),
-  ),
-);
+
+        context,
+
+        MaterialPageRoute(
+
+          builder: (_) => WinScreen(
+
+            stars: stars,
+
+            nextGame:
+                const ColorsScreen(),
+
+            gamesPage:
+                const GamesScreen(),
+
+          ),
+
+        ),
+
+      );
+
     }
+
   }
 
 
+
+
+  void restartGame() {
+
+
+    audioPlayer.stop();
+
+
+    prepareGame();
+
+
+
+    setState(() {
+
+      currentQuestion = 0;
+
+      stars = 0;
+
+      answered = false;
+
+      loadingNextQuestion = false;
+
+
+    });
+
+
+
+    ProgressManager.resetProgress(
+      "puzzle_game",
+    );
+
+  }
   void restartGame() {
     audioPlayer.stop();
 
@@ -237,6 +579,7 @@ class _GameScreenState extends State<GameScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
+
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
@@ -252,6 +595,7 @@ class _GameScreenState extends State<GameScreen> {
           child: SafeArea(
             child: Column(
               children: [
+
                 const SizedBox(height: 15),
 
                 Row(
@@ -323,6 +667,7 @@ class _GameScreenState extends State<GameScreen> {
                         ),
                       ),
                     ),
+
                   ],
                 ),
 
@@ -333,8 +678,8 @@ class _GameScreenState extends State<GameScreen> {
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(
-                        horizontal: 20,
-                      ),
+                    horizontal: 20,
+                  ),
 
                   child: LinearProgressIndicator(
                     value:
@@ -358,11 +703,13 @@ class _GameScreenState extends State<GameScreen> {
 
 
                 const SizedBox(height: 20),
+
+
                 Container(
                   margin:
                       const EdgeInsets.symmetric(
-                        horizontal: 20,
-                      ),
+                    horizontal: 20,
+                  ),
 
                   padding:
                       const EdgeInsets.all(15),
@@ -377,7 +724,7 @@ class _GameScreenState extends State<GameScreen> {
                       BoxShadow(
                         color: Colors.black26,
                         blurRadius: 8,
-                        offset: Offset(0, 4),
+                        offset: Offset(0,4),
                       ),
                     ],
                   ),
@@ -385,30 +732,16 @@ class _GameScreenState extends State<GameScreen> {
                   child: AnimatedSwitcher(
                     duration:
                         const Duration(
-                          milliseconds: 400,
-                        ),
-
-                    transitionBuilder:
-                        (child, animation) {
-
-                      return ScaleTransition(
-                        scale: animation,
-
-                        child: FadeTransition(
-                          opacity: animation,
-
-                          child: child,
-                        ),
-                      );
-                    },
+                      milliseconds: 400,
+                    ),
 
                     child: Image.asset(
                       data["image"],
 
                       key:
                           ValueKey(
-                            data["image"],
-                          ),
+                        data["image"],
+                      ),
 
                       height:
                           MediaQuery.of(context)
@@ -418,18 +751,6 @@ class _GameScreenState extends State<GameScreen> {
 
                       fit:
                           BoxFit.contain,
-
-                      errorBuilder:
-                          (context, error, stackTrace) {
-
-                        return const Icon(
-                          Icons.image_not_supported,
-
-                          size: 120,
-
-                          color: Colors.grey,
-                        );
-                      },
                     ),
                   ),
                 ),
@@ -443,7 +764,6 @@ class _GameScreenState extends State<GameScreen> {
 
                   style: TextStyle(
                     fontSize: 24,
-
                     fontWeight:
                         FontWeight.bold,
                   ),
@@ -458,8 +778,8 @@ class _GameScreenState extends State<GameScreen> {
 
                     padding:
                         const EdgeInsets.symmetric(
-                          horizontal: 20,
-                        ),
+                      horizontal:20,
+                    ),
 
                     itemCount:
                         data["options"].length,
@@ -468,176 +788,122 @@ class _GameScreenState extends State<GameScreen> {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
 
-                      crossAxisCount: 2,
+                      crossAxisCount:2,
 
-                      crossAxisSpacing: 15,
+                      crossAxisSpacing:15,
 
-                      mainAxisSpacing: 15,
+                      mainAxisSpacing:15,
 
-                      childAspectRatio: 2,
+                      childAspectRatio:2,
 
                     ),
 
 
                     itemBuilder:
-                        (context, index) {
-
+                        (context,index){
 
                       final String option =
                           data["options"][index];
 
 
-                      return AnimatedScale(
+                      return InkWell(
 
-                        duration:
-                            const Duration(
-                              milliseconds: 180,
-                            ),
+                        borderRadius:
+                            BorderRadius.circular(20),
 
-                        curve:
-                            Curves.easeInOut,
-
-
-                        scale:
-                            answered ? 0.95 : 1,
-
-
-                        child: InkWell(
-
-                          borderRadius:
-                              BorderRadius.circular(20),
+                        onTap:
+                            (loadingNextQuestion ||
+                                    answered)
+                                ? null
+                                : () async =>
+                                    await checkAnswer(
+                                      option,
+                                    ),
 
 
-                          splashColor:
-                              Colors.blue.shade100,
+                        child: Container(
 
+                          alignment:
+                              Alignment.center,
 
-                          onTap:
-                              (loadingNextQuestion ||
-                                      answered)
+                          decoration:
+                              BoxDecoration(
 
-                                  ? null
+                            color:
+                                Colors.white,
 
-                                  : () async =>
-                                      await checkAnswer(
-                                        option,
-                                      ),
-
-
-                          child: AnimatedContainer(
-
-                            duration:
-                                const Duration(
-                                  milliseconds: 200,
+                            borderRadius:
+                                BorderRadius.circular(
+                                  20,
                                 ),
 
+                            boxShadow:
+                                const [
 
-                            alignment:
-                                Alignment.center,
-
-
-                            decoration:
-                                BoxDecoration(
-
-                              color:
-                                  Colors.white,
-
-
-                              borderRadius:
-                                  BorderRadius.circular(
-                                    20,
-                                  ),
-
-
-                              boxShadow:
-                                  const [
-
-                                BoxShadow(
-
-                                  color:
-                                      Colors.black26,
-
-
-                                  blurRadius:
-                                      5,
-
-
-                                  offset:
-                                      Offset(
-                                        0,
-                                        3,
-                                      ),
-
-                                ),
-
-                              ],
-
-                            ),
-
-
-                            child: Padding(
-
-                              padding:
-                                  const EdgeInsets.all(
-                                    8,
-                                  ),
-
-
-                              child: Text(
-
-                                option,
-
-
-                                textAlign:
-                                    TextAlign.center,
-
-
-                                maxLines:
-                                    2,
-
-
-                                overflow:
-                                    TextOverflow.ellipsis,
-
-
-                                style:
-                                    const TextStyle(
-
-                                  fontSize: 22,
-
-
-                                  fontWeight:
-                                      FontWeight.bold,
-
-                                ),
+                              BoxShadow(
+                                color:
+                                    Colors.black26,
+                                blurRadius:
+                                    5,
+                                offset:
+                                    Offset(0,3),
                               ),
-                            ),
+
+                            ],
+
                           ),
+
+                          child: Text(
+
+                            option,
+
+                            textAlign:
+                                TextAlign.center,
+
+                            style:
+                                const TextStyle(
+
+                              fontSize:
+                                  22,
+
+                              fontWeight:
+                                  FontWeight.bold,
+
+                            ),
+
+                          ),
+
                         ),
+
                       );
+
                     },
+
                   ),
                 ),
 
 
-                const SizedBox(height: 15),
+                const SizedBox(height:15),
+
+
                 ElevatedButton.icon(
+
                   onPressed:
                       loadingNextQuestion
                           ? null
                           : restartGame,
 
-                  icon: const Icon(
-                    Icons.refresh_rounded,
-                    size: 28,
+                  icon:
+                      const Icon(
+                    Icons.refresh,
                   ),
 
-                  label: const Text(
+                  label:
+                      const Text(
                     "إعادة اللعب",
-
-                    style: TextStyle(
-                      fontSize: 20,
-
+                    style:
+                        TextStyle(
+                      fontSize:20,
                       fontWeight:
                           FontWeight.bold,
                     ),
@@ -646,41 +912,25 @@ class _GameScreenState extends State<GameScreen> {
                   style:
                       ElevatedButton.styleFrom(
 
-                    backgroundColor:
-                        Colors.white,
-
-                    foregroundColor:
-                        Colors.blue,
-
-                    elevation:
-                        8,
-
-                    shadowColor:
-                        Colors.black45,
-
                     padding:
                         const EdgeInsets.symmetric(
-
-                      horizontal: 35,
-
-                      vertical: 12,
-
+                      horizontal:35,
+                      vertical:12,
                     ),
 
                     shape:
                         RoundedRectangleBorder(
-
                       borderRadius:
-                          BorderRadius.circular(
-                            25,
-                          ),
-
+                          BorderRadius.circular(25),
                     ),
+
                   ),
+
                 ),
 
 
-                const SizedBox(height: 20),
+                const SizedBox(height:20),
+
               ],
             ),
           ),
@@ -698,5 +948,7 @@ class _GameScreenState extends State<GameScreen> {
     audioPlayer.dispose();
 
     super.dispose();
+
   }
+
 }
