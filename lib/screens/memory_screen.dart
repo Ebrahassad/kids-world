@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import 'win_screen.dart';
-
+import 'games_screen.dart';
 import 'progress_manager.dart';
 import 'memory_levels_screen.dart';
 
@@ -13,215 +13,358 @@ class MemoryGameScreen extends StatefulWidget {
 
   final int level;
 
+
   const MemoryGameScreen({
     super.key,
     required this.level,
   });
 
+
   @override
   State<MemoryGameScreen> createState() =>
       _MemoryGameScreenState();
+
 }
 
-class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
-  final AudioPlayer audioPlayer = AudioPlayer();
 
-  final Random random = Random();
+
+class _MemoryGameScreenState
+    extends State<MemoryGameScreen> {
+
+
+  static const String gameName =
+      "memory_game";
+
+
+
+  final AudioPlayer audioPlayer =
+      AudioPlayer();
+
+
+
+  final Random random =
+      Random();
+
+
 
 
   final List<String> allAnimals = [
 
-  "🐶",
-  "🐱",
-  "🐮",
-  "🐑",
-  "🦁",
-  "🐸",
-  "🐷",
-  "🐵",
-  "🐰",
-  "🦊",
-  "🐼",
-  "🐨",
-  "🐯",
-  "🐭",
-  "🐹",
-  "🐔",
-  "🦆",
-  "🦉",
-  "🐢",
-  "🐙",
-  "🐬",
-  "🐠",
-  "🦋",
-  "🐞",
 
-];
-
-late List<String> animals;
+    "🐶",
+    "🐱",
+    "🐮",
+    "🐑",
+    "🦁",
+    "🐸",
+    "🐷",
+    "🐵",
+    "🐰",
+    "🦊",
+    "🐼",
+    "🐨",
+    "🐯",
+    "🐭",
+    "🐹",
+    "🐔",
+    "🦆",
+    "🦉",
+    "🐢",
+    "🐙",
+    "🐬",
+    "🐠",
+    "🦋",
+    "🐞",
 
 
-  List<Map<String, dynamic>> cards = [];
+  ];
+
+
+
+  late List<String> animals;
+
+
+
+  List<Map<String,dynamic>> cards = [];
+
+
 
   int stars = 0;
+
 
   int matches = 0;
 
 
+
   int? firstCard;
 
+
   int? secondCard;
+
 
 
   bool checking = false;
 
 
-
-@override
-void initState() {
-  super.initState();
-  startGame();
-}
+  bool loading = true;
 
 
-void startGame() {
 
-  final List<Map<String, dynamic>> newCards = [];
+  @override
+  void initState() {
 
-// عدد الأزواج حسب المستوى
-int pairs;
-
-switch (widget.level) {
-  case 1:
-    pairs = 4;
-    break;
-  case 2:
-    pairs = 5;
-    break;
-  case 3:
-    pairs = 6;
-    break;
-  case 4:
-    pairs = 7;
-    break;
-  case 5:
-    pairs = 8;
-    break;
-  case 6:
-    pairs = 9;
-    break;
-  case 7:
-    pairs = 10;
-    break;
-  case 8:
-    pairs = 11;
-    break;
-  case 9:
-    pairs = 12;
-    break;
-  case 10:
-  pairs = 12;
-  break;
-default:
-  pairs = 4;
-
-// لا يتجاوز عدد الحيوانات الموجودة
-if (pairs > allAnimals.length) {
-  pairs = allAnimals.length;
-}
-
-// اختيار الحيوانات لهذا المستوى
-animals = allAnimals.take(pairs).toList();
-
-  for (String animal in animals) {
-
-    newCards.add({
-
-      "image": animal,
-
-      "open": false,
-
-      "done": false,
-
-    });
+    super.initState();
 
 
-    newCards.add({
+    loadProgress();
 
-      "image": animal,
 
-      "open": false,
-
-      "done": false,
-
-    });
+    startGame();
 
   }
 
 
-  // خلط الكروت عشوائياً
-  newCards.shuffle(random);
 
 
 
-  if (!mounted) return;
-
-setState(() {
-
-    cards = newCards;
-
-    stars = 0;
-
-    matches = 0;
-
-    firstCard = null;
-
-    secondCard = null;
-
-    checking = false;
-
-  });
-
-}
+  int getPairsCount(){
 
 
-  Future<void> playSound(String file) async {
+    switch(widget.level){
 
-    try {
+
+      case 1:
+        return 4;
+
+
+      case 2:
+        return 5;
+
+
+      case 3:
+        return 6;
+
+
+      case 4:
+        return 7;
+
+
+      case 5:
+        return 8;
+
+
+      case 6:
+        return 9;
+
+
+      case 7:
+        return 10;
+
+
+      case 8:
+        return 11;
+
+
+      case 9:
+      case 10:
+        return 12;
+
+
+      default:
+        return 4;
+
+    }
+
+
+  }
+
+
+
+
+
+  void startGame(){
+
+
+    int pairs =
+        getPairsCount();
+
+
+
+    if(pairs > allAnimals.length){
+
+      pairs = allAnimals.length;
+
+    }
+
+
+
+
+    animals =
+        List<String>.from(
+          allAnimals.take(pairs),
+        );
+
+
+
+
+    List<Map<String,dynamic>> newCards = [];
+
+
+
+
+    for(final animal in animals){
+
+
+
+      newCards.add({
+
+        "image": animal,
+
+        "open": false,
+
+        "done": false,
+
+      });
+
+
+
+
+      newCards.add({
+
+        "image": animal,
+
+        "open": false,
+
+        "done": false,
+
+      });
+
+
+
+    }
+
+
+
+
+    newCards.shuffle(random);
+
+
+
+
+    setState((){
+
+
+      cards = newCards;
+
+
+      matches = 0;
+
+
+      firstCard = null;
+
+
+      secondCard = null;
+
+
+      checking = false;
+
+
+      loading = false;
+
+
+    });
+
+
+  }
+  Future<void> loadProgress() async {
+
+
+    stars = await ProgressManager.getStars(
+      gameName,
+    );
+
+
+    if(mounted){
+
+      setState(() {
+
+        loading = false;
+
+      });
+
+    }
+
+  }
+
+
+
+
+
+  Future<void> playSound(String fileName) async {
+
+
+    try{
+
 
       await audioPlayer.stop();
+
 
 
       await audioPlayer.play(
 
         AssetSource(
-          "sounds/$file",
+          "sounds/$fileName",
         ),
 
       );
 
 
-    } catch(e) {
+    }catch(e){
+
 
       debugPrint(
         "خطأ الصوت: $e",
       );
 
+
     }
 
+
   }
-  void selectCard(int index) {
-
-if (cards.isEmpty) return;
-
-    // منع الضغط أثناء المقارنة
-    if (checking) return;
 
 
-    // منع فتح بطاقة مكتملة أو مفتوحة
-    if (cards[index]["open"] == true ||
-        cards[index]["done"] == true) {
+
+
+
+
+  Future<void> saveGameProgress() async {
+
+
+    await ProgressManager.saveStars(
+
+      gameName,
+
+      stars,
+
+    );
+
+
+  }
+
+
+
+
+
+  void selectCard(int index){
+
+
+    if(checking) return;
+
+
+
+    if(cards[index]["open"] ||
+       cards[index]["done"]){
 
       return;
 
@@ -229,7 +372,8 @@ if (cards.isEmpty) return;
 
 
 
-    setState(() {
+
+    setState((){
 
       cards[index]["open"] = true;
 
@@ -237,12 +381,17 @@ if (cards.isEmpty) return;
 
 
 
-    if (firstCard == null) {
+
+
+    if(firstCard == null){
+
 
       firstCard = index;
 
 
-    } else {
+
+    }else{
+
 
 
       secondCard = index;
@@ -251,38 +400,51 @@ if (cards.isEmpty) return;
       checking = true;
 
 
+
       Future.delayed(
 
-        const Duration(seconds: 1),
+        const Duration(
+          milliseconds: 900,
+        ),
 
-        () {
 
-          checkMatch();
+        checkMatch,
 
-        },
 
       );
 
+
     }
 
+
   }
 
 
 
 
-  void checkMatch() {
-
-  if (!mounted) return;
-
-  if (firstCard == null ||
-      secondCard == null) {
-    return;
-  }
 
 
-   
+
+  Future<void> checkMatch() async {
+
+
+
+    if(firstCard == null ||
+       secondCard == null){
+
+      checking = false;
+
+      return;
+
+    }
+
+
+
+
+
     final first =
         cards[firstCard!]["image"];
+
 
 
     final second =
@@ -291,153 +453,301 @@ if (cards.isEmpty) return;
 
 
 
-    if (first == second) {
 
-
-      playSound("correct.mp3");
+    if(first == second){
 
 
 
-      setState(() {
+      await playSound(
+        "correct.mp3",
+      );
 
 
-        cards[firstCard!]["done"] = true;
+
+      setState((){
 
 
-        cards[secondCard!]["done"] = true;
+        cards[firstCard!]["done"] =
+            true;
+
+
+
+        cards[secondCard!]["done"] =
+            true;
+
+
+
+        matches++;
 
 
 
         stars++;
 
-        matches++;
+
 
       });
 
 
 
-      if (matches == animals.length) {
 
-  Future.delayed(
+      await saveGameProgress();
 
-    const Duration(milliseconds: 700),
 
-    () async {
 
-      // حفظ أعلى مستوى تم فتحه
-      if (widget.level < 10) {
-  await ProgressManager.saveUnlockedLevel(
-    "memory_game",
-    widget.level + 1,
-  );
-}
 
-      if (!mounted) return;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => WinScreen(
-  stars: stars,
+      if(matches == animals.length){
 
-  nextGame: MemoryGameScreen(
-    level: widget.level,
-  ),
 
-  gamesPage: const MemoryLevelsScreen(),
 
-  hasLevels: true,
+        await Future.delayed(
 
-  currentLevel: widget.level,
+          const Duration(
+            milliseconds:700,
+          ),
 
-  maxLevels: 10,
+        );
 
-  nextLevelPage: widget.level < 10
-      ? MemoryGameScreen(
-          level: widget.level + 1,
-        )
-      : null,
-),
-        ),
+
+
+
+        if(widget.level < 10){
+
+
+          await ProgressManager
+              .saveUnlockedLevel(
+
+            gameName,
+
+            widget.level + 1,
+
+          );
+
+
+        }
+
+
+
+
+
+
+        if(!mounted) return;
+
+
+
+
+        Navigator.pushReplacement(
+
+
+          context,
+
+
+          MaterialPageRoute(
+
+
+            builder: (_) => WinScreen(
+
+
+
+              stars: stars,
+
+
+
+              nextGame:
+                  MemoryGameScreen(
+
+                    level:
+                        widget.level,
+
+                  ),
+
+
+
+              gamesPage:
+                  const MemoryLevelsScreen(),
+
+
+
+
+              hasLevels:
+                  true,
+
+
+
+              currentLevel:
+                  widget.level,
+
+
+
+              maxLevels:
+                  10,
+
+
+
+              nextLevelPage:
+
+                  widget.level < 10
+
+                  ? MemoryGameScreen(
+
+                      level:
+                          widget.level + 1,
+
+                    )
+
+                  : null,
+
+
+
+            ),
+
+
+
+          ),
+
+
+
+        );
+
+
+
+      }
+
+
+
+
+    }else{
+
+
+
+      await playSound(
+        "wrong.mp3",
       );
 
-    },
-
-  );
-
-}
 
 
-    } else {
+      setState((){
 
 
-      playSound("wrong.mp3");
+        cards[firstCard!]["open"] =
+            false;
 
 
 
-      setState(() {
+        cards[secondCard!]["open"] =
+            false;
 
-
-        cards[firstCard!]["open"] = false;
-
-
-        cards[secondCard!]["open"] = false;
 
 
       });
+
 
 
     }
 
 
 
+
+
+
     firstCard = null;
 
+
     secondCard = null;
+
 
     checking = false;
 
 
+
   }
 
-int getCrossAxisCount() {
 
-  if (widget.level <= 2) {
-    return 4;
+
+
+
+
+
+  void restartGame(){
+
+
+    startGame();
+
+
+
+  }
+  int getCrossAxisCount(){
+
+
+    if(widget.level <= 2){
+
+      return 4;
+
+    }
+
+
+    if(widget.level <= 5){
+
+      return 5;
+
+    }
+
+
+    if(widget.level <= 8){
+
+      return 6;
+
+    }
+
+
+    return 7;
+
+
   }
 
-  if (widget.level <= 5) {
-    return 5;
+
+
+
+
+  double getCardFontSize(){
+
+
+    if(widget.level <= 2){
+
+      return 55;
+
+    }
+
+
+    if(widget.level <= 5){
+
+      return 48;
+
+    }
+
+
+    if(widget.level <= 8){
+
+      return 42;
+
+    }
+
+
+    return 36;
+
+
   }
 
-  if (widget.level <= 8) {
-    return 6;
-  }
-
-  return 7;
-}
-
-double getCardFontSize() {
-
-  if (widget.level <= 2) {
-    return 55;
-  }
-
-  if (widget.level <= 5) {
-    return 48;
-  }
-
-  if (widget.level <= 8) {
-    return 42;
-  }
-
-  return 36;
-}
-
-  Widget buildCard(int index) {
 
 
-    bool show =
+
+
+
+  Widget buildCard(int index){
+
+
+
+    final bool show =
 
         cards[index]["open"] ||
 
@@ -445,10 +755,12 @@ double getCardFontSize() {
 
 
 
+
+
     return GestureDetector(
 
 
-      onTap: () {
+      onTap: (){
 
         selectCard(index);
 
@@ -459,16 +771,24 @@ double getCardFontSize() {
       child: AnimatedContainer(
 
 
+
         duration:
 
-            const Duration(milliseconds: 300),
+            const Duration(
+              milliseconds:300,
+            ),
 
 
 
-        decoration: BoxDecoration(
+        decoration:
+
+            BoxDecoration(
 
 
-          color: show
+
+          color:
+
+              show
 
               ? Colors.white
 
@@ -482,45 +802,76 @@ double getCardFontSize() {
 
 
 
-          boxShadow: const [
+
+          boxShadow:
+
+              const [
+
 
 
             BoxShadow(
 
-              color: Colors.black26,
 
-              blurRadius: 8,
+              color:
 
-              offset: Offset(0,4),
+                  Colors.black26,
+
+
+              blurRadius:
+
+                  8,
+
+
+              offset:
+
+                  Offset(0,4),
+
 
             ),
 
+
+
           ],
+
+
 
         ),
 
 
 
-        child: Center(
+
+        child:
+
+            Center(
 
 
-          child: AnimatedSwitcher(
+
+          child:
+
+              AnimatedSwitcher(
+
 
 
             duration:
 
-                const Duration(milliseconds: 300),
+                const Duration(
+                  milliseconds:300,
+                ),
 
 
 
-            child: Text(
+            child:
+
+                Text(
+
 
 
               show
 
-                  ? cards[index]["image"]
+              ? cards[index]["image"]
 
-                  : "❓",
+              : "❓",
+
 
 
 
@@ -530,129 +881,269 @@ double getCardFontSize() {
 
 
 
-              style: TextStyle(
 
-  fontSize: getCardFontSize(),
+              style:
 
-),
+                  TextStyle(
+
+                fontSize:
+                    getCardFontSize(),
+
+              ),
+
+
 
             ),
 
 
+
           ),
 
+
+
         ),
+
+
 
       ),
 
+
+
     );
 
+
   }
+
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
 
+
+
+    if(loading){
+
+
+      return const Scaffold(
+
+        body:
+
+            Center(
+
+          child:
+
+              CircularProgressIndicator(),
+
+        ),
+
+      );
+
+
+    }
+
+
+
+
     return Scaffold(
 
-      body: Container(
-
-        width: double.infinity,
-
-        height: double.infinity,
 
 
-        decoration: const BoxDecoration(
+      body:
 
-          image: DecorationImage(
+          Container(
 
-            image: AssetImage(
+
+
+        width:
+
+            double.infinity,
+
+
+
+        height:
+
+            double.infinity,
+
+
+
+        decoration:
+
+            const BoxDecoration(
+
+
+
+          image:
+
+              DecorationImage(
+
+
+
+            image:
+
+                AssetImage(
+
               "assets/images/background.png",
+
             ),
 
-            fit: BoxFit.cover,
+
+
+            fit:
+
+                BoxFit.cover,
+
+
 
           ),
+
+
 
         ),
 
 
-        child: Container(
-
-          color: Colors.white.withOpacity(0.25),
 
 
-          child: SafeArea(
 
-            child: Column(
+
+        child:
+
+            Container(
+
+
+
+          color:
+
+              Colors.white.withOpacity(0.25),
+
+
+
+
+
+          child:
+
+              SafeArea(
+
+
+
+            child:
+
+                Column(
+
+
 
               children: [
 
 
-                const SizedBox(height: 15),
+
+                const SizedBox(
+                  height:15,
+                ),
+
+
 
 
 
                 Row(
 
+
+
                   mainAxisAlignment:
+
                       MainAxisAlignment.spaceEvenly,
+
 
 
                   children: [
 
 
 
+
+
                     Container(
 
+
+
                       padding:
+
                           const EdgeInsets.symmetric(
 
-                        horizontal: 20,
+                        horizontal:20,
 
-                        vertical: 10,
+                        vertical:10,
 
                       ),
 
 
-                      decoration: BoxDecoration(
 
-                        color: Colors.white,
+
+                      decoration:
+
+                          BoxDecoration(
+
+
+
+                        color:
+
+                            Colors.white,
+
+
 
                         borderRadius:
+
                             BorderRadius.circular(20),
 
-                        boxShadow: const [
 
-                          BoxShadow(
-
-                            color: Colors.black12,
-
-                            blurRadius: 6,
-
-                          ),
-
-                        ],
 
                       ),
 
 
 
-                      child: Text(
+
+                      child:
+
+                          Text(
+
+
 
                         "⭐ $stars",
 
 
-                        style: const TextStyle(
 
-                          fontSize: 24,
+                        style:
+
+                            const TextStyle(
+
+
+
+                          fontSize:
+
+                              24,
+
+
 
                           fontWeight:
+
                               FontWeight.bold,
 
-                          color: Colors.orange,
+
+
+                          color:
+
+                              Colors.orange,
+
+
 
                         ),
 
+
+
                       ),
+
+
 
                     ),
 
@@ -662,42 +1153,164 @@ double getCardFontSize() {
 
                     Container(
 
+
+
                       padding:
+
                           const EdgeInsets.symmetric(
 
-                        horizontal: 20,
+                        horizontal:20,
 
-                        vertical: 10,
+                        vertical:10,
 
                       ),
 
 
-                      decoration: BoxDecoration(
 
-                        color: Colors.white,
+                      decoration:
+
+                          BoxDecoration(
+
+
+
+                        color:
+
+                            Colors.white,
+
+
 
                         borderRadius:
+
                             BorderRadius.circular(20),
+
+
 
                       ),
 
 
 
-                      child: Text(
+                      child:
+
+                          Text(
+
+
+
+                        "المستوى ${widget.level}",
+
+
+
+                        style:
+
+                            const TextStyle(
+
+
+
+                          fontSize:
+
+                              22,
+
+
+
+                          fontWeight:
+
+                              FontWeight.bold,
+
+
+
+                          color:
+
+                              Colors.blue,
+
+
+
+                        ),
+
+
+
+                      ),
+
+
+
+                    ),
+
+
+
+
+                    Container(
+
+
+
+                      padding:
+
+                          const EdgeInsets.symmetric(
+
+                        horizontal:15,
+
+                        vertical:10,
+
+                      ),
+
+
+
+
+                      decoration:
+
+                          BoxDecoration(
+
+
+
+                        color:
+
+                            Colors.white,
+
+
+
+                        borderRadius:
+
+                            BorderRadius.circular(20),
+
+
+
+                      ),
+
+
+
+
+                      child:
+
+                          Text(
+
+
 
                         "🧩 $matches/${animals.length}",
 
 
-                        style: const TextStyle(
 
-                          fontSize: 22,
+                        style:
+
+                            const TextStyle(
+
+
+
+                          fontSize:
+
+                              20,
+
+
 
                           fontWeight:
+
                               FontWeight.bold,
+
+
 
                         ),
 
+
+
                       ),
+
+
 
                     ),
 
@@ -705,57 +1318,97 @@ double getCardFontSize() {
 
                   ],
 
+
+
                 ),
 
 
 
 
-                const SizedBox(height: 25),
+                const SizedBox(
+                  height:25,
+                ),
 
 
 
 
                 const Text(
+
+
 
                   "لعبة الذاكرة 🧠",
 
-                  style: TextStyle(
 
-                    fontSize: 30,
+
+                  style:
+
+                      TextStyle(
+
+
+
+                    fontSize:
+
+                        30,
+
+
 
                     fontWeight:
+
                         FontWeight.bold,
 
+
+
                   ),
+
+
 
                 ),
 
 
 
 
-                const SizedBox(height: 10),
+                const SizedBox(
+                  height:10,
+                ),
+
+
 
 
 
                 const Text(
 
+
+
                   "ابحث عن الصور المتشابهة 🎯",
 
-                  style: TextStyle(
 
-                    fontSize: 22,
+
+                  style:
+
+                      TextStyle(
+
+
+
+                    fontSize:
+
+                        22,
+
+
 
                     fontWeight:
+
                         FontWeight.bold,
+
+
 
                   ),
 
+
+
                 ),
-
-
-
-
-                const SizedBox(height: 20),
+                const SizedBox(
+                  height:20,
+                ),
 
 
 
@@ -766,43 +1419,74 @@ double getCardFontSize() {
                   child: GridView.builder(
 
 
+
                     padding:
+
                         const EdgeInsets.all(20),
 
 
 
+
                     itemCount:
+
                         cards.length,
 
 
 
+
+
                     gridDelegate:
-    SliverGridDelegateWithFixedCrossAxisCount(
 
-  crossAxisCount: getCrossAxisCount(),
+                        SliverGridDelegateWithFixedCrossAxisCount(
 
-  crossAxisSpacing: 12,
 
-  mainAxisSpacing: 12,
 
-),
+                      crossAxisCount:
+
+                          getCrossAxisCount(),
+
+
+
+
+                      crossAxisSpacing:
+
+                          12,
+
+
+
+                      mainAxisSpacing:
+
+                          12,
+
+
+
+                    ),
+
+
 
 
 
                     itemBuilder:
+
                         (context,index){
+
 
 
                       return buildCard(index);
 
 
+
                     },
+
 
 
                   ),
 
 
+
                 ),
+
+
 
 
 
@@ -810,13 +1494,21 @@ double getCardFontSize() {
                 ElevatedButton.icon(
 
 
-                  onPressed: () {
-  startGame();
-},
+
+                  onPressed:
+
+                      (){
+
+                    startGame();
+
+                  },
 
 
 
-                  icon: const Icon(
+
+                  icon:
+
+                      const Icon(
 
                     Icons.refresh_rounded,
 
@@ -824,88 +1516,181 @@ double getCardFontSize() {
 
 
 
-                  label: const Text(
+
+
+                  label:
+
+                      const Text(
+
+
 
                     "إعادة اللعب",
 
-                    style: TextStyle(
 
-                      fontSize: 20,
+
+
+                    style:
+
+                        TextStyle(
+
+
+
+                      fontSize:
+
+                          20,
+
+
 
                       fontWeight:
+
                           FontWeight.bold,
 
+
+
                     ),
+
+
 
                   ),
 
 
 
-                  style: ElevatedButton.styleFrom(
 
-                    backgroundColor: Colors.white,
 
-                    foregroundColor: Colors.blue,
+                  style:
 
-                    elevation: 8,
+                      ElevatedButton.styleFrom(
+
+
+
+                    backgroundColor:
+
+                        Colors.white,
+
+
+
+                    foregroundColor:
+
+                        Colors.blue,
+
+
+
+                    elevation:
+
+                        8,
+
+
 
                     padding:
+
                         const EdgeInsets.symmetric(
 
-                      horizontal: 35,
 
-                      vertical: 12,
+
+                      horizontal:
+
+                          35,
+
+
+
+                      vertical:
+
+                          12,
+
+
 
                     ),
+
 
 
 
                     shape:
+
                         RoundedRectangleBorder(
 
+
+
                       borderRadius:
+
                           BorderRadius.circular(25),
+
+
 
                     ),
 
+
+
                   ),
+
+
 
                 ),
 
 
 
 
-                const SizedBox(height: 20),
+
+
+                const SizedBox(
+
+                  height:20,
+
+                ),
+
+
 
 
               ],
 
 
+
             ),
+
 
 
           ),
 
 
+
         ),
+
 
 
       ),
 
 
+
     );
 
 
+
   }
+
+
+
+
+
+
+
   @override
-  void dispose() {
+  void dispose(){
+
+
 
     audioPlayer.stop();
 
+
+
     audioPlayer.dispose();
+
+
 
     super.dispose();
 
+
+
   }
+
+
 
 }
