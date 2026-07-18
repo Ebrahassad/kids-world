@@ -976,7 +976,7 @@ class _ChooseImageScreenState
 
                       currentQuestion = 0;
 
-                      stars = 0;
+                      
 
                       answering = false;
 
