@@ -8,6 +8,7 @@ import 'games_screen.dart';
 import 'progress_manager.dart';
 
 
+
 class NumbersScreen extends StatefulWidget {
 
   const NumbersScreen({super.key});
@@ -21,14 +22,18 @@ class NumbersScreen extends StatefulWidget {
 
 
 
+
 class _NumbersScreenState extends State<NumbersScreen> {
 
 
-  static const String gameName = "numbers_game";
+  static const String gameName =
+      "numbers_game";
+
 
 
   final AudioPlayer audioPlayer =
       AudioPlayer();
+
 
 
   final Random random =
@@ -41,137 +46,227 @@ class _NumbersScreenState extends State<NumbersScreen> {
   int stars = 0;
 
 
+
   bool loading = true;
 
   bool answering = false;
 
 
 
-  final List<Map<String, dynamic>> questions = [
+
+  final List<Map<String, dynamic>>
+      originalQuestions = [
+
 
 
     {
-      "question": "1",
-      "answer": "1",
-      "options": [
-        "1",
-        "3",
-        "5",
-        "8",
-      ],
+      "question":
+          "كم عدد التفاحات؟ 🍎🍎🍎",
+
+      "answer":
+          "3",
+
+      "number":
+          "🍎 🍎 🍎",
+
+      "options":
+          [
+            "2",
+            "3",
+            "5",
+            "1",
+          ],
     },
 
 
+
+
     {
-      "question": "2",
-      "answer": "2",
-      "options": [
-        "4",
-        "2",
-        "6",
-        "9",
-      ],
+      "question":
+          "كم عدد النجوم؟ ⭐⭐⭐⭐⭐",
+
+      "answer":
+          "5",
+
+      "number":
+          "⭐ ⭐ ⭐ ⭐ ⭐",
+
+      "options":
+          [
+            "4",
+            "5",
+            "7",
+            "2",
+          ],
     },
 
 
+
+
+
     {
-      "question": "3",
-      "answer": "3",
-      "options": [
-        "7",
-        "1",
-        "3",
-        "5",
-      ],
+      "question":
+          "كم عدد الأسماك؟ 🐟🐟",
+
+      "answer":
+          "2",
+
+      "number":
+          "🐟 🐟",
+
+      "options":
+          [
+            "1",
+            "2",
+            "6",
+            "4",
+          ],
     },
 
 
+
+
+
     {
-      "question": "4",
-      "answer": "4",
-      "options": [
-        "4",
-        "2",
-        "8",
-        "6",
-      ],
+      "question":
+          "كم عدد البالونات؟ 🎈🎈🎈🎈",
+
+      "answer":
+          "4",
+
+      "number":
+          "🎈 🎈 🎈 🎈",
+
+      "options":
+          [
+            "3",
+            "4",
+            "8",
+            "6",
+          ],
     },
 
 
+
+
+
     {
-      "question": "5",
-      "answer": "5",
-      "options": [
-        "1",
-        "5",
-        "3",
-        "9",
-      ],
+      "question":
+          "كم عدد الأقمار؟ 🌙🌙🌙🌙🌙🌙",
+
+      "answer":
+          "6",
+
+      "number":
+          "🌙 🌙 🌙 🌙 🌙 🌙",
+
+      "options":
+          [
+            "5",
+            "6",
+            "9",
+            "3",
+          ],
     },
 
 
+
+
+
     {
-      "question": "6",
-      "answer": "6",
-      "options": [
-        "2",
-        "8",
-        "6",
-        "4",
-      ],
+      "question":
+          "كم عدد الفراشات؟ 🦋🦋🦋🦋🦋🦋🦋",
+
+      "answer":
+          "7",
+
+      "number":
+          "🦋 🦋 🦋 🦋 🦋 🦋 🦋",
+
+      "options":
+          [
+            "7",
+            "4",
+            "10",
+            "8",
+          ],
     },
 
 
+
+
+
     {
-      "question": "7",
-      "answer": "7",
-      "options": [
-        "7",
-        "5",
-        "1",
-        "3",
-      ],
+      "question":
+          "كم عدد الأقلام؟ ✏️✏️✏️✏️✏️✏️✏️✏️",
+
+      "answer":
+          "8",
+
+      "number":
+          "✏️ ✏️ ✏️ ✏️ ✏️ ✏️ ✏️ ✏️",
+
+      "options":
+          [
+            "8",
+            "6",
+            "2",
+            "9",
+          ],
     },
 
 
+
+
+
     {
-      "question": "8",
-      "answer": "8",
-      "options": [
-        "6",
-        "2",
-        "8",
-        "4",
-      ],
+      "question":
+          "كم عدد القلوب؟ ❤️❤️❤️❤️❤️❤️❤️❤️❤️",
+
+      "answer":
+          "9",
+
+      "number":
+          "❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️",
+
+      "options":
+          [
+            "9",
+            "5",
+            "7",
+            "10",
+          ],
     },
 
 
-    {
-      "question": "9",
-      "answer": "9",
-      "options": [
-        "3",
-        "7",
-        "9",
-        "5",
-      ],
-    },
+
 
 
     {
-      "question": "10",
-      "answer": "10",
-      "options": [
-        "8",
-        "10",
-        "4",
-        "2",
-      ],
+      "question":
+          "كم عدد الكرات؟ ⚽⚽⚽⚽⚽⚽⚽⚽⚽⚽",
+
+      "answer":
+          "10",
+
+      "number":
+          "⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽",
+
+      "options":
+          [
+            "8",
+            "10",
+            "4",
+            "6",
+          ],
     },
 
 
   ];
 
+
+
+  late List<Map<String,dynamic>> questions;
   @override
   void initState() {
 
@@ -186,14 +281,55 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
+
   void prepareGame() {
 
+
+    questions =
+        originalQuestions.map((item) {
+
+
+      return {
+
+
+        "question":
+            item["question"],
+
+
+        "answer":
+            item["answer"],
+
+
+        "number":
+            item["number"],
+
+
+        "options":
+            List<String>.from(
+              item["options"],
+            ),
+
+
+      };
+
+
+    }).toList();
+
+
+
+
+
+    // خلط ترتيب الأسئلة
 
     questions.shuffle(random);
 
 
 
-    for (final item in questions) {
+
+
+    // خلط الاختيارات
+
+    for(final item in questions){
 
 
       final List<String> options =
@@ -205,13 +341,16 @@ class _NumbersScreenState extends State<NumbersScreen> {
       options.shuffle(random);
 
 
-      item["options"] = options;
+      item["options"] =
+          options;
 
 
     }
 
 
   }
+
+
 
 
 
@@ -226,6 +365,7 @@ class _NumbersScreenState extends State<NumbersScreen> {
         );
 
 
+
     stars =
         await ProgressManager.getStars(
           gameName,
@@ -233,7 +373,8 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
-    if (currentQuestion >= questions.length) {
+
+    if(currentQuestion >= questions.length){
 
       currentQuestion = 0;
 
@@ -241,13 +382,19 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
-    if (mounted) {
 
-      setState(() {
+
+    if(mounted){
+
+
+      setState((){
+
 
         loading = false;
 
+
       });
+
 
     }
 
@@ -258,10 +405,13 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
-  Future<void> playSound(String fileName) async {
 
 
-    try {
+  Future<void> playSound(
+      String fileName) async {
+
+
+    try{
 
 
       await audioPlayer.stop();
@@ -270,15 +420,19 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
       await audioPlayer.play(
 
+
         AssetSource(
+
           "sounds/$fileName",
+
         ),
+
 
       );
 
 
 
-    } catch(e) {
+    }catch(e){
 
 
       debugPrint(
@@ -296,39 +450,59 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
-  Future<void> checkAnswer(String answer) async {
+
+
+  Future<void> checkAnswer(
+      String answer) async {
+
 
 
     if(answering) return;
 
 
 
-    answering = true;
+    setState((){
+
+
+      answering = true;
+
+
+    });
 
 
 
-    final correct =
+
+
+    final correctAnswer =
         questions[currentQuestion]["answer"];
 
 
 
-    if(answer == correct) {
+
+
+    if(answer == correctAnswer){
 
 
 
       await playSound(
+
         "correct.mp3",
+
       );
 
 
 
-      setState(() {
+
+      setState((){
 
 
         stars++;
 
 
       });
+
+
+
 
 
 
@@ -343,21 +517,28 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
+
+
+
       if(currentQuestion <
-          questions.length - 1) {
+          questions.length - 1){
 
 
 
-        setState(() {
+        setState((){
 
 
           currentQuestion++;
+
 
           answering = false;
 
 
 
         });
+
+
+
 
 
 
@@ -371,7 +552,7 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
-      } else {
+      }else{
 
 
 
@@ -380,6 +561,8 @@ class _NumbersScreenState extends State<NumbersScreen> {
           gameName,
 
         );
+
+
 
 
 
@@ -393,9 +576,17 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
+
+
+
         await playSound(
+
           "win.mp3",
+
         );
+
+
+
 
 
 
@@ -403,25 +594,44 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
+
+
         Navigator.pushReplacement(
+
 
           context,
 
+
           MaterialPageRoute(
+
 
             builder: (_) => WinScreen(
 
+
+
               stars: stars,
 
+
+
               nextGame:
+
                   const NumbersScreen(),
 
+
+
               gamesPage:
+
                   const GamesScreen(),
+
+
 
             ),
 
+
+
           ),
+
+
 
         );
 
@@ -431,7 +641,8 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
-    } else {
+
+    }else{
 
 
 
@@ -443,38 +654,68 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
+
+
+
       ScaffoldMessenger.of(context)
           .showSnackBar(
 
 
+
+
         const SnackBar(
+
+
 
           content:
 
               Text(
+
                 "حاول مرة أخرى ⭐",
+
               ),
 
 
+
+          duration:
+
+              Duration(
+
+                milliseconds: 800,
+
+              ),
+
+
+
         ),
+
 
 
       );
 
 
 
-      answering = false;
+
+
+      setState((){
+
+
+        answering = false;
+
+
+      });
+
 
 
     }
 
 
   }
-
   void restartGame() {
 
 
     audioPlayer.stop();
+
 
 
     prepareGame();
@@ -484,19 +725,26 @@ class _NumbersScreenState extends State<NumbersScreen> {
     setState(() {
 
 
+
       currentQuestion = 0;
+
 
       stars = 0;
 
+
       answering = false;
+
 
 
     });
 
 
 
+
     ProgressManager.resetProgress(
+
       gameName,
+
     );
 
 
@@ -506,8 +754,12 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
+
+
+
   @override
   Widget build(BuildContext context) {
+
 
 
     if(loading){
@@ -515,12 +767,17 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
       return const Scaffold(
 
+
         body: Center(
 
+
           child:
+
               CircularProgressIndicator(),
 
+
         ),
+
 
       );
 
@@ -529,20 +786,34 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
+
+
+
     final data =
         questions[currentQuestion];
+
+
+
 
 
 
     return Scaffold(
 
 
+
       body: Container(
 
 
-        width: double.infinity,
 
-        height: double.infinity,
+        width:
+            double.infinity,
+
+
+
+        height:
+            double.infinity,
+
+
 
 
 
@@ -550,11 +821,15 @@ class _NumbersScreenState extends State<NumbersScreen> {
             const BoxDecoration(
 
 
+
           image:
+
               DecorationImage(
 
 
+
             image:
+
                 AssetImage(
 
               "assets/images/background.png",
@@ -562,11 +837,15 @@ class _NumbersScreenState extends State<NumbersScreen> {
             ),
 
 
+
             fit:
+
                 BoxFit.cover,
 
 
+
           ),
+
 
 
         ),
@@ -574,27 +853,41 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
+
         child: Container(
 
 
+
           color:
+
               Colors.white.withOpacity(0.25),
+
+
+
 
 
 
           child: SafeArea(
 
 
+
             child: Column(
+
 
 
               children: [
 
 
 
+
+
                 const SizedBox(
+
                   height: 15,
+
                 ),
+
+
 
 
 
@@ -602,60 +895,109 @@ class _NumbersScreenState extends State<NumbersScreen> {
                 Row(
 
 
+
                   mainAxisAlignment:
+
                       MainAxisAlignment.spaceEvenly,
+
+
+
 
 
                   children: [
 
 
 
+
+
+
                     Container(
 
 
+
                       padding:
+
                           const EdgeInsets.symmetric(
 
-                        horizontal: 20,
+                        horizontal:
 
-                        vertical: 10,
+                            20,
+
+                        vertical:
+
+                            10,
 
                       ),
+
+
 
 
 
                       decoration:
+
                           BoxDecoration(
 
+
+
                         color:
+
                             Colors.white,
 
+
+
                         borderRadius:
-                            BorderRadius.circular(20),
+
+                            BorderRadius.circular(
+
+                              20,
+
+                            ),
+
+
 
                       ),
 
 
 
+
+
+
                       child:
+
                           Text(
+
+
 
                         "⭐ $stars",
 
 
+
                         style:
+
                             const TextStyle(
 
+
+
                           fontSize:
+
                               24,
 
+
+
                           fontWeight:
+
                               FontWeight.bold,
 
+
+
                           color:
+
                               Colors.orange,
 
+
+
                         ),
+
 
 
                       ),
@@ -668,69 +1010,119 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
+
+
+
                     Container(
 
 
+
                       padding:
+
                           const EdgeInsets.symmetric(
 
-                        horizontal: 20,
+                        horizontal:
 
-                        vertical: 10,
+                            20,
+
+                        vertical:
+
+                            10,
 
                       ),
+
 
 
 
                       decoration:
+
                           BoxDecoration(
 
+
+
                         color:
+
                             Colors.white,
 
+
+
                         borderRadius:
-                            BorderRadius.circular(20),
+
+                            BorderRadius.circular(
+
+                              20,
+
+                            ),
+
+
 
                       ),
 
 
 
+
+
+
                       child:
+
                           Text(
+
 
 
                         "${currentQuestion + 1}/${questions.length}",
 
 
+
                         style:
+
                             const TextStyle(
 
+
+
                           fontSize:
+
                               22,
 
+
+
                           fontWeight:
+
                               FontWeight.bold,
 
+
+
                         ),
+
 
 
                       ),
 
 
+
                     ),
+
 
 
                   ],
 
 
+
                 ),
+
+
+
+
 
 
 
 
                 const SizedBox(
+
                   height: 25,
+
                 ),
+
+
 
 
 
@@ -738,28 +1130,107 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
                 const Text(
 
-                  "اختر الرقم الصحيح 🔢",
+
+
+                  "تعلم الأرقام 🔢",
+
+
 
                   style:
+
                       TextStyle(
 
+
+
                     fontSize:
-                        28,
+
+                        30,
+
+
 
                     fontWeight:
+
                         FontWeight.bold,
+
+
 
                   ),
 
 
+
                 ),
+
+
+
+
 
 
 
 
                 const SizedBox(
-                  height: 20,
+
+                  height: 15,
+
                 ),
+
+
+
+
+
+
+
+                Text(
+
+
+
+                  data["question"],
+
+
+
+                  textAlign:
+
+                      TextAlign.center,
+
+
+
+                  style:
+
+                      const TextStyle(
+
+
+
+                    fontSize:
+
+                        25,
+
+
+
+                    fontWeight:
+
+                        FontWeight.bold,
+
+
+
+                  ),
+
+
+
+                ),
+
+
+
+
+
+
+
+
+                const SizedBox(
+
+                  height: 20,
+
+                ),
+
+
 
 
 
@@ -768,150 +1239,262 @@ class _NumbersScreenState extends State<NumbersScreen> {
                 Container(
 
 
-                  width:
-                      180,
 
-                  height:
-                      180,
+                  margin:
+
+                      const EdgeInsets.symmetric(
+
+                    horizontal:
+
+                        20,
+
+                  ),
+
+
+
+
+
+                  padding:
+
+                      const EdgeInsets.all(
+
+                        20,
+
+                      ),
+
+
 
 
 
                   decoration:
+
                       BoxDecoration(
 
+
+
                     color:
+
                         Colors.white,
 
+
+
                     borderRadius:
-                        BorderRadius.circular(30),
+
+                        BorderRadius.circular(
+
+                          25,
+
+                        ),
+
 
 
                     boxShadow:
+
                         const [
+
+
 
                       BoxShadow(
 
+
+
                         color:
+
                             Colors.black26,
 
+
+
                         blurRadius:
+
                             8,
+
+
+
+                        offset:
+
+                            Offset(
+
+                              0,
+
+                              4,
+
+                            ),
+
+
 
                       ),
 
+
+
                     ],
 
+
+
                   ),
+
+
+
+
 
 
 
 
                   child:
+
                       Center(
 
 
+
                     child:
+
                         Text(
 
 
-                      data["question"],
+
+                      data["number"],
+
+
+
+                      textAlign:
+
+                          TextAlign.center,
 
 
 
                       style:
+
                           const TextStyle(
 
+
+
                         fontSize:
-                            90,
 
-                        fontWeight:
-                            FontWeight.bold,
+                            45,
 
-                        color:
-                            Colors.blue,
+
 
                       ),
 
 
+
                     ),
+
 
 
                   ),
 
 
+
                 ),
+
+
+
+
 
 
 
                 const SizedBox(
-                  height: 25,
+
+                  height: 20,
+
                 ),
                 Expanded(
+
 
                   child: GridView.builder(
 
 
+
                     padding:
+
                         const EdgeInsets.all(20),
 
 
 
+
                     itemCount:
+
                         data["options"].length,
 
 
 
+
                     gridDelegate:
+
                         const SliverGridDelegateWithFixedCrossAxisCount(
 
 
+
                       crossAxisCount:
+
                           2,
 
 
+
                       crossAxisSpacing:
+
                           15,
+
 
 
                       mainAxisSpacing:
+
                           15,
 
 
+
                       childAspectRatio:
+
                           1.4,
+
 
 
                     ),
 
 
 
+
+
                     itemBuilder:
-                        (context, index) {
+
+                        (context,index){
 
 
 
                       final String number =
+
                           data["options"][index];
+
+
 
 
 
                       return InkWell(
 
 
+
                         onTap:
+
                             answering
+
                                 ? null
+
                                 : () {
 
                           checkAnswer(number);
+
 
 
                         },
 
 
 
+
+
                         borderRadius:
+
                             BorderRadius.circular(25),
+
 
 
 
@@ -919,92 +1502,144 @@ class _NumbersScreenState extends State<NumbersScreen> {
                         child: Container(
 
 
+
                           alignment:
+
                               Alignment.center,
 
 
 
+
+
                           decoration:
+
                               BoxDecoration(
 
 
+
                             color:
+
                                 Colors.green,
 
 
+
                             borderRadius:
+
                                 BorderRadius.circular(25),
 
 
 
+
                             boxShadow:
+
                                 const [
+
 
 
                               BoxShadow(
 
+
+
                                 color:
+
                                     Colors.black26,
 
+
+
                                 blurRadius:
+
                                     6,
 
+
+
                                 offset:
-                                    Offset(0,4),
+
+                                    Offset(
+
+                                      0,
+
+                                      4,
+
+                                    ),
+
+
 
                               ),
+
 
 
                             ],
 
 
+
                           ),
+
 
 
 
 
                           child:
+
                               Text(
+
 
 
                             number,
 
 
+
                             style:
+
                                 const TextStyle(
 
 
+
                               fontSize:
+
                                   45,
 
 
+
                               fontWeight:
+
                                   FontWeight.bold,
 
 
+
                               color:
+
                                   Colors.white,
+
 
 
                             ),
 
 
+
                           ),
+
 
 
                         ),
 
 
+
                       );
+
 
 
                     },
 
 
+
                   ),
 
 
+
                 ),
+
+
+
 
 
 
@@ -1015,11 +1650,19 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
                   onPressed:
-                      restartGame,
+
+                      answering
+
+                          ? null
+
+                          : restartGame,
+
+
 
 
 
                   icon:
+
                       const Icon(
 
                     Icons.refresh,
@@ -1028,64 +1671,113 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
 
+
+
                   label:
+
                       const Text(
+
+
 
                     "إعادة اللعب",
 
+
+
                     style:
+
                         TextStyle(
 
+
+
                       fontSize:
+
                           20,
 
+
+
                       fontWeight:
+
                           FontWeight.bold,
 
+
+
                     ),
+
+
 
                   ),
 
 
 
+
+
+
                   style:
+
                       ElevatedButton.styleFrom(
 
 
+
                     backgroundColor:
+
                         Colors.white,
 
 
+
                     foregroundColor:
+
                         Colors.blue,
 
 
+
                     elevation:
+
                         6,
 
 
+
                     padding:
+
                         const EdgeInsets.symmetric(
 
+
+
                       horizontal:
+
                           35,
 
+
+
                       vertical:
+
                           12,
 
+
+
                     ),
+
+
 
 
 
                     shape:
+
                         RoundedRectangleBorder(
 
 
+
                       borderRadius:
-                          BorderRadius.circular(25),
+
+                          BorderRadius.circular(
+
+                            25,
+
+                          ),
+
 
 
                     ),
+
 
 
                   ),
@@ -1093,54 +1785,75 @@ class _NumbersScreenState extends State<NumbersScreen> {
 
 
                 ),
+
+
+
 
 
 
 
 
                 const SizedBox(
+
                   height: 20,
+
                 ),
+
 
 
               ],
 
 
+
             ),
+
 
 
           ),
 
 
+
         ),
+
 
 
       ),
 
 
+
     );
 
 
+
   }
+
+
+
 
 
 
 
 
   @override
+
   void dispose() {
+
 
 
     audioPlayer.stop();
 
 
+
     audioPlayer.dispose();
+
 
 
     super.dispose();
 
 
+
   }
+
 
 
 }
