@@ -17,7 +17,6 @@ class ProgressManager {
 
   }
 
-
   // جلب تقدم اللعبة
   static Future<int> getProgress(
     String gameName,
@@ -30,7 +29,6 @@ class ProgressManager {
     ) ?? 0;
 
   }
-
 
   // حفظ نجوم اللعبة
   static Future<void> saveStars(
@@ -47,7 +45,6 @@ class ProgressManager {
 
   }
 
-
   // جلب نجوم اللعبة
   static Future<int> getStars(
     String gameName,
@@ -60,7 +57,6 @@ class ProgressManager {
     ) ?? 0;
 
   }
-
 
   // حفظ مجموع النجوم لكل الألعاب
   static Future<void> saveTotalStars(
@@ -76,7 +72,6 @@ class ProgressManager {
 
   }
 
-
   // جلب مجموع النجوم
   static Future<int> getTotalStars() async {
 
@@ -87,7 +82,6 @@ class ProgressManager {
     ) ?? 0;
 
   }
-
 
   // تسجيل أن اللعبة اكتملت
   static Future<void> saveCompletedGame(
@@ -103,7 +97,6 @@ class ProgressManager {
 
   }
 
-
   // هل اللعبة مكتملة؟
   static Future<bool> isGameCompleted(
     String gameName,
@@ -117,8 +110,43 @@ class ProgressManager {
 
   }
 
+  // حفظ آخر مستوى مفتوح
+  static Future<void> saveUnlockedLevel(
+    String gameName,
+    int level,
+  ) async {
 
-  // مسح تقدم لعبة
+    final prefs = await SharedPreferences.getInstance();
+
+    final currentLevel = prefs.getInt(
+      "${gameName}_unlocked_level",
+    ) ?? 1;
+
+    if (level > currentLevel) {
+
+      await prefs.setInt(
+        "${gameName}_unlocked_level",
+        level,
+      );
+
+    }
+
+  }
+
+  // جلب آخر مستوى مفتوح
+  static Future<int> getUnlockedLevel(
+    String gameName,
+  ) async {
+
+    final prefs = await SharedPreferences.getInstance();
+
+    return prefs.getInt(
+      "${gameName}_unlocked_level",
+    ) ?? 1;
+
+  }
+
+  // إعادة تعيين تقدم اللعبة
   static Future<void> resetProgress(
     String gameName,
   ) async {
@@ -135,6 +163,10 @@ class ProgressManager {
 
     await prefs.remove(
       "${gameName}_completed",
+    );
+
+    await prefs.remove(
+      "${gameName}_unlocked_level",
     );
 
   }
