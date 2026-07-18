@@ -5,8 +5,8 @@ import 'package:audioplayers/audioplayers.dart';
 
 import 'win_screen.dart';
 import 'games_screen.dart';
-import 'progress_manager.dart';
 
+import '../progress_manager.dart';
 
 class LettersScreen extends StatefulWidget {
 
