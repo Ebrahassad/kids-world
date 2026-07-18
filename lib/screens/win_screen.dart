@@ -73,8 +73,8 @@ class _WinScreenState extends State<WinScreen> {
   }
 
   
-Future<int> getTotalStars() async {
-  return await ProgressManager.getTotalStars();
+Future<int> getTotalStars() {
+  return ProgressManager.getTotalStars();
 }
 
   Future<void> playWinSound() async {
