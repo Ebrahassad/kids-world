@@ -3,6 +3,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
 import 'games_screen.dart';
 
+import '../progress_manager.dart';
+
 class SortObjectsScreen extends StatefulWidget {
   const SortObjectsScreen({super.key});
 
@@ -46,70 +48,86 @@ class _SortObjectsScreenState extends State<SortObjectsScreen> {
     );
 
   }
-  void checkOrder() {
+  Future<void> checkOrder() async {
 
-    bool correct = true;
+  bool correct = true;
 
+  for (var item in objects) {
 
-    for (var item in objects) {
+    if (item["position"] != item["correct"] - 1) {
 
-      if (item["position"] != item["correct"] - 1) {
-
-        correct = false;
-
-      }
-
-    }
-
-
-    if (correct) {
-
-      playSound("correct.mp3");
-
-
-      setState(() {
-
-        stars++;
-
-      });
-
-
-      Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(
-    builder: (_) => WinScreen(
-      stars: stars,
-      nextGame: const SortObjectsScreen(),
-      gamesPage: const GamesScreen(),
-    ),
-  ),
-);
-
-
-    } else {
-
-
-      playSound("wrong.mp3");
-
-
-      ScaffoldMessenger.of(context).showSnackBar(
-
-        const SnackBar(
-
-          content: Text(
-            "رتب الأشياء بشكل صحيح ⭐",
-          ),
-
-        ),
-
-      );
-
+      correct = false;
 
     }
 
   }
 
 
+  if (correct) {
+
+    playSound("correct.mp3");
+
+
+    setState(() {
+
+      stars++;
+
+    });
+
+
+    // حفظ تقدم لعبة ترتيب الأشياء
+    await ProgressManager.saveCompletedGame(
+      "sort_objects",
+    );
+
+
+    // زيادة عدد مرات الفوز
+    await ProgressManager.addWinCount();
+
+
+    // حفظ آخر لعبة
+    await ProgressManager.saveLastPlayed(
+      "ترتيب الأشياء",
+    );
+
+
+    // حفظ النجوم
+    await ProgressManager.addStars(1);
+
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => WinScreen(
+          stars: stars,
+          nextGame: const SortObjectsScreen(),
+          gamesPage: const GamesScreen(),
+        ),
+      ),
+    );
+
+
+  } else {
+
+
+    playSound("wrong.mp3");
+
+
+    ScaffoldMessenger.of(context).showSnackBar(
+
+      const SnackBar(
+
+        content: Text(
+          "رتب الأشياء بشكل صحيح ⭐",
+        ),
+
+      ),
+
+    );
+
+  }
+
+}
 
   void moveObject(int oldIndex, int newIndex) {
 
