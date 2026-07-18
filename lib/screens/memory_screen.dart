@@ -694,11 +694,11 @@ class _MemoryGameScreenState
 
 
 
-    await ProgressManager.saveCompletedGame(
-
-      gameName,
-
-    );
+    if(widget.level == 10){
+  await ProgressManager.saveCompletedGame(
+    gameName,
+  );
+}
 
 
 
@@ -707,11 +707,7 @@ class _MemoryGameScreenState
 
     // الإضافات الجديدة
 
-    await ProgressManager.addTotalStars(
-
-      stars,
-
-    );
+    
 
 
 
