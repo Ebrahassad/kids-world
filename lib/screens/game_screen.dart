@@ -840,7 +840,7 @@ class _GameScreenState extends State<GameScreen> {
           image: DecorationImage(
 
             image: AssetImage(
-              "assets/images/Picture/background.png",
+              "assets/images/background.png",
             ),
 
             fit: BoxFit.cover,
