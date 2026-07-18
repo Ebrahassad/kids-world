@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/services.dart';
-
+import 'progress_manager.dart';
 
 class WinScreen extends StatefulWidget {
 
@@ -73,6 +73,9 @@ class _WinScreenState extends State<WinScreen> {
   }
 
   
+Future<int> getTotalStars() async {
+  return await ProgressManager.getTotalStars();
+}
 
   Future<void> playWinSound() async {
 
@@ -264,40 +267,29 @@ class _WinScreenState extends State<WinScreen> {
 
                     const SizedBox(height: 25),
 
-                    Container(
+                    FutureBuilder<int>(
+  future: getTotalStars(),
+  builder: (context, snapshot) {
+    final totalStars = snapshot.data ?? widget.stars;
 
-                      padding:
-                          const EdgeInsets.all(15),
-
-                      decoration: BoxDecoration(
-
-                        color: Colors.white,
-
-                        borderRadius:
-                            BorderRadius.circular(20),
-
-                      ),
-
-                      child: Text(
-
-                        "جمعت ⭐ ${widget.stars} نجوم",
-
-                        style: const TextStyle(
-
-                          fontSize: 32,
-
-                          fontWeight:
-                              FontWeight.bold,
-
-                          color: Colors.orange,
-
-                        ),
-
-                      ),
-
-                    ),
-
-                    const SizedBox(height: 40),
+    return Container(
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        "إجمالي النجوم ⭐ $totalStars",
+        style: const TextStyle(
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+          color: Colors.orange,
+        ),
+      ),
+    );
+  },
+),
+                   const SizedBox(height: 40),
                     // زر المستوى التالي (يظهر فقط في الألعاب ذات المستويات)
                     if (widget.hasLevels)
 
