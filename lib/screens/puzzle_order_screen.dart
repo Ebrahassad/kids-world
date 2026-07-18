@@ -208,10 +208,7 @@ await playSound("win.mp3");
 
 
 
-    finished = false;
-
-
-  }
+  
 
 
 
