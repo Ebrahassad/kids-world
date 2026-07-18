@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 
 import 'star_manager.dart';
 
-
 class WinScreen extends StatefulWidget {
 
   final int stars;
@@ -14,6 +13,17 @@ class WinScreen extends StatefulWidget {
 
   final Widget gamesPage;
 
+  // هل اللعبة تحتوي على مستويات؟
+  final bool hasLevels;
+
+  // المستوى الحالي
+  final int currentLevel;
+
+  // عدد المستويات
+  final int maxLevels;
+
+  // صفحة المستوى التالي
+  final Widget? nextLevelPage;
 
   const WinScreen({
 
@@ -25,80 +35,63 @@ class WinScreen extends StatefulWidget {
 
     required this.gamesPage,
 
+    this.hasLevels = false,
+
+    this.currentLevel = 1,
+
+    this.maxLevels = 1,
+
+    this.nextLevelPage,
+
   });
 
-
-
   @override
-  State<WinScreen> createState() => _WinScreenState();
-
+  State<WinScreen> createState() =>
+      _WinScreenState();
 }
-
-
 
 class _WinScreenState extends State<WinScreen> {
 
-
   final AudioPlayer audioPlayer = AudioPlayer();
 
-
   late ConfettiController confettiController;
-
-
 
   @override
   void initState() {
 
     super.initState();
 
-
     confettiController = ConfettiController(
-
       duration: const Duration(seconds: 5),
-
     );
-
 
     playWinSound();
 
-
     confettiController.play();
-
 
     saveStars();
 
   }
 
-
-
-
   Future<void> saveStars() async {
 
     await StarManager.addStars(
-
       widget.stars,
-
     );
 
   }
-
-
-
 
   Future<void> playWinSound() async {
 
     try {
 
       await audioPlayer.play(
-
         AssetSource(
           "sounds/win.mp3",
         ),
-
       );
 
-
-    } catch(e) {
+    } catch (e) {
 
       debugPrint(
         "خطأ الصوت: $e",
@@ -107,10 +100,6 @@ class _WinScreenState extends State<WinScreen> {
     }
 
   }
-
-
-
-
 
   @override
   void dispose() {
@@ -122,10 +111,6 @@ class _WinScreenState extends State<WinScreen> {
     super.dispose();
 
   }
-
-
-
-
 
   Widget actionButton({
 
@@ -139,53 +124,34 @@ class _WinScreenState extends State<WinScreen> {
 
   }) {
 
-
     return SizedBox(
 
       width: 270,
 
       height: 60,
 
-
       child: ElevatedButton.icon(
-
 
         onPressed: onPressed,
 
-
         icon: Icon(
-
           icon,
-
           color: Colors.white,
-
           size: 30,
-
         ),
-
 
         label: Text(
-
           text,
-
           style: const TextStyle(
-
             fontSize: 22,
-
             color: Colors.white,
-
             fontWeight: FontWeight.bold,
-
           ),
-
         ),
-
-
 
         style: ElevatedButton.styleFrom(
 
           backgroundColor: color,
-
 
           shape: RoundedRectangleBorder(
 
@@ -194,61 +160,43 @@ class _WinScreenState extends State<WinScreen> {
 
           ),
 
-
         ),
-
 
       ),
 
     );
 
   }
-
-
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
 
+    final bool isLastLevel =
+        widget.currentLevel >= widget.maxLevels;
 
     return Scaffold(
-
 
       backgroundColor:
           const Color(0xffB3E5FC),
 
-
-
       body: Stack(
-
 
         alignment: Alignment.center,
 
-
         children: [
-
-
 
           Align(
 
             alignment: Alignment.topCenter,
-
 
             child: ConfettiWidget(
 
               confettiController:
                   confettiController,
 
-
               blastDirectionality:
                   BlastDirectionality.explosive,
 
-
               shouldLoop: false,
-
 
               numberOfParticles: 50,
 
@@ -256,55 +204,33 @@ class _WinScreenState extends State<WinScreen> {
 
           ),
 
-
-
-
-
           Center(
-
 
             child: SingleChildScrollView(
 
-
               child: Padding(
-
 
                 padding:
                     const EdgeInsets.all(25),
 
-
-
                 child: Column(
-
 
                   mainAxisAlignment:
                       MainAxisAlignment.center,
 
-
                   children: [
-
-
 
                     const Text(
 
                       "🎉🏆⭐",
 
                       style: TextStyle(
-
                         fontSize: 80,
-
                       ),
 
                     ),
 
-
-
-
-
-                    const SizedBox(height:20),
-
-
-
+                    const SizedBox(height: 20),
 
                     const Text(
 
@@ -312,25 +238,18 @@ class _WinScreenState extends State<WinScreen> {
 
                       style: TextStyle(
 
-                        fontSize:42,
+                        fontSize: 42,
 
                         fontWeight:
                             FontWeight.bold,
 
-                        color:Colors.green,
+                        color: Colors.green,
 
                       ),
 
                     ),
 
-
-
-
-
-                    const SizedBox(height:20),
-
-
-
+                    const SizedBox(height: 20),
 
                     const Text(
 
@@ -339,10 +258,9 @@ class _WinScreenState extends State<WinScreen> {
                       textAlign:
                           TextAlign.center,
 
-
                       style: TextStyle(
 
-                        fontSize:23,
+                        fontSize: 23,
 
                         fontWeight:
                             FontWeight.bold,
@@ -351,85 +269,90 @@ class _WinScreenState extends State<WinScreen> {
 
                     ),
 
-
-
-
-
-                    const SizedBox(height:25),
-
-
-
+                    const SizedBox(height: 25),
 
                     Container(
-
 
                       padding:
                           const EdgeInsets.all(15),
 
-
-
                       decoration: BoxDecoration(
 
-
-                        color:Colors.white,
-
+                        color: Colors.white,
 
                         borderRadius:
                             BorderRadius.circular(20),
 
-
                       ),
-
-
 
                       child: Text(
 
-
                         "جمعت ⭐ ${widget.stars} نجوم",
-
-
 
                         style: const TextStyle(
 
-
-                          fontSize:32,
-
+                          fontSize: 32,
 
                           fontWeight:
                               FontWeight.bold,
 
-
-                          color:Colors.orange,
-
+                          color: Colors.orange,
 
                         ),
 
-
                       ),
-
 
                     ),
 
+                    const SizedBox(height: 40),
+                    // زر المستوى التالي (يظهر فقط في الألعاب ذات المستويات)
+                    if (widget.hasLevels)
 
+                      actionButton(
 
+                        text: isLastLevel
+                            ? "العودة إلى المراحل 📋"
+                            : "المستوى التالي ➡",
 
+                        icon: isLastLevel
+                            ? Icons.list
+                            : Icons.arrow_forward,
 
-                    const SizedBox(height:40),
+                        color: Colors.orange,
 
+                        onPressed: () {
 
+                          Navigator.pushReplacement(
 
+                            context,
 
+                            MaterialPageRoute(
 
+                              builder: (_) => isLastLevel
+                                  ? widget.gamesPage
+                                  : widget.nextLevelPage!,
+
+                            ),
+
+                          );
+
+                        },
+
+                      ),
+
+                    if (widget.hasLevels)
+                      const SizedBox(height: 15),
+
+                    // إعادة اللعب
                     actionButton(
 
-                      text:"إعادة اللعب 🔄",
+                      text: "إعادة اللعب 🔄",
 
-                      icon:Icons.refresh,
+                      icon: Icons.refresh,
 
-                      color:Colors.green,
+                      color: Colors.green,
 
                       onPressed: () {
-
 
                         Navigator.pushReplacement(
 
@@ -444,30 +367,27 @@ class _WinScreenState extends State<WinScreen> {
 
                         );
 
-
                       },
 
                     ),
 
+                    const SizedBox(height: 15),
 
-
-
-                    const SizedBox(height:15),
-
-
-
-
-
+                    // إذا كانت اللعبة بدون مستويات يظهر زر الألعاب
+                    // وإذا كانت بمستويات يظهر زر المراحل
                     actionButton(
 
-                      text:"صفحة الألعاب 🎮",
+                      text: widget.hasLevels
+                          ? "المراحل 📋"
+                          : "صفحة الألعاب 🎮",
 
-                      icon:Icons.games,
+                      icon: widget.hasLevels
+                          ? Icons.list
+                          : Icons.games,
 
-                      color:Colors.blue,
+                      color: Colors.blue,
 
                       onPressed: () {
-
 
                         Navigator.pushReplacement(
 
@@ -482,65 +402,44 @@ class _WinScreenState extends State<WinScreen> {
 
                         );
 
-
                       },
 
                     ),
 
-
-
-
-                    const SizedBox(height:15),
-
-
-
-
+                    const SizedBox(height: 15),
 
                     actionButton(
 
-                      text:"إغلاق التطبيق 🚪",
+                      text: "إغلاق التطبيق 🚪",
 
-                      icon:Icons.exit_to_app,
+                      icon: Icons.exit_to_app,
 
-                      color:Colors.red,
+                      color: Colors.red,
 
                       onPressed: () {
 
-
                         SystemNavigator.pop();
-
 
                       },
 
                     ),
-
-
-
 
                   ],
 
                 ),
 
-
               ),
-
 
             ),
 
-
           ),
-
 
         ],
 
-
       ),
-
 
     );
 
-
   }
-
 
 }
