@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'memory_screen.dart';
-import 'progress_manager.dart';
+import '../progress_manager.dart';
 
 
 class MemoryLevelsScreen extends StatefulWidget {
