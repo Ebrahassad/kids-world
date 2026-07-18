@@ -97,6 +97,8 @@ class _MemoryGameScreenState
 
   bool checking = false;
 
+  bool loading = true;
+
 
 
   @override
@@ -104,83 +106,106 @@ class _MemoryGameScreenState
 
     super.initState();
 
+    loadGame();
+
+  }
+
+
+
+  Future<void> loadGame() async {
+
     startGame();
+
+
+    stars = await ProgressManager.getStars(
+      gameName,
+    );
+
+
+    if(mounted){
+
+      setState((){
+
+        loading = false;
+
+      });
+
+    }
 
   }
 
 
 
 
-
-  void startGame() {
-
-
-    int pairs;
-
+  int getPairsCount(){
 
 
     switch(widget.level){
 
 
       case 1:
-        pairs = 4;
-        break;
+        return 4;
 
 
       case 2:
-        pairs = 5;
-        break;
+        return 5;
 
 
       case 3:
-        pairs = 6;
-        break;
+        return 6;
 
 
       case 4:
-        pairs = 7;
-        break;
+        return 7;
 
 
       case 5:
-        pairs = 8;
-        break;
+        return 8;
 
 
       case 6:
-        pairs = 9;
-        break;
+        return 9;
 
 
       case 7:
-        pairs = 10;
-        break;
+        return 10;
 
 
       case 8:
-        pairs = 11;
-        break;
+        return 11;
 
 
       case 9:
       case 10:
-        pairs = 12;
-        break;
+        return 12;
 
 
       default:
-        pairs = 4;
+        return 4;
 
     }
+
+  }
+
+
+
+  void startGame(){
+
+
+    final int pairs =
+        getPairsCount();
 
 
 
     levelAnimals =
-        animalsList.take(pairs).toList();
+        animalsList
+            .take(pairs)
+            .toList();
 
 
 
-    final List<Map<String,dynamic>> newCards = [];
+    final List<Map<String,dynamic>>
+        newCards = [];
 
 
 
@@ -218,28 +243,16 @@ class _MemoryGameScreenState
 
 
 
-    setState(() {
+    cards = newCards;
 
 
-      cards = newCards;
+    matches = 0;
 
+    firstCard = null;
 
-      stars = 0;
+    secondCard = null;
 
-
-      matches = 0;
-
-
-      firstCard = null;
-
-
-      secondCard = null;
-
-
-      checking = false;
-
-
-    });
+    checking = false;
 
 
   }
@@ -252,19 +265,13 @@ class _MemoryGameScreenState
       await audioPlayer.stop();
 
 
-
       await audioPlayer.play(
 
-
         AssetSource(
-
           "sounds/$fileName",
-
         ),
 
-
       );
-
 
 
     } catch(e) {
@@ -277,9 +284,7 @@ class _MemoryGameScreenState
 
     }
 
-
   }
-
 
 
 
@@ -294,8 +299,8 @@ class _MemoryGameScreenState
 
 
 
-    if(cards[index]["open"] ||
-       cards[index]["done"]) {
+    if(cards[index]["open"] == true ||
+       cards[index]["done"] == true){
 
       return;
 
@@ -304,7 +309,7 @@ class _MemoryGameScreenState
 
 
 
-    setState(() {
+    setState((){
 
 
       cards[index]["open"] = true;
@@ -333,11 +338,12 @@ class _MemoryGameScreenState
 
 
 
+
       Future.delayed(
 
 
         const Duration(
-          milliseconds: 800,
+          milliseconds: 900,
         ),
 
 
@@ -345,7 +351,6 @@ class _MemoryGameScreenState
 
 
       );
-
 
 
     }
@@ -359,7 +364,9 @@ class _MemoryGameScreenState
 
 
 
-  void checkMatch(){
+
+
+  Future<void> checkMatch() async {
 
 
 
@@ -370,29 +377,46 @@ class _MemoryGameScreenState
     if(firstCard == null ||
        secondCard == null){
 
+
+      checking = false;
+
       return;
+
 
     }
 
 
 
-    final first =
-        cards[firstCard!]["image"];
+
+    final int firstIndex =
+        firstCard!;
+
+
+    final int secondIndex =
+        secondCard!;
 
 
 
-    final second =
-        cards[secondCard!]["image"];
+
+    final firstImage =
+        cards[firstIndex]["image"];
+
+
+
+    final secondImage =
+        cards[secondIndex]["image"];
 
 
 
 
 
-    if(first == second){
+
+
+    if(firstImage == secondImage){
 
 
 
-      playSound(
+      await playSound(
         "correct.mp3",
       );
 
@@ -401,22 +425,38 @@ class _MemoryGameScreenState
       setState((){
 
 
-        cards[firstCard!]["done"] =
-            true;
-
-
-        cards[secondCard!]["done"] =
+        cards[firstIndex]["done"] =
             true;
 
 
 
-        stars++;
+        cards[secondIndex]["done"] =
+            true;
+
 
 
         matches++;
 
 
+        stars++;
+
+
+
       });
+
+
+
+
+
+      await ProgressManager.saveStars(
+
+        gameName,
+
+        stars,
+
+      );
+
+
 
 
 
@@ -424,136 +464,174 @@ class _MemoryGameScreenState
       if(matches == levelAnimals.length){
 
 
-        Future.delayed(
 
+        await Future.delayed(
 
           const Duration(
             milliseconds: 700,
           ),
 
+        );
 
-          () async {
 
 
 
-            if(widget.level < 10){
 
+        if(widget.level < 10){
 
-              await ProgressManager
-                  .saveUnlockedLevel(
 
-                gameName,
 
-                widget.level + 1,
+          await ProgressManager
+              .saveUnlockedLevel(
 
-              );
+            gameName,
 
+            widget.level + 1,
 
-            }
+          );
 
 
+        }
 
-            await ProgressManager
-                .saveCompletedGame(
 
-              gameName,
 
-            );
 
 
 
-            await playSound(
-              "win.mp3",
-            );
+        await ProgressManager
+            .saveCompletedGame(
 
+          gameName,
 
+        );
 
-            if(!mounted) return;
 
 
 
-            Navigator.pushReplacement(
 
 
-              context,
 
+        await playSound(
 
-              MaterialPageRoute(
+          "win.mp3",
 
+        );
 
-                builder: (_) => WinScreen(
 
 
-                  stars: stars,
 
 
 
-                  nextGame:
 
-                      MemoryGameScreen(
+        if(!mounted) return;
 
-                    level: widget.level,
 
-                  ),
 
 
 
-                  gamesPage:
 
-                      const MemoryLevelsScreen(),
+        Navigator.pushReplacement(
 
 
 
-                  hasLevels: true,
+          context,
 
 
 
-                  currentLevel:
-                      widget.level,
+          MaterialPageRoute(
 
 
 
-                  maxLevels:
-                      10,
+            builder: (_) => WinScreen(
 
 
 
-                  nextLevelPage:
+              stars: stars,
 
-                      widget.level < 10
 
-                      ?
 
-                      MemoryGameScreen(
 
-                        level:
-                            widget.level + 1,
+              nextGame:
 
-                      )
+                  MemoryGameScreen(
 
-                      :
-
-                      null,
-
-
-
-                ),
-
+                level: widget.level,
 
               ),
 
 
-            );
 
 
 
-          },
+
+              gamesPage:
+
+                  const MemoryLevelsScreen(),
+
+
+
+
+
+
+              hasLevels: true,
+
+
+
+
+
+
+
+              currentLevel:
+
+                  widget.level,
+
+
+
+
+
+
+
+              maxLevels:
+
+                  10,
+
+
+
+
+
+
+
+              nextLevelPage:
+
+                  widget.level < 10
+
+                      ? MemoryGameScreen(
+
+                          level:
+                              widget.level + 1,
+
+                        )
+
+                      : null,
+
+
+
+            ),
+
+
+
+          ),
+
 
 
         );
 
 
+
       }
+
+
+
 
 
 
@@ -561,21 +639,26 @@ class _MemoryGameScreenState
 
 
 
-      playSound(
+      await playSound(
+
         "wrong.mp3",
+
       );
+
 
 
 
       setState((){
 
 
-        cards[firstCard!]["open"] =
+
+        cards[firstIndex]["open"] =
             false;
 
 
 
-        cards[secondCard!]["open"] =
+
+        cards[secondIndex]["open"] =
             false;
 
 
@@ -583,7 +666,9 @@ class _MemoryGameScreenState
       });
 
 
+
     }
+
 
 
 
@@ -606,11 +691,234 @@ class _MemoryGameScreenState
 
 
 
+
   void restartGame(){
 
 
-
     startGame();
+
+
+    setState((){});
+
+
+  }
+  void checkMatch() {
+
+    if (!mounted) return;
+
+
+    if (firstCard == null ||
+        secondCard == null) {
+
+      return;
+
+    }
+
+
+    final first =
+        cards[firstCard!]["image"];
+
+
+    final second =
+        cards[secondCard!]["image"];
+
+
+
+
+    if (first == second) {
+
+
+      playSound(
+        "correct.mp3",
+      );
+
+
+
+      setState(() {
+
+
+        cards[firstCard!]["done"] = true;
+
+
+        cards[secondCard!]["done"] = true;
+
+
+
+        stars++;
+
+
+        matches++;
+
+
+      });
+
+
+
+
+      // انتهى المستوى
+      if (matches == levelAnimals.length) {
+
+
+        Future.delayed(
+
+          const Duration(
+            milliseconds: 700,
+          ),
+
+
+          () async {
+
+
+            // فتح المستوى التالي
+            if (widget.level < 10) {
+
+
+              await ProgressManager
+                  .saveUnlockedLevel(
+
+                gameName,
+
+                widget.level + 1,
+
+              );
+
+
+            }
+
+
+
+
+            await ProgressManager
+                .saveCompletedGame(
+
+              gameName,
+
+            );
+
+
+
+
+            await playSound(
+              "win.mp3",
+            );
+
+
+
+
+            if (!mounted) return;
+
+
+
+
+            Navigator.pushReplacement(
+
+              context,
+
+              MaterialPageRoute(
+
+                builder: (_) => WinScreen(
+
+                  stars: stars,
+
+
+                  nextGame:
+                      MemoryGameScreen(
+
+                    level: widget.level,
+
+                  ),
+
+
+
+                  gamesPage:
+                      const MemoryLevelsScreen(),
+
+
+
+                  hasLevels: true,
+
+
+
+                  currentLevel:
+                      widget.level,
+
+
+
+                  maxLevels:
+                      10,
+
+
+
+                  nextLevelPage:
+
+                      widget.level < 10
+
+                      ? MemoryGameScreen(
+
+                          level:
+                              widget.level + 1,
+
+                        )
+
+                      : null,
+
+
+
+                ),
+
+              ),
+
+            );
+
+
+          },
+
+        );
+
+
+      }
+
+
+
+    } else {
+
+
+
+      playSound(
+        "wrong.mp3",
+      );
+
+
+
+      setState(() {
+
+
+
+        cards[firstCard!]["open"] =
+            false;
+
+
+
+        cards[secondCard!]["open"] =
+            false;
+
+
+
+      });
+
+
+    }
+
+
+
+
+    firstCard = null;
+
+
+    secondCard = null;
+
+
+    checking = false;
 
 
 
@@ -620,25 +928,38 @@ class _MemoryGameScreenState
 
 
 
-  int getColumns(){
+
+  void restartGame() {
+
+
+    startGame();
+
+
+  }
 
 
 
-    if(widget.level <= 2){
+
+
+
+  int getColumns() {
+
+
+    if(widget.level <= 2) {
 
       return 4;
 
     }
 
 
-    if(widget.level <= 5){
+    if(widget.level <= 5) {
 
       return 5;
 
     }
 
 
-    if(widget.level <= 8){
+    if(widget.level <= 8) {
 
       return 6;
 
@@ -655,32 +976,28 @@ class _MemoryGameScreenState
 
 
 
-  double getEmojiSize(){
+  double getEmojiSize() {
 
 
-
-    if(widget.level <= 2){
+    if(widget.level <= 2) {
 
       return 55;
 
     }
 
 
-
-    if(widget.level <= 5){
+    if(widget.level <= 5) {
 
       return 48;
 
     }
 
 
-
-    if(widget.level <= 8){
+    if(widget.level <= 8) {
 
       return 40;
 
     }
-
 
 
     return 35;
@@ -692,10 +1009,9 @@ class _MemoryGameScreenState
 
     final bool show =
 
-        cards[index]["open"] ||
+        cards[index]["open"] == true ||
 
-        cards[index]["done"];
-
+        cards[index]["done"] == true;
 
 
 
@@ -704,9 +1020,7 @@ class _MemoryGameScreenState
 
       onTap: () {
 
-
         selectCard(index);
-
 
       },
 
@@ -718,9 +1032,7 @@ class _MemoryGameScreenState
         duration:
 
             const Duration(
-
               milliseconds: 300,
-
             ),
 
 
@@ -731,9 +1043,7 @@ class _MemoryGameScreenState
           color:
 
               show
-
                   ? Colors.white
-
                   : Colors.green,
 
 
@@ -752,15 +1062,12 @@ class _MemoryGameScreenState
             BoxShadow(
 
               color:
-
                   Colors.black26,
 
               blurRadius:
-
                   8,
 
               offset:
-
                   Offset(0,4),
 
             ),
@@ -777,29 +1084,44 @@ class _MemoryGameScreenState
         child: Center(
 
 
-
-          child: Text(
-
+          child: AnimatedSwitcher(
 
 
-            show
+            duration:
 
-                ? cards[index]["image"]
-
-                : "❓",
+                const Duration(
+                  milliseconds: 250,
+                ),
 
 
 
-            style:
+            child: Text(
 
-                TextStyle(
 
-              fontSize:
+              show
+                  ? cards[index]["image"]
+                  : "❓",
 
-                  getEmojiSize(),
+
+
+              key:
+
+                  ValueKey(show),
+
+
+
+              style:
+
+                  TextStyle(
+
+                fontSize:
+                    getEmojiSize(),
+
+              ),
+
+
 
             ),
-
 
 
           ),
@@ -808,9 +1130,7 @@ class _MemoryGameScreenState
         ),
 
 
-
       ),
-
 
 
     );
@@ -823,23 +1143,39 @@ class _MemoryGameScreenState
 
 
 
-
   @override
   Widget build(BuildContext context) {
+
+
+    if(loading){
+
+
+      return const Scaffold(
+
+        body: Center(
+
+          child:
+
+              CircularProgressIndicator(),
+
+        ),
+
+      );
+
+
+    }
+
 
 
     return Scaffold(
 
 
-
       body: Container(
-
 
 
         width:
 
             double.infinity,
-
 
 
         height:
@@ -853,11 +1189,9 @@ class _MemoryGameScreenState
             const BoxDecoration(
 
 
-
           image:
 
               DecorationImage(
-
 
 
             image:
@@ -869,15 +1203,12 @@ class _MemoryGameScreenState
             ),
 
 
-
             fit:
 
                 BoxFit.cover,
 
 
-
           ),
-
 
 
         ),
@@ -885,8 +1216,8 @@ class _MemoryGameScreenState
 
 
 
-        child: Container(
 
+        child: Container(
 
 
           color:
@@ -899,12 +1230,85 @@ class _MemoryGameScreenState
           child: SafeArea(
 
 
-
             child: Column(
 
 
-
               children: [
+
+
+
+                Row(
+
+                  children: [
+
+
+                    IconButton(
+
+                      icon:
+
+                          const Icon(
+
+                        Icons.arrow_back,
+
+                        size: 32,
+
+                      ),
+
+
+                      onPressed:
+
+                          () {
+
+                        Navigator.pop(context);
+
+                      },
+
+                    ),
+
+
+
+                    Expanded(
+
+                      child:
+
+                          Text(
+
+                        "لعبة الذاكرة 🧠 المستوى ${widget.level}",
+
+
+                        textAlign:
+
+                            TextAlign.center,
+
+
+                        style:
+
+                            const TextStyle(
+
+                          fontSize: 24,
+
+                          fontWeight:
+
+                              FontWeight.bold,
+
+                        ),
+
+                      ),
+
+                    ),
+
+
+                    const SizedBox(
+
+                      width: 45,
+
+                    ),
+
+
+                  ],
+
+                ),
+
 
 
 
@@ -914,7 +1318,6 @@ class _MemoryGameScreenState
                   height: 15,
 
                 ),
-
 
 
 
@@ -922,507 +1325,58 @@ class _MemoryGameScreenState
 
                 Row(
 
-
-
                   mainAxisAlignment:
 
                       MainAxisAlignment.spaceEvenly,
 
 
-
-
                   children: [
 
 
+                    Text(
 
-                    Container(
+                      "⭐ $stars",
 
+                      style:
 
+                          const TextStyle(
 
-                      padding:
+                        fontSize: 25,
 
-                          const EdgeInsets.symmetric(
+                        fontWeight:
 
-                        horizontal: 20,
-
-                        vertical: 10,
-
-                      ),
-
-
-
-
-                      decoration:
-
-                          BoxDecoration(
-
-
+                            FontWeight.bold,
 
                         color:
 
-                            Colors.white,
-
-
-
-                        borderRadius:
-
-                            BorderRadius.circular(20),
-
+                            Colors.orange,
 
                       ),
-
-
-
-
-
-                      child:
-
-                          Text(
-
-
-
-                        "⭐ $stars",
-
-
-
-                        style:
-
-                            const TextStyle(
-
-
-
-                          fontSize:
-
-                              24,
-
-
-
-                          fontWeight:
-
-                              FontWeight.bold,
-
-
-
-                          color:
-
-                              Colors.orange,
-
-
-
-                        ),
-
-
-
-                      ),
-
-
-
 
                     ),
 
 
 
+                    Text(
 
+                      "🧩 $matches/${levelAnimals.length}",
 
+                      style:
 
-                    Container(
+                          const TextStyle(
 
+                        fontSize: 22,
 
+                        fontWeight:
 
-                      padding:
-
-                          const EdgeInsets.symmetric(
-
-                        horizontal: 20,
-
-                        vertical: 10,
-
-                      ),
-
-
-
-
-                      decoration:
-
-                          BoxDecoration(
-
-
-
-                        color:
-
-                            Colors.white,
-
-
-
-                        borderRadius:
-
-                            BorderRadius.circular(20),
-
+                            FontWeight.bold,
 
                       ),
-
-
-
-
-
-                      child:
-
-                          Text(
-
-
-
-                        "🧩 $matches/${levelAnimals.length}",
-
-
-
-                        style:
-
-                            const TextStyle(
-
-
-
-                          fontSize:
-
-                              22,
-
-
-
-                          fontWeight:
-
-                              FontWeight.bold,
-
-
-
-                        ),
-
-
-
-                      ),
-
-
-
 
                     ),
-
 
 
                   ],
-
-
-
-                ),
-
-
-
-
-
-
-
-                const SizedBox(
-
-                  height: 25,
-
-                ),
-
-
-
-
-
-
-                Text(
-
-
-
-                  "لعبة الذاكرة المستوى ${widget.level} 🧠",
-
-
-
-                  style:
-
-                      const TextStyle(
-
-
-
-                    fontSize:
-
-                        28,
-
-
-
-                    fontWeight:
-
-                        FontWeight.bold,
-
-
-
-                  ),
-
-
-
-                ),
-
-
-
-
-
-
-
-                const SizedBox(
-
-                  height: 10,
-
-                ),
-
-
-
-
-
-                const Text(
-
-
-
-                  "ابحث عن الصور المتشابهة 🎯",
-
-
-
-                  style:
-
-                      TextStyle(
-
-
-
-                    fontSize:
-
-                        20,
-
-
-
-                    fontWeight:
-
-                        FontWeight.bold,
-
-
-
-                  ),
-
-
-
-                ),
-
-
-
-
-
-
-
-                const SizedBox(
-
-                  height: 15,
-
-                ),
-
-
-
-
-
-
-                Expanded(
-
-
-
-                  child:
-
-                      GridView.builder(
-
-
-
-                    padding:
-
-                        const EdgeInsets.all(20),
-
-
-
-
-                    itemCount:
-
-                        cards.length,
-
-
-
-
-
-                    gridDelegate:
-
-                        SliverGridDelegateWithFixedCrossAxisCount(
-
-
-
-                      crossAxisCount:
-
-                          getColumns(),
-
-
-
-
-                      crossAxisSpacing:
-
-                          12,
-
-
-
-                      mainAxisSpacing:
-
-                          12,
-
-
-
-                    ),
-
-
-
-
-
-                    itemBuilder:
-
-                        (context,index){
-
-
-
-                      return buildCard(index);
-
-
-
-                    },
-
-
-
-                  ),
-
-
-
-                ),
-                ElevatedButton.icon(
-
-
-
-                  onPressed:
-
-                      restartGame,
-
-
-
-                  icon:
-
-                      const Icon(
-
-                    Icons.refresh_rounded,
-
-                  ),
-
-
-
-                  label:
-
-                      const Text(
-
-
-
-                    "إعادة اللعب",
-
-
-
-                    style:
-
-                        TextStyle(
-
-
-
-                      fontSize:
-
-                          20,
-
-
-
-                      fontWeight:
-
-                          FontWeight.bold,
-
-
-
-                    ),
-
-
-
-                  ),
-
-
-
-
-                  style:
-
-                      ElevatedButton.styleFrom(
-
-
-
-                    backgroundColor:
-
-                        Colors.white,
-
-
-
-                    foregroundColor:
-
-                        Colors.blue,
-
-
-
-                    elevation:
-
-                        8,
-
-
-
-                    padding:
-
-                        const EdgeInsets.symmetric(
-
-
-
-                      horizontal:
-
-                          35,
-
-
-
-                      vertical:
-
-                          12,
-
-
-
-                    ),
-
-
-
-
-                    shape:
-
-                        RoundedRectangleBorder(
-
-
-
-                      borderRadius:
-
-                          BorderRadius.circular(25),
-
-
-
-                    ),
-
-
-
-                  ),
-
 
 
                 ),
@@ -1441,28 +1395,192 @@ class _MemoryGameScreenState
 
 
 
-              ],
 
+
+                Expanded(
+
+
+                  child:
+
+                      GridView.builder(
+
+
+                    padding:
+
+                        const EdgeInsets.all(20),
+
+
+
+                    itemCount:
+
+                        cards.length,
+
+
+
+                    gridDelegate:
+
+                        SliverGridDelegateWithFixedCrossAxisCount(
+
+
+                      crossAxisCount:
+
+                          getColumns(),
+
+
+
+                      crossAxisSpacing:
+
+                          12,
+
+
+                      mainAxisSpacing:
+
+                          12,
+
+
+
+                    ),
+
+
+
+                    itemBuilder:
+
+                        (context,index){
+
+
+                      return buildCard(index);
+
+
+                    },
+
+
+                  ),
+
+
+                ),
+
+
+
+
+
+
+                ElevatedButton.icon(
+
+
+                  onPressed:
+
+                      restartGame,
+
+
+
+                  icon:
+
+                      const Icon(
+
+                    Icons.refresh,
+
+                  ),
+
+
+
+                  label:
+
+                      const Text(
+
+                    "إعادة اللعب",
+
+                    style:
+
+                        TextStyle(
+
+                      fontSize:
+
+                          20,
+
+                      fontWeight:
+
+                          FontWeight.bold,
+
+                    ),
+
+                  ),
+
+
+
+                  style:
+
+                      ElevatedButton.styleFrom(
+
+
+                    backgroundColor:
+
+                        Colors.white,
+
+
+                    foregroundColor:
+
+                        Colors.blue,
+
+
+                    padding:
+
+                        const EdgeInsets.symmetric(
+
+                      horizontal:
+
+                          35,
+
+                      vertical:
+
+                          12,
+
+                    ),
+
+
+
+                    shape:
+
+                        RoundedRectangleBorder(
+
+                      borderRadius:
+
+                          BorderRadius.circular(25),
+
+                    ),
+
+
+
+                  ),
+
+
+                ),
+
+
+
+
+                const SizedBox(
+
+                  height: 20,
+
+                ),
+
+
+              ],
 
 
             ),
 
 
-
           ),
-
 
 
         ),
 
 
-
       ),
 
 
-
     );
-
 
 
   }
@@ -1472,22 +1590,18 @@ class _MemoryGameScreenState
 
 
 
+
   @override
-
-  void dispose(){
-
+  void dispose() {
 
 
     audioPlayer.stop();
 
 
-
     audioPlayer.dispose();
 
 
-
     super.dispose();
-
 
 
   }
