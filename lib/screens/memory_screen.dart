@@ -9,13 +9,18 @@ import 'levels_screen.dart';
 
 
 class MemoryGameScreen extends StatefulWidget {
-  const MemoryGameScreen({super.key});
+
+  final int level;
+
+  const MemoryGameScreen({
+    super.key,
+    required this.level,
+  });
 
   @override
   State<MemoryGameScreen> createState() =>
       _MemoryGameScreenState();
 }
-
 
 class _MemoryGameScreenState extends State<MemoryGameScreen> {
 
@@ -24,16 +29,36 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   final Random random = Random();
 
 
-  final List<String> animals = [
+  final List<String> allAnimals = [
 
-    "🐶",
-    "🐱",
-    "🐮",
-    "🐑",
-    "🦁",
-    "🐸",
+  "🐶",
+  "🐱",
+  "🐮",
+  "🐑",
+  "🦁",
+  "🐸",
+  "🐷",
+  "🐵",
+  "🐰",
+  "🦊",
+  "🐼",
+  "🐨",
+  "🐯",
+  "🐭",
+  "🐹",
+  "🐔",
+  "🦆",
+  "🦉",
+  "🐢",
+  "🐙",
+  "🐬",
+  "🐠",
+  "🦋",
+  "🐞",
 
-  ];
+];
+
+late List<String> animals;
 
 
   List<Map<String, dynamic>> cards = [];
