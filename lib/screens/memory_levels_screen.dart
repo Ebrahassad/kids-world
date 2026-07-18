@@ -3,106 +3,184 @@ import 'package:flutter/material.dart';
 import 'memory_screen.dart';
 import 'progress_manager.dart';
 
+
 class MemoryLevelsScreen extends StatefulWidget {
+
   const MemoryLevelsScreen({super.key});
 
   @override
   State<MemoryLevelsScreen> createState() =>
       _MemoryLevelsScreenState();
+
 }
+
 
 class _MemoryLevelsScreenState
     extends State<MemoryLevelsScreen> {
 
+
   int unlockedLevel = 1;
+
 
   @override
   void initState() {
+
     super.initState();
+
     loadProgress();
+
   }
 
+
+
   Future<void> loadProgress() async {
-    unlockedLevel =
+
+    final level =
         await ProgressManager.getUnlockedLevel(
       "memory_game",
     );
 
-    if (unlockedLevel < 1) {
-      unlockedLevel = 1;
-    }
 
     if (mounted) {
-      setState(() {});
+
+      setState(() {
+
+        unlockedLevel =
+            level < 1 ? 1 : level;
+
+      });
+
     }
+
   }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
 
+
     return Scaffold(
 
-      backgroundColor: Colors.lightBlue.shade50,
+
+      backgroundColor:
+          Colors.lightBlue.shade50,
+
+
 
       appBar: AppBar(
 
-        title: const Text(
-          "مراحل لعبة الذاكرة 🧠",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+
+        backgroundColor:
+            Colors.blue,
+
 
         centerTitle: true,
 
-        backgroundColor: Colors.blue,
+
+        title: const Text(
+
+          "مراحل لعبة الذاكرة 🧠",
+
+          style: TextStyle(
+
+            color: Colors.white,
+
+            fontWeight:
+                FontWeight.bold,
+
+          ),
+
+        ),
 
       ),
 
+
+
+
       body: Padding(
 
-        padding: const EdgeInsets.all(16),
+
+        padding:
+            const EdgeInsets.all(16),
+
+
 
         child: GridView.builder(
 
+
           itemCount: 10,
+
+
 
           gridDelegate:
               const SliverGridDelegateWithFixedCrossAxisCount(
 
+
             crossAxisCount: 2,
+
 
             crossAxisSpacing: 15,
 
+
             mainAxisSpacing: 15,
+
 
             childAspectRatio: 1.2,
 
+
           ),
 
-          itemBuilder: (context, index) {
 
-            final level = index + 1;
+
+
+          itemBuilder: (context,index){
+
+
+
+            final level =
+                index + 1;
+
+
 
             final unlocked =
                 level <= unlockedLevel;
 
+
+
             return ElevatedButton(
 
-              style: ElevatedButton.styleFrom(
 
-                backgroundColor: unlocked
-                    ? Colors.white
-                    : Colors.grey.shade300,
+              style:
+                  ElevatedButton.styleFrom(
 
-                foregroundColor: unlocked
-                    ? Colors.blue
-                    : Colors.grey,
 
-                elevation: unlocked ? 5 : 1,
+                backgroundColor:
 
-                shape: RoundedRectangleBorder(
+                    unlocked
+                        ? Colors.white
+                        : Colors.grey.shade300,
+
+
+
+                foregroundColor:
+
+                    unlocked
+                        ? Colors.blue
+                        : Colors.grey,
+
+
+
+                elevation:
+
+                    unlocked ? 8 : 1,
+
+
+
+                shape:
+                    RoundedRectangleBorder(
 
                   borderRadius:
                       BorderRadius.circular(20),
@@ -111,53 +189,88 @@ class _MemoryLevelsScreenState
 
               ),
 
-              onPressed: unlocked
-                  ? () {
 
-                      Navigator.push(
+
+
+              onPressed: unlocked
+
+                  ? () async {
+
+
+                      await Navigator.push(
 
                         context,
 
                         MaterialPageRoute(
 
                           builder: (_) =>
+
                               MemoryGameScreen(
+
                             level: level,
+
                           ),
 
                         ),
 
                       );
 
+
+                      // تحديث المستويات بعد الرجوع
+
+                      loadProgress();
+
+
                     }
+
                   : null,
 
+
+
+
               child: Column(
+
 
                 mainAxisAlignment:
                     MainAxisAlignment.center,
 
+
+
                 children: [
 
-                  Icon(
+
+
+                  Text(
 
                     unlocked
-                        ? Icons.extension
-                        : Icons.lock,
+                        ? "🧠"
+                        : "🔒",
 
-                    size: 40,
+                    style:
+                        const TextStyle(
+
+                      fontSize: 45,
+
+                    ),
 
                   ),
 
+
+
+
                   const SizedBox(height: 10),
+
+
+
 
                   Text(
 
                     "المستوى $level",
 
-                    style: const TextStyle(
+                    style:
+                        const TextStyle(
 
-                      fontSize: 18,
+                      fontSize: 20,
 
                       fontWeight:
                           FontWeight.bold,
@@ -166,19 +279,48 @@ class _MemoryLevelsScreenState
 
                   ),
 
+
+
+
+                  if (unlocked)
+
+                    const Text(
+
+                      "ابدأ اللعب ⭐",
+
+                      style:
+                          TextStyle(
+
+                        color: Colors.green,
+
+                        fontWeight:
+                            FontWeight.bold,
+
+                      ),
+
+                    ),
+
+
+
                 ],
 
               ),
 
+
             );
+
 
           },
 
+
         ),
+
 
       ),
 
+
     );
+
 
   }
 
