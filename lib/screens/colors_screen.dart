@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'win_screen.dart';
 import 'games_screen.dart';
+import 'progress_manager.dart';
 
 class ColorsScreen extends StatefulWidget {
   const ColorsScreen({super.key});
@@ -11,10 +12,13 @@ class ColorsScreen extends StatefulWidget {
 }
 
 class _ColorsScreenState extends State<ColorsScreen> {
+
   final AudioPlayer audioPlayer = AudioPlayer();
 
   int currentQuestion = 0;
   int stars = 0;
+  bool loading = true;
+
 
   final List<Map<String, dynamic>> questions = [
 
@@ -83,6 +87,7 @@ class _ColorsScreenState extends State<ColorsScreen> {
         Colors.green,
       ],
     },
+
     {
       "question": "اختر اللون الأسود",
       "answer": Colors.black,
@@ -128,151 +133,510 @@ class _ColorsScreenState extends State<ColorsScreen> {
     },
 
   ];
-
-  void playSound(String fileName) {
-    audioPlayer.play(
-      AssetSource('sounds/$fileName'),
-    );
+  @override
+  void initState() {
+    super.initState();
+    loadProgress();
   }
 
-  void checkAnswer(Color color) {
+
+  Future<void> loadProgress() async {
+
+    currentQuestion =
+        await ProgressManager.getProgress(
+          "colors_game",
+        );
+
+
+    stars =
+        await ProgressManager.getStars(
+          "colors_game",
+        );
+
+
+    setState(() {
+
+      loading = false;
+
+    });
+
+  }
+
+
+
+  void playSound(String fileName) {
+
+    audioPlayer.play(
+
+      AssetSource(
+        'sounds/$fileName',
+      ),
+
+    );
+
+  }
+
+
+
+
+
+  void checkAnswer(Color color) async {
+
+
     if (color == questions[currentQuestion]["answer"]) {
+
 
       playSound("correct.mp3");
 
+
+
       setState(() {
+
         stars++;
+
       });
+
+
+
+      await ProgressManager.saveStars(
+        "colors_game",
+        stars,
+      );
+
+
 
       if (currentQuestion < questions.length - 1) {
 
+
         setState(() {
+
           currentQuestion++;
+
         });
+
+
+
+        await ProgressManager.saveProgress(
+          "colors_game",
+          currentQuestion,
+        );
+
+
 
       } else {
 
+
+
+        await ProgressManager.saveCompletedGame(
+          "colors_game",
+        );
+
+
+
+        await ProgressManager.saveProgress(
+          "colors_game",
+          0,
+        );
+
+
+
         Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(
-    builder: (_) => WinScreen(
-  stars: stars + 1,
-  nextGame: const ColorsScreen(),
-  gamesPage: const GamesScreen(),
-),
-  ),
-);
+
+          context,
+
+          MaterialPageRoute(
+
+            builder: (_) => WinScreen(
+
+              stars: stars,
+
+              nextGame:
+                  const ColorsScreen(),
+
+              gamesPage:
+                  const GamesScreen(),
+
+            ),
+
+          ),
+
+        );
+
+
       }
+
 
     } else {
 
+
       playSound("wrong.mp3");
 
+
+
       ScaffoldMessenger.of(context).showSnackBar(
+
         const SnackBar(
-          content: Text("حاول مرة أخرى ⭐"),
+
+          content:
+              Text("حاول مرة أخرى ⭐"),
+
         ),
+
       );
 
+
     }
+
   }
+
+
+
 
   @override
   void dispose() {
+
     audioPlayer.dispose();
+
     super.dispose();
+
   }
   @override
   Widget build(BuildContext context) {
+
+
+    if (loading) {
+
+      return const Scaffold(
+
+        body: Center(
+
+          child:
+              CircularProgressIndicator(),
+
+        ),
+
+      );
+
+    }
+
+
+
     final data = questions[currentQuestion];
 
+
+
     return Scaffold(
-      backgroundColor: Colors.lightBlue.shade50,
+
+
+      backgroundColor:
+          Colors.lightBlue.shade50,
+
+
 
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+
+
+        backgroundColor:
+            Colors.blue,
+
+
         centerTitle: true,
+
+
+
         title: Text(
+
+
           "تعلم الألوان ${currentQuestion + 1}/${questions.length}",
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.star,
-                  color: Colors.yellow,
-                ),
-                const SizedBox(width: 5),
-                Text(
-                  "$stars",
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
+
+
+
+          style: const TextStyle(
+
+            color:
+                Colors.white,
+
+            fontWeight:
+                FontWeight.bold,
+
           ),
+
+        ),
+
+
+
+        actions: [
+
+
+          Padding(
+
+            padding:
+                const EdgeInsets.only(right: 16),
+
+
+
+            child: Row(
+
+              children: [
+
+
+                const Icon(
+
+                  Icons.star,
+
+                  color:
+                      Colors.yellow,
+
+                ),
+
+
+
+                const SizedBox(
+                  width: 5,
+                ),
+
+
+
+                Text(
+
+                  "$stars",
+
+                  style: const TextStyle(
+
+                    fontSize:
+                        20,
+
+                    fontWeight:
+                        FontWeight.bold,
+
+                    color:
+                        Colors.white,
+
+                  ),
+
+                ),
+
+
+              ],
+
+            ),
+
+          ),
+
+
         ],
+
+
       ),
+
+
+
+
 
       body: Padding(
-        padding: const EdgeInsets.all(20),
+
+
+        padding:
+            const EdgeInsets.all(20),
+
+
+
         child: Column(
+
+
           children: [
 
-            const SizedBox(height: 20),
+
+            const SizedBox(
+              height: 20,
+            ),
+
+
+
 
             Text(
+
+
               data["question"],
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
+
+
+
+              style:
+                  const TextStyle(
+
+
+                fontSize:
+                    28,
+
+
+                fontWeight:
+                    FontWeight.bold,
+
+
               ),
-              textAlign: TextAlign.center,
+
+
+
+              textAlign:
+                  TextAlign.center,
+
+
+
             ),
 
-            const SizedBox(height: 30),
+
+
+
+
+            const SizedBox(
+              height: 30,
+            ),
+
+
+
 
             Expanded(
-              child: GridView.builder(
-                itemCount: (data["options"] as List).length,
+
+
+
+              child:
+                  GridView.builder(
+
+
+
+                itemCount:
+                    (data["options"] as List).length,
+
+
+
                 gridDelegate:
                     const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                ),
-                itemBuilder: (context, index) {
 
-                  final Color color = data["options"][index] as Color;
+
+
+                  crossAxisCount:
+                      2,
+
+
+
+                  crossAxisSpacing:
+                      20,
+
+
+
+                  mainAxisSpacing:
+                      20,
+
+
+
+                ),
+
+
+
+
+                itemBuilder:
+                    (context, index) {
+
+
+
+                  final Color color =
+                      data["options"][index] as Color;
+
+
+
 
                   return GestureDetector(
+
+
+
                     onTap: () {
+
+
+
                       checkAnswer(color);
+
+
+
                     },
+
+
+
+
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 2,
+
+
+
+                      decoration:
+                          BoxDecoration(
+
+
+
+                        color:
+                            color,
+
+
+
+                        borderRadius:
+                            BorderRadius.circular(20),
+
+
+
+                        border:
+                            Border.all(
+
+
+
+                          color:
+                              Colors.black,
+
+
+
+                          width:
+                              2,
+
+
+
                         ),
+
+
+
                       ),
+
+
+
                     ),
+
+
+
                   );
+
+
+
                 },
+
+
+
               ),
+
+
+
             ),
 
+
+
           ],
+
+
+
         ),
+
+
+
       ),
-        
+
+
     );
+
   }
+
 }
