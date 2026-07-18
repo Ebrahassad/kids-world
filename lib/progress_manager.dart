@@ -87,27 +87,32 @@ class ProgressManager {
 
 
   static Future<void> saveStars(
-    String gameName,
-    int stars,
-  ) async {
+  String gameName,
+  int stars,
+) async {
 
+  final prefs = await _prefs();
 
-    final prefs =
-        await _prefs();
+  final oldStars =
+      prefs.getInt("${gameName}_stars") ?? 0;
 
-
+  if (stars > oldStars) {
 
     await prefs.setInt(
-
       "${gameName}_stars",
-
       stars,
-
     );
 
+    final total =
+        prefs.getInt(totalStarsKey) ?? 0;
 
+    await prefs.setInt(
+      totalStarsKey,
+      total + (stars - oldStars),
+    );
   }
 
+}
 
 
 
@@ -137,41 +142,7 @@ class ProgressManager {
 
 
 
-  // ==================================
-  // مجموع نجوم التطبيق كامل
-  // ==================================
-
-
-  static Future<void> addTotalStars(
-    int stars,
-  ) async {
-
-
-    final prefs =
-        await _prefs();
-
-
-
-    final current =
-
-        prefs.getInt(
-          totalStarsKey,
-        ) ??
-        0;
-
-
-
-    await prefs.setInt(
-
-      totalStarsKey,
-
-      current + stars,
-
-    );
-
-
-  }
-
+  
 
 
 
@@ -551,6 +522,16 @@ class ProgressManager {
     final prefs =
         await _prefs();
 
+final gameStars =
+    prefs.getInt("${gameName}_stars") ?? 0;
+
+final totalStars =
+    prefs.getInt(totalStarsKey) ?? 0;
+
+await prefs.setInt(
+  totalStarsKey,
+  (totalStars - gameStars).clamp(0, totalStars),
+);
 
 
     await prefs.remove(
