@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/services.dart';
-import 'progress_manager.dart';
+import '../progress_manager.dart';
 
 class WinScreen extends StatefulWidget {
 
