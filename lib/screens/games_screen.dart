@@ -13,22 +13,9 @@ import 'sort_objects_screen.dart';
 import 'puzzle_order_screen.dart';
 import 'hard_puzzle_screen.dart';
 import 'game_card.dart';
+import 'game_item.dart';
 
-class GameItem {
-  final int id;
-  final String title;
-  final String image;
-  final Color color;
-  final Widget screen;
 
-  const GameItem({
-    required this.id,
-    required this.title,
-    required this.image,
-    required this.color,
-    required this.screen,
-  });
-}
 
 class GamesScreen extends StatefulWidget {
   const GamesScreen({super.key});
