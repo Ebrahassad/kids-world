@@ -403,7 +403,7 @@ physics:
                     childAspectRatio: 0.86,
                   ),
 
-                  itemBuilder: : (context, index) {
+         itemBuilder: (context, index) {
 
   final game = games[index];
 
