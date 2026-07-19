@@ -392,8 +392,7 @@ class _HomeScreenState extends State<HomeScreen>
                             ),
 
                           ),
-                          const Spacer(),
-
+              const SizedBox(height: 30),
 
                           // =========================
                           // شعار التطبيق
