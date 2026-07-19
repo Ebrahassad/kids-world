@@ -12,6 +12,7 @@ import 'memory_levels_screen.dart';
 import 'sort_objects_screen.dart';
 import 'puzzle_order_screen.dart';
 import 'hard_puzzle_screen.dart';
+import 'game_card.dart';
 
 class GameItem {
   final int id;
@@ -349,6 +350,11 @@ Expanded(
               child: Ink(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
+border: Border.all(
+  color: Colors.white.withOpacity(0.18),
+  width: 1.2,
+),
+
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -360,8 +366,9 @@ Expanded(
                   boxShadow: [
                     BoxShadow(
                       color: game.color.withOpacity(0.35),
-                      blurRadius: 14,
-                      offset: const Offset(0, 8),
+                      blurRadius: 20,
+spreadRadius: 1,
+offset: const Offset(0, 10),
                     ),
                   ],
          border: Border.all(
@@ -389,32 +396,73 @@ Expanded(
 ),
      
   Center(
-                      child: AnimatedOpacity(
-                        duration: const Duration(milliseconds: 400),
-                        opacity: unlocked ? 1 : 0.35,
-                        child: Image.asset(
-                          game.image,
-                          width: 95,
-                          height: 95,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
+  child: Stack(
+    alignment: Alignment.center,
+    children: [
+
+      Container(
+        width: 85,
+        height: 85,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white.withOpacity(0.15),
+        ),
+      ),
+
+      AnimatedOpacity(
+        duration: const Duration(milliseconds: 400),
+        opacity: unlocked ? 1 : 0.35,
+Hero(
+  tag: "game_${game.id}",
+  child: Image.asset(
+    game.image,
+    width: 95,
+    height: 95,
+    fit: BoxFit.contain,
+  ),
+),
+        child: Image.asset(
+          game.image,
+          width: 95,
+          height: 95,
+          fit: BoxFit.contain,
+        ),
+      ),
+
+    ],
+  ),
+),
+
                     Positioned(
-                      top: 10,
-                      left: 10,
-                      child: CircleAvatar(
-                        radius: 16,
-                        backgroundColor: Colors.white,
-                        child: Text(
-                          "${game.id}",
-                          style: TextStyle(
-                            color: game.color,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
+  top: 10,
+  left: 10,
+  child: Container(
+    width: 34,
+    height: 34,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.15),
+          blurRadius: 8,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: Center(
+      child: Text(
+        "${game.id}",
+        style: TextStyle(
+          color: game.color,
+          fontWeight: FontWeight.bold,
+          fontSize: 15,
+        ),
+      ),
+    ),
+  ),
+),
+
                     Positioned(
                       bottom: 18,
                       left: 10,
