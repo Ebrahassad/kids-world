@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
+import 'screens/splash_screen.dart';
 
 class KidsWorldApp extends StatelessWidget {
   const KidsWorldApp({super.key});
@@ -16,7 +17,7 @@ class KidsWorldApp extends StatelessWidget {
         fontFamily: 'Roboto',
       ),
 
-      home: const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }
