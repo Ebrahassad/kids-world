@@ -11,7 +11,7 @@ class ProgressManager {
   static const String gamesPlayedKey =
       "games_played";
 
-
+static const int totalGames = 10;
 
   // ==================================
   // الحصول على SharedPreferences
@@ -597,6 +597,93 @@ await prefs.setInt(
 
 
   }
+
+  // ==================================
+  // نظام فتح الألعاب الرئيسية
+  // ==================================
+
+  static const String unlockedGameKey =
+      "main_unlocked_game";
+
+  /// أول لعبة تكون مفتوحة دائماً
+  static Future<int> getUnlockedGame() async {
+    final prefs = await _prefs();
+
+    return prefs.getInt(
+          unlockedGameKey,
+        ) ??
+        1;
+  }
+
+  /// فتح اللعبة التالية بعد الفوز
+  static Future<void> unlockNextGame(
+    int currentGame,
+  ) async {
+    final prefs = await _prefs();
+
+    final unlocked =
+        prefs.getInt(
+              unlockedGameKey,
+            ) ??
+            1;
+
+    if (currentGame >= unlocked &&
+        currentGame < totalGames) {
+      await prefs.setInt(
+        unlockedGameKey,
+        currentGame + 1,
+      );
+    }
+  }
+
+  /// هل اللعبة مفتوحة؟
+  static Future<bool> isGameUnlocked(
+    int gameIndex,
+  ) async {
+    final unlocked =
+        await getUnlockedGame();
+
+    return gameIndex <= unlocked;
+  }
+
+  /// عدد الألعاب المفتوحة
+  static Future<int> getOpenedGamesCount()
+  async {
+    return await getUnlockedGame();
+  }
+
+/// نسبة التقدم في فتح الألعاب
+static Future<double> getGamesProgress()
+async {
+
+  final opened =
+      await getUnlockedGame();
+
+  return opened / totalGames;
+
+}
+
+/// هل انتهى الطفل من جميع الألعاب؟
+static Future<bool> allGamesCompleted()
+async {
+
+  final unlocked =
+      await getUnlockedGame();
+
+  return unlocked >= totalGames;
+
+}
+  /// إعادة قفل الألعاب
+  static Future<void> resetUnlockedGames()
+  async {
+    final prefs = await _prefs();
+
+    await prefs.setInt(
+      unlockedGameKey,
+      1,
+    );
+  }
+
   // ==================================
   // حذف كل بيانات التطبيق
   // يستخدم عند إعادة ضبط اللعبة بالكامل
