@@ -112,6 +112,8 @@ class _GamesScreenState extends State<GamesScreen> {
       screen: const HardPuzzleScreen(),
     ),
   ];
+
+
   @override
   void initState() {
     super.initState();
@@ -319,244 +321,21 @@ Expanded(
         childAspectRatio: 0.86,
       ),
       itemBuilder: (context, index) {
-        final game = games[index];
-        final unlocked = _isUnlocked(game.id);
 
-        return animatedGameCard(
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(24),
-              onTap: () async {
-  await Future.delayed(
-    const Duration(milliseconds: 120),
+  final game = games[index];
+
+  final unlocked = _isUnlocked(game.id);
+
+  return GameCard(
+    game: game,
+    unlocked: unlocked,
+    index: index,
+    onTap: () => _openGame(game),
   );
-  _openGame(game);
 },
 
-              child: Ink(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-border: Border.all(
-  color: Colors.white.withOpacity(0.18),
-  width: 1.2,
-),
-
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      game.color,
-                      game.color.withOpacity(0.75),
-                    ],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: game.color.withOpacity(0.35),
-                      blurRadius: 20,
-spreadRadius: 1,
-offset: const Offset(0, 10),
-                    ),
-                  ],
-         border: Border.all(
-  color: Colors.white.withOpacity(0.25),
-  width: 1.5,
-),
-
-       ),
-                child: ClipRRect(
-  borderRadius: BorderRadius.circular(24),
-  child: Stack(
-
-                  children: [
-             Positioned(
-  top: -30,
-  left: -20,
-  child: Container(
-    width: 120,
-    height: 80,
-    decoration: BoxDecoration(
-      color: Colors.white.withOpacity(0.18),
-      borderRadius: BorderRadius.circular(60),
-    ),
-  ),
-),
-     
-  Center(
-  child: Stack(
-    alignment: Alignment.center,
-    children: [
-
-      Container(
-        width: 85,
-        height: 85,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white.withOpacity(0.15),
-        ),
-      ),
-
-      AnimatedOpacity(
-        duration: const Duration(milliseconds: 400),
-        opacity: unlocked ? 1 : 0.35,
-Hero(
-  tag: "game_${game.id}",
-  child: Image.asset(
-    game.image,
-    width: 95,
-    height: 95,
-    fit: BoxFit.contain,
-  ),
-),
-        child: Image.asset(
-          game.image,
-          width: 95,
-          height: 95,
-          fit: BoxFit.contain,
-        ),
-      ),
-
-    ],
-  ),
-),
-
-                    Positioned(
-  top: 10,
-  left: 10,
-  child: Container(
-    width: 34,
-    height: 34,
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      color: Colors.white,
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.15),
-          blurRadius: 8,
-          offset: const Offset(0, 3),
-        ),
-      ],
-    ),
-    child: Center(
-      child: Text(
-        "${game.id}",
-        style: TextStyle(
-          color: game.color,
-          fontWeight: FontWeight.bold,
-          fontSize: 15,
-        ),
-      ),
-    ),
-  ),
-),
-
-                    Positioned(
-                      bottom: 18,
-                      left: 10,
-                      right: 10,
-                      child: Text(
-                        game.title,
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-
-                    if (!unlocked)
-  Positioned.fill(
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.black54,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(
-            Icons.lock_rounded,
-            color: Colors.white,
-            size: 50,
-          ),
-        ),
-      ),
-    ),
-  ),
-
-if (game.id < openedGames)
-  const Positioned(
-    top: 10,
-    right: 10,
-    child: CircleAvatar(
-      radius: 16,
-      backgroundColor: Colors.green,
-      child: Icon(
-        Icons.check,
-        color: Colors.white,
-        size: 18,
-      ),
-    ),
-  ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          index,
-        );
-      },
-    ),
-  ),
-),
-          ],
-        ),
-      ),
-    );
-}
-
-  //  ==================================
-  // حركة ظهور البطاقات
-  // ==================================
-
-  Widget animatedGameCard(
-  Widget child,
-  int index,
-) {
-  return TweenAnimationBuilder<double>(
-    duration: Duration(
-      milliseconds: 450 + (index * 80),
-    ),
-    curve: Curves.easeOutCubic,
-    tween: Tween(
-      begin: 0,
-      end: 1,
-    ),
-    builder: (context, value, child) {
-      return Opacity(
-        opacity: value,
-        child: Transform.translate(
-          offset: Offset(
-            0,
-            (1 - value) * 40,
-          ),
-          child: Transform.scale(
-            scale: 0.9 + (0.1 * value),
-            child: child,
-          ),
-        ),
-      );
-    },
-    child: child,
-  );
-}
+        
+ 
 
   // ==================================
   // رسالة عند فتح لعبة جديدة
