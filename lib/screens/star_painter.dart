@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+
 import 'star_face.dart';
 import 'star_mouth.dart';
 import 'star_effects.dart';
@@ -8,7 +9,9 @@ import 'star_particles.dart';
 import 'star_arms_legs.dart';
 
 
+
 class StarPainter extends CustomPainter {
+
 
   final bool blink;
   final bool talking;
@@ -16,7 +19,9 @@ class StarPainter extends CustomPainter {
   final double shineValue;
   final double particleValue;
   final double armAnimation;
-final bool happy;
+  final bool happy;
+
+
 
   StarPainter({
 
@@ -26,7 +31,8 @@ final bool happy;
     required this.shineValue,
     required this.particleValue,
     required this.armAnimation,
-required this.happy,
+    required this.happy,
+
   });
 
 
@@ -35,6 +41,12 @@ required this.happy,
   void paint(Canvas canvas, Size size) {
 
 
+    final double cx = size.width / 2;
+    final double cy = size.height / 2;
+
+
+
+    // لون النجمة
     final Paint paint = Paint()
       ..shader = const LinearGradient(
 
@@ -58,11 +70,8 @@ required this.happy,
 
 
 
+    // رسم شكل النجمة
     final Path path = Path();
-
-
-    final double cx = size.width / 2;
-    final double cy = size.height / 2;
 
 
     final double outer = size.width / 2;
@@ -70,7 +79,8 @@ required this.happy,
 
 
 
-    for (int i = 0; i < 10; i++) {
+    for(int i = 0; i < 10; i++) {
+
 
       final double radius =
           i.isEven ? outer : inner;
@@ -78,6 +88,7 @@ required this.happy,
 
       final double angle =
           -pi / 2 + i * pi / 5;
+
 
 
       final double x =
@@ -89,15 +100,16 @@ required this.happy,
 
 
 
-      if (i == 0) {
+      if(i == 0){
 
-        path.moveTo(x, y);
+        path.moveTo(x,y);
 
       } else {
 
-        path.lineTo(x, y);
+        path.lineTo(x,y);
 
       }
+
 
     }
 
@@ -106,23 +118,28 @@ required this.happy,
 
 
 
-    // الهالة الذهبية
+    // الهالة
     StarEffects.drawGlow(
-  canvas: canvas,
-  cx: cx,
-  cy: cy,
-  radius: size.width * 0.55 * glowScale,
-  
-);
 
-// جسم النجمة
-    canvas.drawPath(
+      canvas: canvas,
 
-      path,
+      cx: cx,
 
-      paint,
+      cy: cy,
+
+      radius:
+          size.width * 0.55 * glowScale,
 
     );
+
+
+
+    // جسم النجمة
+    canvas.drawPath(
+      path,
+      paint,
+    );
+
 
 
     // اليدين والأرجل
@@ -142,9 +159,6 @@ required this.happy,
 
 
 
-    
-
-
     // اللمعة
     StarShine.draw(
 
@@ -162,7 +176,7 @@ required this.happy,
 
 
 
-    // الجزيئات
+    // النجوم الصغيرة حولها
     StarParticles.draw(
 
       canvas,
@@ -181,13 +195,20 @@ required this.happy,
 
     // العيون
     StarFace.drawEyes(
-  canvas: canvas,
-  cx: cx,
-  cy: cy,
-  size: size.width,
-  blink: blink,
-  happy: happy,
-);
+
+      canvas: canvas,
+
+      cx: cx,
+
+      cy: cy,
+
+      size: size.width,
+
+      blink: blink,
+
+      happy: happy,
+
+    );
 
 
 
@@ -204,6 +225,8 @@ required this.happy,
 
       talking: talking,
 
+      happy: happy,
+
     );
 
 
@@ -211,18 +234,29 @@ required this.happy,
 
 
 
-
   @override
-bool shouldRepaint(
-    covariant StarPainter oldDelegate) {
+  bool shouldRepaint(
+      covariant StarPainter oldDelegate) {
 
-  return oldDelegate.blink != blink ||
+
+    return
+
+      oldDelegate.blink != blink ||
+
       oldDelegate.talking != talking ||
+
       oldDelegate.glowScale != glowScale ||
+
       oldDelegate.shineValue != shineValue ||
+
       oldDelegate.particleValue != particleValue ||
+
       oldDelegate.armAnimation != armAnimation ||
+
       oldDelegate.happy != happy;
-}
+
+
+  }
+
 
 }
