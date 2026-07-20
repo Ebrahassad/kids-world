@@ -12,6 +12,7 @@ class StarMouth {
     required double cy,
     required double size,
     required bool talking,
+    required bool happy,
 
   }) {
 
@@ -29,11 +30,77 @@ class StarMouth {
 
 
 
+    // ⭐ فم سعيد عند الفوز
+    if (happy) {
+
+
+      canvas.drawArc(
+
+        Rect.fromCenter(
+
+          center: Offset(
+
+            cx,
+
+            cy + size * .10,
+
+          ),
+
+          width: size * .45,
+
+          height: size * .30,
+
+        ),
+
+        0,
+
+        pi,
+
+        false,
+
+        smilePaint,
+
+      );
+
+
+      // خدود الفوز
+      final Paint cheekPaint = Paint()
+
+        ..color = Colors.pink.withValues(alpha: 0.5);
+
+
+
+      canvas.drawCircle(
+        Offset(
+          cx - size * .28,
+          cy + size * .12,
+        ),
+        size * .04,
+        cheekPaint,
+      );
+
+
+      canvas.drawCircle(
+        Offset(
+          cx + size * .28,
+          cy + size * .12,
+        ),
+        size * .04,
+        cheekPaint,
+      );
+
+
+      return;
+
+    }
+
+
+
+    // 🗣️ الكلام
     if (talking) {
 
 
 
-      // الفم المفتوح
       canvas.drawOval(
 
         Rect.fromCenter(
@@ -57,7 +124,6 @@ class StarMouth {
           ..color = Colors.red.shade900,
 
       );
-
 
 
 
@@ -96,9 +162,7 @@ class StarMouth {
 
 
 
-
       // اللسان
-
       canvas.drawOval(
 
         Rect.fromCenter(
@@ -129,7 +193,7 @@ class StarMouth {
 
 
 
-      // ابتسامة كبيرة
+      // 🙂 الابتسامة العادية
 
       canvas.drawArc(
 
@@ -161,22 +225,17 @@ class StarMouth {
 
 
 
-      // خدود صغيرة
-
       final Paint cheekPaint = Paint()
 
-        ..color = Colors.pink.withOpacity(0.5);
+        ..color = Colors.pink.withValues(alpha: 0.5);
 
 
 
       canvas.drawCircle(
 
         Offset(
-
           cx - size * .27,
-
           cy + size * .12,
-
         ),
 
         size * .035,
@@ -189,11 +248,8 @@ class StarMouth {
       canvas.drawCircle(
 
         Offset(
-
           cx + size * .27,
-
           cy + size * .12,
-
         ),
 
         size * .035,
@@ -201,7 +257,6 @@ class StarMouth {
         cheekPaint,
 
       );
-
 
 
     }
