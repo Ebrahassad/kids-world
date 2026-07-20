@@ -35,8 +35,13 @@ class _HappyStarState extends State<HappyStar> {
 
   bool blink = false;
 bool talking = false;
+bool mouthOpen = false;
+double starRotation = 0;
 
-  @@override
+Timer? blinkTimer;
+Timer? mouthTimer;
+
+  @override
 void initState() {
   super.initState();
 
@@ -52,62 +57,72 @@ void initState() {
 
 
   void startBlink() {
+  blinkTimer = Timer.periodic(
+    const Duration(seconds: 3),
+    (timer) {
+      if (!mounted) return;
 
-    Timer.periodic(
+      setState(() {
+        blink = true;
+      });
 
-      const Duration(seconds: 3),
+      Future.delayed(
+        const Duration(milliseconds: 180),
+        () {
+          if (!mounted) return;
 
-      (timer) {
+          setState(() {
+            blink = false;
+          });
+        },
+      );
+    },
+  );
+}
 
-        if (!mounted) return;
-
-
-        setState(() {
-
-          blink = true;
-
-        });
-
-
-        Future.delayed(
-
-          const Duration(milliseconds: 180),
-
-          () {
-
-            if (!mounted) return;
-
-
-            setState(() {
-
-              blink = false;
-
-            });
-
-          },
-
-        );
-
-      },
-
-    );
-
-  }
 
 void _talkListener() {
   if (!mounted) return;
 
+  final bool isTalking =
+      StarVoiceManager.talkingNotifier.value;
+
+  if (isTalking) {
+    mouthTimer?.cancel();
+
+    mouthTimer = Timer.periodic(
+      const Duration(milliseconds: 180),
+      (_) {
+        if (!mounted) return;
+
+        setState(() {
+  mouthOpen = !mouthOpen;
+
+  starRotation =
+      starRotation == 0 ? 0.06 : 0;
+});
+      },
+    );
+  } else {
+    mouthTimer?.cancel();
+
+    setState(() {
+      mouthOpen = false;
+    });
+  }
+
   setState(() {
-    talking = StarVoiceManager.talkingNotifier.value;
+    talking = isTalking;
   });
 }
-
 @override
 void dispose() {
   StarVoiceManager.talkingNotifier.removeListener(
     _talkListener,
   );
 
+blinkTimer?.cancel();
+mouthTimer?.cancel();
   super.dispose();
 }
 
@@ -123,25 +138,19 @@ void dispose() {
       children: [
 
 
-        CustomPaint(
-
-          size: Size(
-
-            widget.size,
-
-            widget.size,
-
-          ),
-
-
-          painter: StarPainter(
-  blink: blink,
-  talking: talking,
+        Transform.rotate(
+  angle: starRotation,
+  child: CustomPaint(
+    size: Size(
+      widget.size,
+      widget.size,
+    ),
+    painter: StarPainter(
+      blink: blink,
+      talking: mouthOpen,
+    ),
+  ),
 ),
-
-        ),
-
-
 
         const SizedBox(
 
@@ -504,43 +513,63 @@ final bool talking;
 
 
 
-    canvas.drawArc(
+    if (talking) {
 
-      Rect.fromCenter(
+  // الفم
+  canvas.drawOval(
+    Rect.fromCenter(
+      center: Offset(
+        cx,
+        cy + size.height * .15,
+      ),
+      width: size.width * .20,
+      height: size.height * .14,
+    ),
+    Paint()..color = Colors.red.shade900,
+  );
 
-        center: Offset(
+  // اللسان
+  canvas.drawOval(
+    Rect.fromCenter(
+      center: Offset(
+        cx,
+        cy + size.height * .18,
+      ),
+      width: size.width * .11,
+      height: size.height * .05,
+    ),
+    Paint()..color = Colors.pinkAccent,
+  );
 
-          cx,
+} else {
 
-          cy + size.height * .12,
+  // الابتسامة العادية
+  canvas.drawArc(
 
-        ),
+    Rect.fromCenter(
 
-
-        width:
-
-            size.width * .35,
-
-
-        height:
-
-            size.height * .25,
-
+      center: Offset(
+        cx,
+        cy + size.height * .12,
       ),
 
+      width: size.width * .35,
 
-      0,
+      height: size.height * .25,
 
-      pi,
+    ),
 
+    0,
 
-      false,
+    pi,
 
+    false,
 
-      smilePaint,
+    smilePaint,
 
-    );
+  );
 
+}
 
   }
 
