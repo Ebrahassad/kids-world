@@ -585,7 +585,8 @@ class _ColorsScreenState
             builder: (_) => WinScreen(
 
               stars: stars,
-
+gameId:
+4,
 
               nextGame:
                   const ColorsScreen(),
