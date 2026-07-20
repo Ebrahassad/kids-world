@@ -4,19 +4,21 @@ import 'star_face.dart';
 import 'star_mouth.dart';
 import 'star_effects.dart';
 import 'star_shine.dart';
-
+import 'star_particles.dart';
 
 class StarPainter extends CustomPainter {
   final bool blink;
 final bool talking;
 final double glowScale;
 final double shineValue;
+final double particleValue;
 
   StarPainter({
   required this.blink,
   required this.talking,
   required this.glowScale,
   required this.shineValue,
+required this.particleValue,
 });
 
   @override
@@ -88,6 +90,14 @@ StarShine.draw(
   shineValue,
 );
 
+StarParticles.draw(
+  canvas,
+  cx,
+  cy,
+  size.width,
+  particleValue,
+);
+
 StarFace.drawEyes(
   canvas: canvas,
   cx: cx,
@@ -110,8 +120,9 @@ StarMouth.draw(
 bool shouldRepaint(
     covariant StarPainter oldDelegate) {
   return oldDelegate.blink != blink ||
-      oldDelegate.talking != talking ||
-      oldDelegate.glowScale != glowScale ||
-      oldDelegate.shineValue != shineValue;
+    oldDelegate.talking != talking ||
+    oldDelegate.glowScale != glowScale ||
+    oldDelegate.shineValue != shineValue ||
+    oldDelegate.particleValue != particleValue;
 }
 }
