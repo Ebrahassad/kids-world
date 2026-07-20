@@ -2,131 +2,245 @@ import 'package:flutter/material.dart';
 
 class StarArmsLegs {
 
+
   static void draw(
+
     Canvas canvas,
     double cx,
     double cy,
     double size,
     double animation,
+
   ) {
 
-    final Paint paint = Paint()
-      ..color = Colors.orange.shade700
+
+
+    final Paint armPaint = Paint()
+
+      ..color = Colors.orange.shade800
+
       ..strokeWidth = size * 0.035
+
       ..strokeCap = StrokeCap.round;
 
 
-    // اليد اليسرى
+
+    final double wave =
+        animation * size * 0.12;
+
+
+
+    // اليد اليسرى مرفوعة
     canvas.drawLine(
+
       Offset(
-        cx - size * 0.38,
+
+        cx - size * .38,
+
         cy,
+
       ),
+
       Offset(
-        cx - size * 0.65,
-        cy - size * 0.12 +
-            animation * size * 0.08,
+
+        cx - size * .65,
+
+        cy - size * .15 - wave,
+
       ),
-      paint,
+
+      armPaint,
+
     );
 
 
-    // اليد اليمنى
+
+
+    // اليد اليمنى مرفوعة
     canvas.drawLine(
+
       Offset(
-        cx + size * 0.38,
+
+        cx + size * .38,
+
         cy,
+
       ),
+
       Offset(
-        cx + size * 0.65,
-        cy - size * 0.12 -
-            animation * size * 0.08,
+
+        cx + size * .65,
+
+        cy - size * .15 + wave,
+
       ),
-      paint,
+
+      armPaint,
+
     );
 
 
-    // الرجل اليسرى
+
+
+    // الأرجل مع حركة القفز
+
+    final double jump =
+        animation * size * .06;
+
+
+
     canvas.drawLine(
+
       Offset(
-        cx - size * 0.15,
-        cy + size * 0.35,
+
+        cx - size * .15,
+
+        cy + size * .35,
+
       ),
+
       Offset(
-        cx - size * 0.25,
-        cy + size * 0.65 +
-            animation * size * 0.05,
+
+        cx - size * .28,
+
+        cy + size * .65 - jump,
+
       ),
-      paint,
+
+      armPaint,
+
     );
 
 
-    // الرجل اليمنى
+
     canvas.drawLine(
+
       Offset(
-        cx + size * 0.15,
-        cy + size * 0.35,
+
+        cx + size * .15,
+
+        cy + size * .35,
+
       ),
+
       Offset(
-        cx + size * 0.25,
-        cy + size * 0.65 -
-            animation * size * 0.05,
+
+        cx + size * .28,
+
+        cy + size * .65 + jump,
+
       ),
-      paint,
+
+      armPaint,
+
     );
 
 
-    // دوائر اليدين والأرجل
+
+
+
+    // اليدين والرجلين
+
     final Paint circlePaint = Paint()
-      ..color = Colors.orange.shade700;
+
+      ..color = Colors.orange.shade800;
 
 
-    // اليد اليسرى
-    canvas.drawCircle(
+
+    final points = [
+
+
       Offset(
-        cx - size * 0.65,
-        cy - size * 0.12 +
-            animation * size * 0.08,
+
+        cx - size * .65,
+
+        cy - size * .15 - wave,
+
       ),
-      size * 0.05,
-      circlePaint,
+
+
+      Offset(
+
+        cx + size * .65,
+
+        cy - size * .15 + wave,
+
+      ),
+
+
+      Offset(
+
+        cx - size * .28,
+
+        cy + size * .65 - jump,
+
+      ),
+
+
+      Offset(
+
+        cx + size * .28,
+
+        cy + size * .65 + jump,
+
+      ),
+
+    ];
+
+
+
+
+    for (final point in points) {
+
+
+      canvas.drawCircle(
+
+        point,
+
+        size * .05,
+
+        circlePaint,
+
+      );
+
+
+    }
+
+
+
+
+    // خطوط صغيرة كأنها أصابع
+
+    final Paint fingerPaint = Paint()
+
+      ..color = Colors.orange.shade900
+
+      ..strokeWidth = size * .015;
+
+
+
+    canvas.drawLine(
+
+      points[0],
+
+      points[0] + Offset(-size*.05, -size*.03),
+
+      fingerPaint,
+
     );
 
 
-    // اليد اليمنى
-    canvas.drawCircle(
-      Offset(
-        cx + size * 0.65,
-        cy - size * 0.12 -
-            animation * size * 0.08,
-      ),
-      size * 0.05,
-      circlePaint,
+    canvas.drawLine(
+
+      points[1],
+
+      points[1] + Offset(size*.05, -size*.03),
+
+      fingerPaint,
+
     );
 
-
-    // الرجل اليسرى
-    canvas.drawCircle(
-      Offset(
-        cx - size * 0.25,
-        cy + size * 0.65 +
-            animation * size * 0.05,
-      ),
-      size * 0.05,
-      circlePaint,
-    );
-
-
-    // الرجل اليمنى
-    canvas.drawCircle(
-      Offset(
-        cx + size * 0.25,
-        cy + size * 0.65 -
-            animation * size * 0.05,
-      ),
-      size * 0.05,
-      circlePaint,
-    );
 
   }
+
 }
