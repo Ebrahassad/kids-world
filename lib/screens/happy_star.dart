@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../star_voice_manager.dart';
 import 'star_painter.dart';
@@ -46,6 +45,9 @@ Timer? mouthTimer;
 
 late AnimationController glowController;
 late Animation<double> glowAnimation;
+late AnimationController shineController;
+late Animation<double> shineAnimation;
+
 
   @override
 void initState() {
@@ -66,6 +68,24 @@ glowAnimation = Tween<double>(
     curve: Curves.easeInOut,
   ),
 );
+shineController = AnimationController(
+  vsync: this,
+  duration: const Duration(
+    seconds: 2,
+  ),
+);
+
+shineAnimation = Tween<double>(
+  begin: -1,
+  end: 1,
+).animate(
+  CurvedAnimation(
+    parent: shineController,
+    curve: Curves.easeInOut,
+  ),
+);
+
+shineController.repeat();
 
 glowController.repeat(
   reverse: true,
@@ -149,7 +169,7 @@ void dispose() {
 
 blinkTimer?.cancel();
 mouthTimer?.cancel(); 
-
+shineController.dispose();
 glowController.dispose();
 
 super.dispose();
@@ -170,7 +190,10 @@ super.dispose();
         Transform.rotate(
   angle: starRotation,
   child: AnimatedBuilder(
-  animation: glowAnimation,
+  animation: Listenable.merge([
+  glowAnimation,
+  shineAnimation,
+]),
   builder: (context, child) {
     return CustomPaint(
       size: Size(
@@ -181,6 +204,7 @@ super.dispose();
         blink: blink,
         talking: mouthOpen,
         glowScale: glowAnimation.value,
+shineValue: shineAnimation.value,
       ),
     );
   },
