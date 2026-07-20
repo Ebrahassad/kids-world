@@ -370,24 +370,25 @@ class _HappyStarState extends State<HappyStar>
 
                   painter: StarPainter(
 
-                    blink: blink,
+  blink: blink,
 
-                    talking: mouthOpen,
+  talking: mouthOpen,
 
-                    glowScale:
-                        glowAnimation.value,
+  glowScale:
+      glowAnimation.value,
 
-                    shineValue:
-                        shineAnimation.value,
+  shineValue:
+      shineAnimation.value,
 
-                    particleValue:
-                        particleAnimation.value,
+  particleValue:
+      particleAnimation.value,
 
-                    armAnimation:
-                        moveAnimation.value,
+  armAnimation:
+      moveAnimation.value,
 
-                  ),
+  happy: true,
 
+),
                 );
 
               },
