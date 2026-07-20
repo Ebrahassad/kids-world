@@ -6,15 +6,19 @@ class StarVoiceManager {
 
   static final AudioPlayer _player = AudioPlayer();
 
-  // هل النجمة تتحدث؟
+  // هل نجومة تتحدث الآن؟
   static bool _isTalking = false;
 
   static bool get isTalking => _isTalking;
 
-  // إشعار للشاشات عند بدء وانتهاء الكلام
+  // آخر صوت تم تشغيله
+  static String currentVoice = "";
+
+  // إشعار للشاشات
   static final ValueNotifier<bool> talkingNotifier =
       ValueNotifier(false);
 
+  // إيقاف أي صوت
   static Future<void> stop() async {
     await _player.stop();
 
@@ -22,12 +26,17 @@ class StarVoiceManager {
     talkingNotifier.value = false;
   }
 
+  // تشغيل أي ملف صوتي
   static Future<void> _play(String fileName) async {
-    try {
-      // إيقاف أي صوت سابق
-      await _player.stop();
 
-      // بدء الكلام
+    if (_isTalking) {
+      await stop();
+    }
+
+    try {
+
+      currentVoice = fileName;
+
       _isTalking = true;
       talkingNotifier.value = true;
 
@@ -35,17 +44,23 @@ class StarVoiceManager {
         AssetSource("sounds/star/$fileName"),
       );
 
-      // عند انتهاء الصوت
       _player.onPlayerComplete.first.then((_) {
         _isTalking = false;
         talkingNotifier.value = false;
       });
+
     } catch (e) {
+
       debugPrint("Star Voice Error: $e");
 
       _isTalking = false;
       talkingNotifier.value = false;
     }
+  }
+
+  // تشغيل أي ملف صوتي جديد
+  static Future<void> play(String fileName) async {
+    await _play(fileName);
   }
 
   // ⭐ الترحيب
@@ -68,7 +83,7 @@ class StarVoiceManager {
     await _play("great.mp3");
   }
 
-  // 🎁 فتح لعبة جديدة
+  // 🔓 فتح لعبة
   static Future<void> unlock() async {
     await _play("unlock.mp3");
   }
