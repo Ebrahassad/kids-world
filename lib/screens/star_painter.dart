@@ -44,7 +44,19 @@ class StarPainter extends CustomPainter {
     final double cx = size.width / 2;
     final double cy = size.height / 2;
 
-
+// ظل أسفل النجمة
+canvas.drawOval(
+  Rect.fromCenter(
+    center: Offset(
+      cx,
+      cy + size.width * 0.60,
+    ),
+    width: size.width * 0.55,
+    height: size.width * 0.12,
+  ),
+  Paint()
+    ..color = Colors.black.withValues(alpha: 0.15),
+);
 
     // لون النجمة
     final Paint paint = Paint()
