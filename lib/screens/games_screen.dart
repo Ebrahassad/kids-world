@@ -148,12 +148,16 @@ class _GamesScreenState extends State<GamesScreen> {
       return;
     }
 
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => game.screen,
-      ),
-    );
+    await ProgressManager.saveLastGame(
+  game.title,
+);
+
+await Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (_) => game.screen,
+  ),
+);
 
     await _refreshData();
   }
@@ -334,8 +338,17 @@ Expanded(
   );
 },
 
-        
- 
+     ),
+  ),
+),
+       
+             ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   // ==================================
   // رسالة عند فتح لعبة جديدة
