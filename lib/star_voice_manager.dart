@@ -6,7 +6,7 @@ class StarVoiceManager {
 
   static final AudioPlayer _player = AudioPlayer();
 
-  // هل نجومة تتحدث الآن؟
+  // هل نجمتك تتحدث الآن؟
   static bool _isTalking = false;
 
   static bool get isTalking => _isTalking;
@@ -68,6 +68,11 @@ class StarVoiceManager {
     await _play("welcome.mp3");
   }
 
+// 🎮 اختيار اللعبة
+static Future<void> chooseGame() async {
+  await _play("choose_game.mp3");
+}
+
   // 🏆 الفوز
   static Future<void> win() async {
     await _play("star_win.mp3");
@@ -82,6 +87,10 @@ class StarVoiceManager {
   static Future<void> great() async {
     await _play("great.mp3");
   }
+// 💡 التلميح
+static Future<void> hint() async {
+  await _play("hint.mp3");
+}
 
   // 🔓 فتح لعبة
   static Future<void> unlock() async {
