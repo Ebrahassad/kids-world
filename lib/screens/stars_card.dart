@@ -29,13 +29,16 @@ class _StarsCardState extends State<StarsCard>
     super.initState();
 
     controller = AnimationController(
+
       vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(
-      reverse: true,
-    );
+
+      duration:
+          const Duration(seconds: 2),
+
+    )..repeat();
 
   }
+
 
 
   @override
@@ -56,7 +59,8 @@ class _StarsCardState extends State<StarsCard>
 
       width: 310,
 
-      padding: const EdgeInsets.all(20),
+      padding:
+          const EdgeInsets.all(20),
 
       decoration: BoxDecoration(
 
@@ -83,35 +87,44 @@ class _StarsCardState extends State<StarsCard>
       ),
 
 
+
       child: Row(
 
         children: [
 
 
+          // ⭐ النجمة الشخصية
+
           AnimatedBuilder(
 
             animation: controller,
 
-            builder: (context, child) {
+            builder:
+                (context, child) {
 
 
-              double scale =
-                  1 +
-                  (controller.value * 0.08);
+              final double jump =
 
-
-              double rotate =
                   sin(controller.value * pi)
-                  * 0.08;
+
+                      * 8;
 
 
-              return Transform.rotate(
+              return Transform.translate(
 
-                angle: rotate,
+                offset:
+                    Offset(0, -jump),
 
-                child: Transform.scale(
 
-                  scale: scale,
+                child:
+                    Transform.rotate(
+
+                  angle:
+
+                      sin(controller.value * pi)
+
+                          * 0.12,
+
 
                   child: child,
 
@@ -122,68 +135,164 @@ class _StarsCardState extends State<StarsCard>
             },
 
 
-            child: Container(
+            child: Stack(
 
-              width: 80,
-
-              height: 80,
-
-
-              decoration: BoxDecoration(
-
-                shape:
-                    BoxShape.circle,
-
-                gradient:
-                    const LinearGradient(
-
-                  colors: [
-
-                    Colors.yellow,
-
-                    Colors.orange,
-
-                  ],
-
-                ),
+              alignment:
+                  Alignment.center,
 
 
-                boxShadow: const [
-
-                  BoxShadow(
-
-                    color:
-                        Colors.amber,
-
-                    blurRadius:
-                        20,
-
-                    spreadRadius:
-                        3,
-
-                  ),
-
-                ],
-
-              ),
+              children: [
 
 
-              child: const Center(
+                // ✨ الوهج
 
-                child: Text(
+                Container(
 
-                  "⭐😊",
+                  width: 95,
 
-                  style:
-                      TextStyle(
+                  height: 95,
 
-                    fontSize: 45,
+
+                  decoration:
+                      BoxDecoration(
+
+                    shape:
+                        BoxShape.circle,
+
+
+                    boxShadow: [
+
+                      BoxShadow(
+
+                        color:
+
+                            Colors.amber
+
+                                .withOpacity(0.6),
+
+
+                        blurRadius:
+                            25,
+
+
+                        spreadRadius:
+                            5,
+
+                      ),
+
+                    ],
 
                   ),
 
                 ),
 
-              ),
+
+
+                // ⭐ جسم النجمة
+
+                Container(
+
+                  width: 80,
+
+                  height: 80,
+
+
+                  decoration:
+                      BoxDecoration(
+
+
+                    shape:
+                        BoxShape.circle,
+
+
+                    gradient:
+                        const LinearGradient(
+
+                      colors: [
+
+                        Color(0xfffff176),
+
+                        Color(0xffff9800),
+
+                      ],
+
+                      begin:
+                          Alignment.topLeft,
+
+
+                      end:
+                          Alignment.bottomRight,
+
+                    ),
+
+
+
+                    border:
+                        Border.all(
+
+                      color:
+                          Colors.white,
+
+                      width:
+                          3,
+
+                    ),
+
+                  ),
+
+
+
+                  child:
+                      const Center(
+
+                    child:
+                        Text(
+
+                      "⭐",
+
+                      style:
+                          TextStyle(
+
+                        fontSize:
+                            55,
+
+                      ),
+
+                    ),
+
+                  ),
+
+                ),
+
+
+
+                // 😊 الوجه
+
+                const Positioned(
+
+                  bottom:
+                      18,
+
+
+                  child:
+                      Text(
+
+                    "😊",
+
+                    style:
+                        TextStyle(
+
+                      fontSize:
+                          22,
+
+                    ),
+
+                  ),
+
+                ),
+
+
+              ],
 
             ),
 
@@ -191,7 +300,11 @@ class _StarsCardState extends State<StarsCard>
 
 
 
-          const SizedBox(width: 18),
+          const SizedBox(
+
+            width: 18,
+
+          ),
 
 
 
@@ -200,6 +313,7 @@ class _StarsCardState extends State<StarsCard>
             child: Column(
 
               crossAxisAlignment:
+
                   CrossAxisAlignment.start,
 
 
@@ -213,7 +327,8 @@ class _StarsCardState extends State<StarsCard>
                   style:
                       TextStyle(
 
-                    fontSize: 18,
+                    fontSize:
+                        18,
 
                     color:
                         Colors.grey,
@@ -229,12 +344,13 @@ class _StarsCardState extends State<StarsCard>
 
                 Text(
 
-                  "${widget.totalStars} نجمة ⭐",
+                  "${widget.totalStars} ⭐",
 
                   style:
                       const TextStyle(
 
-                    fontSize: 30,
+                    fontSize:
+                        34,
 
                     fontWeight:
                         FontWeight.w900,
@@ -255,7 +371,8 @@ class _StarsCardState extends State<StarsCard>
                   style:
                       TextStyle(
 
-                    fontSize: 14,
+                    fontSize:
+                        14,
 
                     color:
                         Colors.green,
@@ -267,11 +384,13 @@ class _StarsCardState extends State<StarsCard>
 
                 ),
 
+
               ],
 
             ),
 
           ),
+
 
         ],
 
