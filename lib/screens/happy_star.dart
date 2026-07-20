@@ -1,15 +1,85 @@
+import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 
-class HappyStar extends StatelessWidget {
+class HappyStar extends StatefulWidget {
 
   final double size;
-
 
   const HappyStar({
     super.key,
     this.size = 90,
   });
+
+
+  @override
+  State<HappyStar> createState() =>
+      _HappyStarState();
+
+}
+
+
+
+class _HappyStarState extends State<HappyStar> {
+
+
+  bool blink = false;
+
+
+  @override
+  void initState() {
+
+    super.initState();
+
+    startBlink();
+
+  }
+
+
+
+  void startBlink() {
+
+    Timer.periodic(
+      const Duration(seconds: 3),
+
+      (timer) {
+
+        if (mounted) {
+
+          setState(() {
+
+            blink = true;
+
+          });
+
+
+          Future.delayed(
+            const Duration(milliseconds: 180),
+
+            () {
+
+              if (mounted) {
+
+                setState(() {
+
+                  blink = false;
+
+                });
+
+              }
+
+            },
+
+          );
+
+        }
+
+      },
+
+    );
+
+  }
 
 
 
@@ -18,9 +88,14 @@ class HappyStar extends StatelessWidget {
 
     return CustomPaint(
 
-      size: Size(size, size),
+      size: Size(
+        widget.size,
+        widget.size,
+      ),
 
-      painter: StarPainter(),
+      painter: StarPainter(
+        blink: blink,
+      ),
 
     );
 
@@ -30,15 +105,30 @@ class HappyStar extends StatelessWidget {
 
 
 
+
+
 class StarPainter extends CustomPainter {
 
 
+  final bool blink;
+
+
+  StarPainter({
+    required this.blink,
+  });
+
+
+
   @override
-  void paint(Canvas canvas, Size size) {
+  void paint(
+      Canvas canvas,
+      Size size) {
 
 
     final Paint paint = Paint()
-      ..shader = const LinearGradient(
+
+      ..shader =
+          const LinearGradient(
 
         colors: [
 
@@ -49,12 +139,14 @@ class StarPainter extends CustomPainter {
         ],
 
       ).createShader(
+
         Rect.fromLTWH(
           0,
           0,
           size.width,
           size.height,
         ),
+
       );
 
 
@@ -62,10 +154,11 @@ class StarPainter extends CustomPainter {
     final Path path = Path();
 
 
-    final double centerX =
+    final double cx =
         size.width / 2;
 
-    final double centerY =
+
+    final double cy =
         size.height / 2;
 
 
@@ -80,27 +173,21 @@ class StarPainter extends CustomPainter {
 
     for (int i = 0; i < 10; i++) {
 
-
-      final double radius =
+      final double r =
           i.isEven ? outer : inner;
 
 
       final double angle =
-          -3.14159 / 2 +
-          i * 3.14159 / 5;
-
+          -pi / 2 +
+          i * pi / 5;
 
 
       final double x =
-          centerX +
-          radius *
-              cos(angle);
+          cx + r * cos(angle);
 
 
       final double y =
-          centerY +
-          radius *
-              sin(angle);
+          cy + r * sin(angle);
 
 
 
@@ -113,7 +200,6 @@ class StarPainter extends CustomPainter {
         path.lineTo(x, y);
 
       }
-
 
     }
 
@@ -128,54 +214,97 @@ class StarPainter extends CustomPainter {
 
 
 
-    // العين اليمنى
-
-    final eyePaint = Paint()
-      ..color = Colors.black;
-
-
-
-    canvas.drawCircle(
-
-      Offset(
-        centerX - size * 0.15,
-        centerY - size * 0.05,
-      ),
-
-      size * 0.04,
-
-      eyePaint,
-
-    );
+    final Paint eyePaint =
+        Paint()
+          ..color = Colors.black;
 
 
 
-    // العين اليسرى
+    if (blink) {
 
-    canvas.drawCircle(
 
-      Offset(
-        centerX + size * 0.15,
-        centerY - size * 0.05,
-      ),
+      canvas.drawLine(
 
-      size * 0.04,
+        Offset(
+          cx - size.width * .22,
+          cy - size.height * .05,
+        ),
 
-      eyePaint,
+        Offset(
+          cx - size.width * .08,
+          cy - size.height * .05,
+        ),
 
-    );
+        eyePaint
+          ..strokeWidth = 3,
+
+      );
+
+
+      canvas.drawLine(
+
+        Offset(
+          cx + size.width * .08,
+          cy - size.height * .05,
+        ),
+
+        Offset(
+          cx + size.width * .22,
+          cy - size.height * .05,
+        ),
+
+        eyePaint
+          ..strokeWidth = 3,
+
+      );
+
+
+    } else {
+
+
+      canvas.drawCircle(
+
+        Offset(
+          cx - size.width * .15,
+          cy - size.height * .05,
+        ),
+
+        size.width * .04,
+
+        eyePaint,
+
+      );
+
+
+      canvas.drawCircle(
+
+        Offset(
+          cx + size.width * .15,
+          cy - size.height * .05,
+        ),
+
+        size.width * .04,
+
+        eyePaint,
+
+      );
+
+    }
+
 
 
 
     // الابتسامة
 
-    final smilePaint = Paint()
+    final smilePaint =
+        Paint()
 
-      ..color = Colors.black
+          ..color = Colors.black
 
-      ..style = PaintingStyle.stroke
+          ..style =
+              PaintingStyle.stroke
 
-      ..strokeWidth = 3;
+          ..strokeWidth = 3;
 
 
 
@@ -185,21 +314,21 @@ class StarPainter extends CustomPainter {
 
         center:
             Offset(
-              centerX,
-              centerY + size * 0.12,
+              cx,
+              cy + size.height * .12,
             ),
 
         width:
-            size * 0.35,
+            size.width * .35,
 
         height:
-            size * 0.25,
+            size.height * .25,
 
       ),
 
       0,
 
-      3.14,
+      pi,
 
       false,
 
@@ -207,16 +336,15 @@ class StarPainter extends CustomPainter {
 
     );
 
-
   }
 
 
 
   @override
   bool shouldRepaint(
-      CustomPainter oldDelegate) {
+      covariant StarPainter oldDelegate) {
 
-    return false;
+    return oldDelegate.blink != blink;
 
   }
 
