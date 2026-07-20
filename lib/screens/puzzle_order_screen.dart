@@ -368,7 +368,8 @@ if(stars == 0){
 
             stars: stars,
 
-
+gameId:
+9,
             nextGame:
 
                 const PuzzleOrderScreen(),
