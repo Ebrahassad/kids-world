@@ -7,9 +7,17 @@ class HappyStar extends StatefulWidget {
 
   final double size;
 
+  final String message;
+
+
   const HappyStar({
+
     super.key,
+
     this.size = 90,
+
+    this.message = "أحسنت يا بطل! ⭐",
+
   });
 
 
@@ -41,39 +49,39 @@ class _HappyStarState extends State<HappyStar> {
   void startBlink() {
 
     Timer.periodic(
+
       const Duration(seconds: 3),
 
       (timer) {
 
-        if (mounted) {
-
-          setState(() {
-
-            blink = true;
-
-          });
+        if (!mounted) return;
 
 
-          Future.delayed(
-            const Duration(milliseconds: 180),
+        setState(() {
 
-            () {
+          blink = true;
 
-              if (mounted) {
+        });
 
-                setState(() {
 
-                  blink = false;
+        Future.delayed(
 
-                });
+          const Duration(milliseconds: 180),
 
-              }
+          () {
 
-            },
+            if (!mounted) return;
 
-          );
 
-        }
+            setState(() {
+
+              blink = false;
+
+            });
+
+          },
+
+        );
 
       },
 
@@ -83,25 +91,118 @@ class _HappyStarState extends State<HappyStar> {
 
 
 
+
   @override
   Widget build(BuildContext context) {
 
-    return CustomPaint(
+    return Row(
 
-      size: Size(
-        widget.size,
-        widget.size,
-      ),
+      mainAxisSize:
+          MainAxisSize.min,
 
-      painter: StarPainter(
-        blink: blink,
-      ),
+
+      children: [
+
+
+        CustomPaint(
+
+          size: Size(
+
+            widget.size,
+
+            widget.size,
+
+          ),
+
+
+          painter: StarPainter(
+
+            blink: blink,
+
+          ),
+
+        ),
+
+
+
+        const SizedBox(
+
+          width: 10,
+
+        ),
+
+
+
+        Container(
+
+          padding:
+              const EdgeInsets.all(12),
+
+
+          decoration:
+              BoxDecoration(
+
+            color:
+                Colors.white,
+
+
+            borderRadius:
+                BorderRadius.circular(18),
+
+
+            boxShadow: const [
+
+              BoxShadow(
+
+                color:
+                    Colors.black12,
+
+                blurRadius:
+                    8,
+
+                offset:
+                    Offset(0, 3),
+
+              ),
+
+            ],
+
+          ),
+
+
+
+          child: Text(
+
+            widget.message,
+
+
+            style:
+                const TextStyle(
+
+              fontSize:
+                  16,
+
+              fontWeight:
+                  FontWeight.bold,
+
+              color:
+                  Colors.black87,
+
+            ),
+
+          ),
+
+        ),
+
+
+      ],
 
     );
 
   }
 
 }
+
 
 
 
@@ -114,15 +215,21 @@ class StarPainter extends CustomPainter {
 
 
   StarPainter({
+
     required this.blink,
+
   });
 
 
 
   @override
   void paint(
-      Canvas canvas,
-      Size size) {
+
+    Canvas canvas,
+
+    Size size,
+
+  ) {
 
 
     final Paint paint = Paint()
@@ -141,13 +248,19 @@ class StarPainter extends CustomPainter {
       ).createShader(
 
         Rect.fromLTWH(
+
           0,
+
           0,
+
           size.width,
+
           size.height,
+
         ),
 
       );
+
 
 
 
@@ -173,21 +286,42 @@ class StarPainter extends CustomPainter {
 
     for (int i = 0; i < 10; i++) {
 
-      final double r =
-          i.isEven ? outer : inner;
+
+      final double radius =
+
+          i.isEven
+
+              ? outer
+
+              : inner;
+
 
 
       final double angle =
+
           -pi / 2 +
+
           i * pi / 5;
 
 
+
       final double x =
-          cx + r * cos(angle);
+
+          cx +
+
+          radius *
+
+              cos(angle);
+
 
 
       final double y =
-          cy + r * sin(angle);
+
+          cy +
+
+          radius *
+
+              sin(angle);
 
 
 
@@ -201,24 +335,35 @@ class StarPainter extends CustomPainter {
 
       }
 
+
     }
 
 
     path.close();
 
 
+
+    // رسم جسم النجمة
+
     canvas.drawPath(
+
       path,
+
       paint,
+
     );
 
 
 
-    final Paint eyePaint =
-        Paint()
-          ..color = Colors.black;
+
+    final Paint eyePaint = Paint()
+
+      ..color =
+          Colors.black;
 
 
+
+    // العيون
 
     if (blink) {
 
@@ -226,64 +371,97 @@ class StarPainter extends CustomPainter {
       canvas.drawLine(
 
         Offset(
+
           cx - size.width * .22,
+
           cy - size.height * .05,
+
         ),
+
 
         Offset(
+
           cx - size.width * .08,
+
           cy - size.height * .05,
+
         ),
 
+
         eyePaint
+
           ..strokeWidth = 3,
 
       );
+
 
 
       canvas.drawLine(
 
         Offset(
+
           cx + size.width * .08,
+
           cy - size.height * .05,
+
         ),
+
 
         Offset(
+
           cx + size.width * .22,
+
           cy - size.height * .05,
+
         ),
 
+
         eyePaint
+
           ..strokeWidth = 3,
 
       );
 
 
+
     } else {
+
 
 
       canvas.drawCircle(
 
         Offset(
+
           cx - size.width * .15,
+
           cy - size.height * .05,
+
         ),
 
+
         size.width * .04,
+
 
         eyePaint,
 
       );
 
 
+
+
       canvas.drawCircle(
 
         Offset(
+
           cx + size.width * .15,
+
           cy - size.height * .05,
+
         ),
 
+
         size.width * .04,
+
 
         eyePaint,
 
@@ -294,17 +472,19 @@ class StarPainter extends CustomPainter {
 
 
 
+
     // الابتسامة
 
-    final smilePaint =
-        Paint()
+    final Paint smilePaint = Paint()
 
-          ..color = Colors.black
+      ..color =
+          Colors.black
 
-          ..style =
-              PaintingStyle.stroke
+      ..style =
+          PaintingStyle.stroke
 
-          ..strokeWidth = 3;
+      ..strokeWidth =
+          3;
 
 
 
@@ -312,37 +492,51 @@ class StarPainter extends CustomPainter {
 
       Rect.fromCenter(
 
-        center:
-            Offset(
-              cx,
-              cy + size.height * .12,
-            ),
+        center: Offset(
+
+          cx,
+
+          cy + size.height * .12,
+
+        ),
+
 
         width:
+
             size.width * .35,
 
+
         height:
+
             size.height * .25,
 
       ),
+
 
       0,
 
       pi,
 
+
       false,
+
 
       smilePaint,
 
     );
 
+
   }
+
 
 
 
   @override
   bool shouldRepaint(
-      covariant StarPainter oldDelegate) {
+
+    covariant StarPainter oldDelegate,
+
+  ) {
 
     return oldDelegate.blink != blink;
 
