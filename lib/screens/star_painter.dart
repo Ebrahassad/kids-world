@@ -78,11 +78,6 @@ StarEffects.drawGlow(
   radius: size.width * 0.55 * glowScale,
 );
 
-// جسم النجمة
-canvas.drawPath(
-  path,
-  paint,
-);
 
 StarArmsLegs.draw(
   canvas,
@@ -91,6 +86,15 @@ StarArmsLegs.draw(
   size.width,
   talking ? 0.2 : 0,
 );
+
+
+// جسم النجمة
+canvas.drawPath(
+  path,
+  paint,
+);
+
+
 
 StarShine.draw(
   canvas,
