@@ -108,17 +108,12 @@ class StarPainter extends CustomPainter {
 
     // الهالة الذهبية
     StarEffects.drawGlow(
-
-      canvas: canvas,
-
-      cx: cx,
-
-      cy: cy,
-
-      radius:
-          size.width * 0.55 * glowScale,
-
-    );
+  canvas: canvas,
+  cx: cx,
+  cy: cy,
+  radius: size.width * 0.55 * glowScale,
+  animation: shineValue,
+);
 
 
 
