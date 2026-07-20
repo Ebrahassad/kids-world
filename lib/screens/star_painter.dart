@@ -145,13 +145,29 @@ canvas.drawOval(
     );
 
 
+// جسم النجمة
+canvas.drawPath(
+  path,
+  paint,
+);
 
-    // جسم النجمة
-    canvas.drawPath(
-      path,
-      paint,
-    );
+// إطار ذهبي لامع
+canvas.drawPath(
+  path,
+  Paint()
+    ..color = const Color(0xffffd54f)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = size.width * 0.025,
+);
 
+// إطار أبيض خفيف لإبراز اللمعان
+canvas.drawPath(
+  path,
+  Paint()
+    ..color = Colors.white.withValues(alpha: 0.35)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = size.width * 0.008,
+);
 
 
     // اليدين والأرجل
