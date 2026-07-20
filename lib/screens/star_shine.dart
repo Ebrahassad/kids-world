@@ -13,10 +13,10 @@ class StarShine {
     final Paint paint = Paint()
       ..shader = LinearGradient(
         colors: [
-          Colors.white.withOpacity(0),
-          Colors.white.withOpacity(0.8),
-          Colors.white.withOpacity(0),
-        ],
+  Colors.white.withValues(alpha: 0),
+  Colors.white.withValues(alpha: 0.8),
+  Colors.white.withValues(alpha: 0),
+],
       ).createShader(
         Rect.fromLTWH(
           cx - size,
