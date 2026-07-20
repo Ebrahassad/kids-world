@@ -4,6 +4,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/services.dart';
 import '../progress_manager.dart';
 import 'win_button_3d.dart';
+import 'stars_card.dart';
 
 class WinScreen extends StatefulWidget {
 
@@ -124,61 +125,8 @@ Future<void> unlockGame() async {
 
   }
 
-  Widget actionButton({
-
-    required String text,
-
-    required IconData icon,
-
-    required Color color,
-
-    required VoidCallback onPressed,
-
-  }) {
-
-    return SizedBox(
-
-      width: 270,
-
-      height: 60,
-
-      child: ElevatedButton.icon(
-
-        onPressed: onPressed,
-
-        icon: Icon(
-          icon,
-          color: Colors.white,
-          size: 30,
-        ),
-
-        label: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 22,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-
-        style: ElevatedButton.styleFrom(
-
-          backgroundColor: color,
-
-          shape: RoundedRectangleBorder(
-
-            borderRadius:
-                BorderRadius.circular(25),
-
-          ),
-
-        ),
-
-      ),
-
-    );
-
-  }
+  
+  
   @override
   Widget build(BuildContext context) {
 
@@ -286,30 +234,20 @@ Future<void> unlockGame() async {
                     FutureBuilder<int>(
   future: getTotalStars(),
   builder: (context, snapshot) {
-    final totalStars = snapshot.data ?? widget.stars;
 
-    return Container(
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        "إجمالي النجوم ⭐ $totalStars",
-        style: const TextStyle(
-          fontSize: 32,
-          fontWeight: FontWeight.bold,
-          color: Colors.orange,
-        ),
-      ),
+    return StarsCard(
+      totalStars:
+          snapshot.data ?? widget.stars,
     );
+
   },
 ),
+
                    const SizedBox(height: 40),
                     // زر المستوى التالي (يظهر فقط في الألعاب ذات المستويات)
                     if (widget.hasLevels)
 
-                      actionButton(
+                      WinButton3D(
 
                         text: isLastLevel
                             ? "العودة إلى المراحل 📋"
@@ -351,7 +289,7 @@ Future<void> unlockGame() async {
                       const SizedBox(height: 15),
 
                     // إعادة اللعب
-                    actionButton(
+                    WinButton3D(
 
                       text: "إعادة اللعب 🔄",
 
@@ -382,7 +320,7 @@ Future<void> unlockGame() async {
 
                     // إذا كانت اللعبة بدون مستويات يظهر زر الألعاب
                     // وإذا كانت بمستويات يظهر زر المراحل
-                    actionButton(
+                    WinButton3D(
 
                       text: widget.hasLevels
                           ? "المراحل 📋"
@@ -415,7 +353,7 @@ Future<void> unlockGame() async {
 
                     const SizedBox(height: 15),
 
-                    actionButton(
+                    WinButton3D(
 
                       text: "إغلاق التطبيق 🚪",
 
