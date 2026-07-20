@@ -3,59 +3,210 @@ import 'package:flutter/material.dart';
 
 
 class StarMouth {
+
+
   static void draw({
+
     required Canvas canvas,
     required double cx,
     required double cy,
     required double size,
     required bool talking,
+
   }) {
+
+
+
     final Paint smilePaint = Paint()
+
       ..color = Colors.black
+
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
+
+      ..strokeWidth = size * 0.025
+
+      ..strokeCap = StrokeCap.round;
+
+
 
     if (talking) {
-      // الفم
+
+
+
+      // الفم المفتوح
       canvas.drawOval(
+
         Rect.fromCenter(
+
           center: Offset(
+
             cx,
+
             cy + size * .15,
+
           ),
-          width: size * .20,
-          height: size * .14,
+
+          width: size * .24,
+
+          height: size * .18,
+
         ),
-        Paint()..color = Colors.red.shade900,
+
+        Paint()
+
+          ..color = Colors.red.shade900,
+
       );
 
-      // اللسان
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset(
-            cx,
-            cy + size * .18,
-          ),
-          width: size * .11,
-          height: size * .05,
-        ),
-        Paint()..color = Colors.pinkAccent,
-      );
-    } else {
+
+
+
+      // الأسنان
       canvas.drawArc(
+
         Rect.fromCenter(
+
           center: Offset(
+
             cx,
+
             cy + size * .12,
+
           ),
-          width: size * .35,
-          height: size * .25,
+
+          width: size * .18,
+
+          height: size * .08,
+
         ),
-        0,
+
         pi,
+
+        pi,
+
         false,
-        smilePaint,
+
+        Paint()
+
+          ..color = Colors.white
+
+          ..style = PaintingStyle.fill,
+
       );
+
+
+
+
+      // اللسان
+
+      canvas.drawOval(
+
+        Rect.fromCenter(
+
+          center: Offset(
+
+            cx,
+
+            cy + size * .20,
+
+          ),
+
+          width: size * .12,
+
+          height: size * .05,
+
+        ),
+
+        Paint()
+
+          ..color = Colors.pinkAccent,
+
+      );
+
+
+
+    } else {
+
+
+
+      // ابتسامة كبيرة
+
+      canvas.drawArc(
+
+        Rect.fromCenter(
+
+          center: Offset(
+
+            cx,
+
+            cy + size * .10,
+
+          ),
+
+          width: size * .38,
+
+          height: size * .28,
+
+        ),
+
+        0,
+
+        pi,
+
+        false,
+
+        smilePaint,
+
+      );
+
+
+
+      // خدود صغيرة
+
+      final Paint cheekPaint = Paint()
+
+        ..color = Colors.pink.withOpacity(0.5);
+
+
+
+      canvas.drawCircle(
+
+        Offset(
+
+          cx - size * .27,
+
+          cy + size * .12,
+
+        ),
+
+        size * .035,
+
+        cheekPaint,
+
+      );
+
+
+      canvas.drawCircle(
+
+        Offset(
+
+          cx + size * .27,
+
+          cy + size * .12,
+
+        ),
+
+        size * .035,
+
+        cheekPaint,
+
+      );
+
+
+
     }
+
   }
+
+
 }
