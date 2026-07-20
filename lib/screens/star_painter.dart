@@ -16,7 +16,7 @@ class StarPainter extends CustomPainter {
   final double shineValue;
   final double particleValue;
   final double armAnimation;
-
+final bool happy;
 
   StarPainter({
 
@@ -26,7 +26,7 @@ class StarPainter extends CustomPainter {
     required this.shineValue,
     required this.particleValue,
     required this.armAnimation,
-
+required this.happy,
   });
 
 
@@ -112,7 +112,7 @@ class StarPainter extends CustomPainter {
   cx: cx,
   cy: cy,
   radius: size.width * 0.55 * glowScale,
-  animation: shineValue,
+  
 );
 
 // جسم النجمة
@@ -181,18 +181,13 @@ class StarPainter extends CustomPainter {
 
     // العيون
     StarFace.drawEyes(
-
-      canvas: canvas,
-
-      cx: cx,
-
-      cy: cy,
-
-      size: size.width,
-
-      blink: blink,
-
-    );
+  canvas: canvas,
+  cx: cx,
+  cy: cy,
+  size: size.width,
+  blink: blink,
+  happy: happy,
+);
 
 
 
@@ -218,22 +213,16 @@ class StarPainter extends CustomPainter {
 
 
   @override
-  bool shouldRepaint(
-      covariant StarPainter oldDelegate) {
+bool shouldRepaint(
+    covariant StarPainter oldDelegate) {
 
-
-    return oldDelegate.blink != blink ||
-
-        oldDelegate.talking != talking ||
-
-        oldDelegate.glowScale != glowScale ||
-
-        oldDelegate.shineValue != shineValue ||
-
-        oldDelegate.particleValue != particleValue ||
-
-        oldDelegate.armAnimation != armAnimation;
-
-  }
+  return oldDelegate.blink != blink ||
+      oldDelegate.talking != talking ||
+      oldDelegate.glowScale != glowScale ||
+      oldDelegate.shineValue != shineValue ||
+      oldDelegate.particleValue != particleValue ||
+      oldDelegate.armAnimation != armAnimation ||
+      oldDelegate.happy != happy;
+}
 
 }
