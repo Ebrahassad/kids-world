@@ -3,17 +3,20 @@ import 'package:flutter/material.dart';
 import 'star_face.dart';
 import 'star_mouth.dart';
 import 'star_effects.dart';
+import 'star_shine.dart';
 
 
 class StarPainter extends CustomPainter {
   final bool blink;
 final bool talking;
 final double glowScale;
+final double shineValue;
 
   StarPainter({
   required this.blink,
   required this.talking,
   required this.glowScale,
+  required this.shineValue,
 });
 
   @override
@@ -77,6 +80,14 @@ canvas.drawPath(
   paint,
 );
 
+StarShine.draw(
+  canvas,
+  cx,
+  cy,
+  size.width,
+  shineValue,
+);
+
 StarFace.drawEyes(
   canvas: canvas,
   cx: cx,
@@ -96,9 +107,11 @@ StarMouth.draw(
 }
 
   @override
-  bool shouldRepaint(
-      covariant StarPainter oldDelegate) {
-    return oldDelegate.blink != blink ||
-        oldDelegate.talking != talking;
-  }
+bool shouldRepaint(
+    covariant StarPainter oldDelegate) {
+  return oldDelegate.blink != blink ||
+      oldDelegate.talking != talking ||
+      oldDelegate.glowScale != glowScale ||
+      oldDelegate.shineValue != shineValue;
+}
 }
