@@ -45,6 +45,8 @@ Timer? mouthTimer;
 
 late AnimationController glowController;
 late Animation<double> glowAnimation;
+late AnimationController particleController;
+late Animation<double> particleAnimation;
 late AnimationController shineController;
 late Animation<double> shineAnimation;
 
@@ -90,6 +92,26 @@ shineController.repeat();
 glowController.repeat(
   reverse: true,
 );
+
+particleController = AnimationController(
+  vsync: this,
+  duration: const Duration(
+    seconds: 3,
+  ),
+);
+
+particleAnimation = Tween<double>(
+  begin: 0,
+  end: 1,
+).animate(
+  CurvedAnimation(
+    parent: particleController,
+    curve: Curves.linear,
+  ),
+);
+
+particleController.repeat();
+
   startBlink();
 
 
@@ -171,7 +193,7 @@ blinkTimer?.cancel();
 mouthTimer?.cancel(); 
 shineController.dispose();
 glowController.dispose();
-
+particleController.dispose();
 super.dispose();
 }
 
@@ -193,7 +215,9 @@ super.dispose();
   animation: Listenable.merge([
   glowAnimation,
   shineAnimation,
+  particleAnimation,
 ]),
+
   builder: (context, child) {
     return CustomPaint(
       size: Size(
@@ -205,6 +229,7 @@ super.dispose();
         talking: mouthOpen,
         glowScale: glowAnimation.value,
 shineValue: shineAnimation.value,
+particleValue: particleAnimation.value,
       ),
     );
   },
