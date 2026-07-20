@@ -222,50 +222,49 @@ super.dispose();
 }
 
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
 
-    return Row(
+  return Row(
+    mainAxisSize: MainAxisSize.min,
 
-      mainAxisSize:
-          MainAxisSize.min,
+    children: [
 
-Transform.translate(
-  offset: Offset(
-    0,
-    -10 * bounceAnimation.value,
-  ),
-  child: Transform.rotate(
+      Transform.translate(
+        offset: Offset(
+          0,
+          -10 * bounceAnimation.value,
+        ),
 
-      children: [
+        child: Transform.rotate(
+          angle: starRotation,
 
+          child: AnimatedBuilder(
+            animation: Listenable.merge([
+              glowAnimation,
+              shineAnimation,
+              particleAnimation,
+              bounceAnimation,
+            ]),
 
-        Transform.rotate(
-  angle: starRotation,
-  child: AnimatedBuilder(
-  animation: Listenable.merge([
-  glowAnimation,
-  shineAnimation,
-  particleAnimation,
-]),
+            builder: (context, child) {
+              return CustomPaint(
+                size: Size(
+                  widget.size,
+                  widget.size,
+                ),
 
-  builder: (context, child) {
-    return CustomPaint(
-      size: Size(
-        widget.size,
-        widget.size,
+                painter: StarPainter(
+                  blink: blink,
+                  talking: mouthOpen,
+                  glowScale: glowAnimation.value,
+                  shineValue: shineAnimation.value,
+                  particleValue: particleAnimation.value,
+                ),
+              );
+            },
+          ),
+        ),
       ),
-      painter: StarPainter(
-        blink: blink,
-        talking: mouthOpen,
-        glowScale: glowAnimation.value,
-shineValue: shineAnimation.value,
-particleValue: particleAnimation.value,
-      ),
-    );
-  },
-),
-),
-),
 
         const SizedBox(
 
