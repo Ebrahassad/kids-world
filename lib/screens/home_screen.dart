@@ -2,7 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'games_screen.dart';
-
+import 'game_screen.dart';
+import 'choose_image_screen.dart';
+import 'match_image_screen.dart';
+import 'colors_screen.dart';
+import 'numbers_screen.dart';
+import 'letters_screen.dart';
+import 'memory_levels_screen.dart';
+import 'sort_objects_screen.dart';
+import 'puzzle_order_screen.dart';
+import 'hard_puzzle_screen.dart';
+import '../progress_manager.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
