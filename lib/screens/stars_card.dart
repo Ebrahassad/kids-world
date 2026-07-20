@@ -123,7 +123,9 @@ AnimatedBuilder(
   },
 
   child: HappyStar(
-    size: 90,
+  size: 90,
+  message: "أحسنت يا بطل! ⭐",
+
   ),
 
 ),
