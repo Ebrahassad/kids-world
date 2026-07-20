@@ -5,6 +5,8 @@ import 'star_mouth.dart';
 import 'star_effects.dart';
 import 'star_shine.dart';
 import 'star_particles.dart';
+import 'star_arms_legs.dart';
+
 
 class StarPainter extends CustomPainter {
   final bool blink;
@@ -80,6 +82,13 @@ StarEffects.drawGlow(
 canvas.drawPath(
   path,
   paint,
+);
+
+StarArmsLegs.draw(
+  canvas,
+  cx,
+  cy,
+  size.width,
 );
 
 StarShine.draw(
