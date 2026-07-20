@@ -89,6 +89,7 @@ StarArmsLegs.draw(
   cx,
   cy,
   size.width,
+  talking ? 0.2 : 0,
 );
 
 StarShine.draw(
