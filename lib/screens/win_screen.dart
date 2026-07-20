@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../progress_manager.dart';
 import 'win_button_3d.dart';
 import 'stars_card.dart';
+import '../star_voice_manager.dart';
 
 class WinScreen extends StatefulWidget {
 
@@ -98,12 +99,29 @@ Future<void> unlockGame() async {
 
     try {
 
-      await audioPlayer.play(
-        AssetSource(
-          "sounds/win.mp3",
-        ),
-      );
+      Future<void> playWinSound() async {
+  try {
+    // مؤثر الفوز
+    await audioPlayer.play(
+      AssetSource(
+        "sounds/win.mp3",
+      ),
+    );
 
+    // انتظر حتى ينتهي مؤثر الفوز
+    await audioPlayer.onPlayerComplete.first;
+
+    // انتظر نصف ثانية
+    await Future.delayed(
+      const Duration(milliseconds: 500),
+    );
+
+    // كلام النجمة
+    await StarVoiceManager.win();
+  } catch (e) {
+    debugPrint("خطأ الصوت: $e");
+  }
+}
     } catch (e) {
 
       debugPrint(
