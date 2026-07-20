@@ -640,7 +640,8 @@ class _LettersScreenState extends State<LettersScreen> {
 
               stars: stars,
 
-
+gameId:
+6,
               nextGame:
                   const LettersScreen(),
 
