@@ -76,6 +76,7 @@ class StarPainter extends CustomPainter {
   size: size.width,
   talking: talking,
 );
+}
 
   @override
   bool shouldRepaint(
