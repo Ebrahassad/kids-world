@@ -1,45 +1,63 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StarManager {
-
   static const String key = "total_stars";
 
+  // قراءة الرصيد
+  static Future<int> getStars() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(key) ?? 0;
+  }
 
-  // حفظ مجموع النجوم
+  // إضافة نجوم
   static Future<void> addStars(int stars) async {
-
     final prefs = await SharedPreferences.getInstance();
 
-    int oldStars = prefs.getInt(key) ?? 0;
+    final current =
+        prefs.getInt(key) ?? 0;
 
     await prefs.setInt(
       key,
-      oldStars + stars,
+      current + stars,
     );
-
   }
 
-
-  // قراءة مجموع النجوم
-  static Future<int> getStars() async {
-
+  // خصم نجوم
+  static Future<bool> spendStars(int stars) async {
     final prefs = await SharedPreferences.getInstance();
 
-    return prefs.getInt(key) ?? 0;
+    final current =
+        prefs.getInt(key) ?? 0;
 
+    if (current < stars) {
+      return false;
+    }
+
+    await prefs.setInt(
+      key,
+      current - stars,
+    );
+
+    return true;
   }
 
+  // تعيين الرصيد مباشرة
+  static Future<void> setStars(int stars) async {
+    final prefs = await SharedPreferences.getInstance();
 
-  // تصفير النجوم (إذا احتجنا)
+    await prefs.setInt(
+      key,
+      stars,
+    );
+  }
+
+  // تصفير الرصيد
   static Future<void> resetStars() async {
-
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setInt(
       key,
       0,
     );
-
   }
-
 }
