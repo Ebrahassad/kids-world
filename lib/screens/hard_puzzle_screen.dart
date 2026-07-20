@@ -159,7 +159,7 @@ class _HardPuzzleScreenState
           builder: (_) => WinScreen(
 
             stars: stars,
-
+gameId: 10,
             nextGame:
                 const HardPuzzleScreen(),
 
