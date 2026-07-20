@@ -38,15 +38,18 @@ class _HappyStarState extends State<HappyStar> {
 bool talking = false;
 bool mouthOpen = false;
 double starRotation = 0;
+double glowScale = 1.0;
 
 Timer? blinkTimer;
 Timer? mouthTimer;
+Timer? glowTimer;
 
   @override
 void initState() {
   super.initState();
 
   startBlink();
+startGlow();
 
   talking = StarVoiceManager.isTalking;
 
@@ -55,7 +58,19 @@ void initState() {
   );
 }
 
+void startGlow() {
+  glowTimer = Timer.periodic(
+    const Duration(milliseconds: 120),
+    (_) {
+      if (!mounted) return;
 
+      setState(() {
+        glowScale =
+            glowScale == 1.0 ? 1.12 : 1.0;
+      });
+    },
+  );
+}
 
   void startBlink() {
   blinkTimer = Timer.periodic(
@@ -123,8 +138,10 @@ void dispose() {
   );
 
 blinkTimer?.cancel();
-mouthTimer?.cancel();
-  super.dispose();
+mouthTimer?.cancel(); 
+glowTimer?.cancel();
+
+super.dispose();
 }
 
   @override
@@ -233,17 +250,3 @@ mouthTimer?.cancel();
 
 
 
-
-
-
-
-
-
-
-  @override
-bool shouldRepaint(covariant StarPainter oldDelegate) {
-  return oldDelegate.blink != blink ||
-      oldDelegate.talking != talking;
-}
-
-}
