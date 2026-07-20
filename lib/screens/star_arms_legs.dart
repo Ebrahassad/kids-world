@@ -24,7 +24,8 @@ class StarArmsLegs {
       ),
       Offset(
         cx - size * 0.65,
-        cy - size * 0.12,
+        cy - size * 0.12 +
+            animation * size * 0.08,
       ),
       paint,
     );
@@ -38,7 +39,8 @@ class StarArmsLegs {
       ),
       Offset(
         cx + size * 0.65,
-        cy - size * 0.12,
+        cy - size * 0.12 -
+            animation * size * 0.08,
       ),
       paint,
     );
@@ -52,7 +54,8 @@ class StarArmsLegs {
       ),
       Offset(
         cx - size * 0.25,
-        cy + size * 0.65,
+        cy + size * 0.65 +
+            animation * size * 0.05,
       ),
       paint,
     );
@@ -66,51 +69,60 @@ class StarArmsLegs {
       ),
       Offset(
         cx + size * 0.25,
-        cy + size * 0.65,
+        cy + size * 0.65 -
+            animation * size * 0.05,
       ),
       paint,
     );
 
 
-    // دوائر صغيرة للأيدي والأرجل
+    // دوائر اليدين والأرجل
     final Paint circlePaint = Paint()
       ..color = Colors.orange.shade700;
 
 
+    // اليد اليسرى
     canvas.drawCircle(
       Offset(
         cx - size * 0.65,
-        cy - size * 0.12,
+        cy - size * 0.12 +
+            animation * size * 0.08,
       ),
       size * 0.05,
       circlePaint,
     );
 
 
+    // اليد اليمنى
     canvas.drawCircle(
       Offset(
         cx + size * 0.65,
-        cy - size * 0.12,
+        cy - size * 0.12 -
+            animation * size * 0.08,
       ),
       size * 0.05,
       circlePaint,
     );
 
 
+    // الرجل اليسرى
     canvas.drawCircle(
       Offset(
         cx - size * 0.25,
-        cy + size * 0.65,
+        cy + size * 0.65 +
+            animation * size * 0.05,
       ),
       size * 0.05,
       circlePaint,
     );
 
 
+    // الرجل اليمنى
     canvas.drawCircle(
       Offset(
         cx + size * 0.25,
-        cy + size * 0.65,
+        cy + size * 0.65 -
+            animation * size * 0.05,
       ),
       size * 0.05,
       circlePaint,
