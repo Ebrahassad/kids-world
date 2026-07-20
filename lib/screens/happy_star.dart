@@ -49,6 +49,8 @@ late AnimationController particleController;
 late Animation<double> particleAnimation;
 late AnimationController shineController;
 late Animation<double> shineAnimation;
+late AnimationController bounceController;
+late Animation<double> bounceAnimation;
 
 
   @override
@@ -111,6 +113,25 @@ particleAnimation = Tween<double>(
 );
 
 particleController.repeat();
+
+bounceController = AnimationController(
+  vsync: this,
+  duration: const Duration(
+    milliseconds: 700,
+  ),
+);
+
+bounceAnimation = Tween<double>(
+  begin: 0,
+  end: 1,
+).animate(
+  CurvedAnimation(
+    parent: bounceController,
+    curve: Curves.elasticOut,
+  ),
+);
+
+bounceController.forward();
 
   startBlink();
 
@@ -183,6 +204,8 @@ void _talkListener() {
     talking = isTalking;
   });
 }
+
+
 @override
 void dispose() {
   StarVoiceManager.talkingNotifier.removeListener(
@@ -194,6 +217,7 @@ mouthTimer?.cancel();
 shineController.dispose();
 glowController.dispose();
 particleController.dispose();
+bounceController.dispose();
 super.dispose();
 }
 
@@ -205,6 +229,12 @@ super.dispose();
       mainAxisSize:
           MainAxisSize.min,
 
+Transform.translate(
+  offset: Offset(
+    0,
+    -10 * bounceAnimation.value,
+  ),
+  child: Transform.rotate(
 
       children: [
 
@@ -233,6 +263,7 @@ particleValue: particleAnimation.value,
       ),
     );
   },
+),
 ),
 ),
 
