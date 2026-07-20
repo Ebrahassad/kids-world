@@ -115,6 +115,14 @@ class StarPainter extends CustomPainter {
   animation: shineValue,
 );
 
+// جسم النجمة
+    canvas.drawPath(
+
+      path,
+
+      paint,
+
+    );
 
 
     // اليدين والأرجل
@@ -134,15 +142,7 @@ class StarPainter extends CustomPainter {
 
 
 
-    // جسم النجمة
-    canvas.drawPath(
-
-      path,
-
-      paint,
-
-    );
-
+    
 
 
     // اللمعة
