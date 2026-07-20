@@ -8,6 +8,8 @@ class WinScreen extends StatefulWidget {
 
   final int stars;
 
+final int gameId;
+
   final Widget nextGame;
 
   final Widget gamesPage;
@@ -29,6 +31,7 @@ class WinScreen extends StatefulWidget {
     super.key,
 
     required this.stars,
+required this.gameId,
 
     required this.nextGame,
 
@@ -68,6 +71,8 @@ class _WinScreenState extends State<WinScreen> {
 
     confettiController.play();
 
+unlockGame();
+
     
 
   }
@@ -75,6 +80,14 @@ class _WinScreenState extends State<WinScreen> {
   
 Future<int> getTotalStars() {
   return ProgressManager.getTotalStars();
+}
+
+Future<void> unlockGame() async {
+
+  await ProgressManager.unlockNextGame(
+    widget.gameId,
+  );
+
 }
 
   Future<void> playWinSound() async {
