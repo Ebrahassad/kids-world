@@ -7,12 +7,14 @@ import 'star_effects.dart';
 
 class StarPainter extends CustomPainter {
   final bool blink;
-  final bool talking;
+final bool talking;
+final double glowScale;
 
   StarPainter({
-    required this.blink,
-    required this.talking,
-  });
+  required this.blink,
+  required this.talking,
+  required this.glowScale,
+});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -66,7 +68,7 @@ StarEffects.drawGlow(
   canvas: canvas,
   cx: cx,
   cy: cy,
-  radius: size.width * 0.55,
+  radius: size.width * 0.55 * glowScale,
 );
 
 // جسم النجمة
