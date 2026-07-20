@@ -7,6 +7,7 @@ class StarArmsLegs {
     double cx,
     double cy,
     double size,
+    double animation,
   ) {
 
     final Paint paint = Paint()
