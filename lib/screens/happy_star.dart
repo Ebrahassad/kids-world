@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../star_voice_manager.dart';
 
 
 class HappyStar extends StatefulWidget {
@@ -33,16 +34,20 @@ class _HappyStarState extends State<HappyStar> {
 
 
   bool blink = false;
+bool talking = false;
 
+  @@override
+void initState() {
+  super.initState();
 
-  @override
-  void initState() {
+  startBlink();
 
-    super.initState();
+  talking = StarVoiceManager.isTalking;
 
-    startBlink();
-
-  }
+  StarVoiceManager.talkingNotifier.addListener(
+    _talkListener,
+  );
+}
 
 
 
@@ -89,8 +94,22 @@ class _HappyStarState extends State<HappyStar> {
 
   }
 
+void _talkListener() {
+  if (!mounted) return;
 
+  setState(() {
+    talking = StarVoiceManager.talkingNotifier.value;
+  });
+}
 
+@override
+void dispose() {
+  StarVoiceManager.talkingNotifier.removeListener(
+    _talkListener,
+  );
+
+  super.dispose();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -116,10 +135,9 @@ class _HappyStarState extends State<HappyStar> {
 
 
           painter: StarPainter(
-
-            blink: blink,
-
-          ),
+  blink: blink,
+  talking: talking,
+),
 
         ),
 
@@ -212,14 +230,12 @@ class StarPainter extends CustomPainter {
 
 
   final bool blink;
-
+final bool talking;
 
   StarPainter({
-
-    required this.blink,
-
-  });
-
+  required this.blink,
+  required this.talking,
+});
 
 
   @override
@@ -532,14 +548,9 @@ class StarPainter extends CustomPainter {
 
 
   @override
-  bool shouldRepaint(
-
-    covariant StarPainter oldDelegate,
-
-  ) {
-
-    return oldDelegate.blink != blink;
-
-  }
+bool shouldRepaint(covariant StarPainter oldDelegate) {
+  return oldDelegate.blink != blink ||
+      oldDelegate.talking != talking;
+}
 
 }
