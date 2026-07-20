@@ -106,6 +106,8 @@ await ProgressManager.saveStars(
       MaterialPageRoute(
         builder: (_) => WinScreen(
           stars: stars,
+          gameId:
+8,
           nextGame: const SortObjectsScreen(),
           gamesPage: const GamesScreen(),
         ),
