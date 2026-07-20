@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 class StarFace {
 
-
   static void drawEyes({
 
     required Canvas canvas,
@@ -15,56 +14,85 @@ class StarFace {
   }) {
 
 
-    final Paint eyePaint = Paint()
-      ..color = Colors.black;
 
-
-    final Paint shinePaint = Paint()
-      ..color = Colors.white;
+    // الخدود
+    final blushPaint = Paint()
+      ..color = Colors.pinkAccent.withValues(alpha: 0.45);
 
 
 
-    final Paint browPaint = Paint()
-      ..color = Colors.brown.shade700
-      ..strokeWidth = size * 0.025
-      ..strokeCap = StrokeCap.round;
+    canvas.drawCircle(
+      Offset(
+        cx - size * .28,
+        cy + size * .08,
+      ),
+      size * .07,
+      blushPaint,
+    );
+
+
+    canvas.drawCircle(
+      Offset(
+        cx + size * .28,
+        cy + size * .08,
+      ),
+      size * .07,
+      blushPaint,
+    );
+
 
 
 
     // الحواجب
+    final eyebrowPaint = Paint()
+
+      ..color = Colors.brown.shade700
+
+      ..strokeWidth = size * .025
+
+      ..strokeCap = StrokeCap.round;
+
+
+
     canvas.drawLine(
 
       Offset(
         cx - size * .22,
-        cy - size * .16,
+        cy - size * .18,
       ),
 
       Offset(
         cx - size * .08,
-        cy - size * .19,
+        cy - size * .20,
       ),
 
-      browPaint,
+      eyebrowPaint,
 
     );
+
 
 
     canvas.drawLine(
 
       Offset(
         cx + size * .08,
-        cy - size * .19,
+        cy - size * .20,
       ),
 
       Offset(
         cx + size * .22,
-        cy - size * .16,
+        cy - size * .18,
       ),
 
-      browPaint,
+      eyebrowPaint,
 
     );
 
+
+
+
+    final eyePaint = Paint()
+      ..color = Colors.black;
 
 
 
@@ -72,6 +100,7 @@ class StarFace {
 
 
       eyePaint.strokeWidth = 3;
+
 
 
       canvas.drawLine(
@@ -89,6 +118,7 @@ class StarFace {
         eyePaint,
 
       );
+
 
 
       canvas.drawLine(
@@ -111,7 +141,7 @@ class StarFace {
     } else {
 
 
-      // العين اليسرى
+
       canvas.drawCircle(
 
         Offset(
@@ -119,14 +149,14 @@ class StarFace {
           cy - size * .05,
         ),
 
-        size * .055,
+        size * .045,
 
         eyePaint,
 
       );
 
 
-      // العين اليمنى
+
       canvas.drawCircle(
 
         Offset(
@@ -134,47 +164,15 @@ class StarFace {
           cy - size * .05,
         ),
 
-        size * .055,
+        size * .045,
 
         eyePaint,
 
       );
 
 
-
-      // لمعة العين
-      canvas.drawCircle(
-
-        Offset(
-          cx - size * .13,
-          cy - size * .07,
-        ),
-
-        size * .018,
-
-        shinePaint,
-
-      );
-
-
-      canvas.drawCircle(
-
-        Offset(
-          cx + size * .17,
-          cy - size * .07,
-        ),
-
-        size * .018,
-
-        shinePaint,
-
-      );
-
-
     }
 
-
   }
-
 
 }
