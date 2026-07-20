@@ -502,7 +502,7 @@ class _ChooseImageScreenState
             builder: (_) => WinScreen(
 
               stars: stars,
-
+gameId: 2,
               nextGame:
                   const ChooseImageScreen(),
 
