@@ -2,6 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'star_face.dart';
 import 'star_mouth.dart';
+import 'star_effects.dart';
+
 
 class StarPainter extends CustomPainter {
   final bool blink;
@@ -59,23 +61,36 @@ class StarPainter extends CustomPainter {
 
     path.close();
 
-    // جسم النجمة
-    canvas.drawPath(path, paint);
+    // الهالة الذهبية
+StarEffects.drawGlow(
+  canvas: canvas,
+  cx: cx,
+  cy: cy,
+  radius: size.width * 0.55,
+);
 
-    StarFace.drawEyes(
+// جسم النجمة
+canvas.drawPath(
+  path,
+  paint,
+);
+
+StarFace.drawEyes(
   canvas: canvas,
   cx: cx,
   cy: cy,
   size: size.width,
   blink: blink,
 );
-    StarMouth.draw(
+
+StarMouth.draw(
   canvas: canvas,
   cx: cx,
   cy: cy,
   size: size.width,
   talking: talking,
 );
+
 }
 
   @override
