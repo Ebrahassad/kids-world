@@ -594,7 +594,8 @@ class _GameScreenState extends State<GameScreen> {
               stars:
               stars,
 
-
+gameId:
+1,
 
               nextGame:
               const GameScreen(),
