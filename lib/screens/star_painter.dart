@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'star_face.dart';
+import 'star_mouth.dart';
 
 class StarPainter extends CustomPainter {
   final bool blink;
@@ -68,54 +69,13 @@ class StarPainter extends CustomPainter {
   size: size.width,
   blink: blink,
 );
-    final Paint smilePaint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
-
-    if (talking) {
-      // الفم
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset(
-            cx,
-            cy + size.height * .15,
-          ),
-          width: size.width * .20,
-          height: size.height * .14,
-        ),
-        Paint()..color = Colors.red.shade900,
-      );
-
-      // اللسان
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset(
-            cx,
-            cy + size.height * .18,
-          ),
-          width: size.width * .11,
-          height: size.height * .05,
-        ),
-        Paint()..color = Colors.pinkAccent,
-      );
-    } else {
-      canvas.drawArc(
-        Rect.fromCenter(
-          center: Offset(
-            cx,
-            cy + size.height * .12,
-          ),
-          width: size.width * .35,
-          height: size.height * .25,
-        ),
-        0,
-        pi,
-        false,
-        smilePaint,
-      );
-    }
-  }
+    StarMouth.draw(
+  canvas: canvas,
+  cx: cx,
+  cy: cy,
+  size: size.width,
+  talking: talking,
+);
 
   @override
   bool shouldRepaint(
