@@ -71,7 +71,9 @@ class _WinScreenState extends State<WinScreen> {
 
     confettiController.play();
 
-unlockGame();
+Future.microtask(() {
+  unlockGame();
+});
 
     
 
