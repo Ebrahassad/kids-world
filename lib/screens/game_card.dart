@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../games_screen.dart';
+import 'game_item.dart';
 
 class GameCard extends StatelessWidget {
   final GameItem game;
