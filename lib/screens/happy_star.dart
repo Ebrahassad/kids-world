@@ -31,25 +31,47 @@ class HappyStar extends StatefulWidget {
 
 
 
-class _HappyStarState extends State<HappyStar> {
+class _HappyStarState extends State<HappyStar>
+    with SingleTickerProviderStateMixin {
 
 
   bool blink = false;
 bool talking = false;
 bool mouthOpen = false;
 double starRotation = 0;
-double glowScale = 1.0;
+
 
 Timer? blinkTimer;
 Timer? mouthTimer;
-Timer? glowTimer;
+
+late AnimationController glowController;
+late Animation<double> glowAnimation;
 
   @override
 void initState() {
   super.initState();
+glowController = AnimationController(
+  vsync: this,
+  duration: const Duration(
+    milliseconds: 900,
+  ),
+);
 
+glowAnimation = Tween<double>(
+  begin: 1.0,
+  end: 1.15,
+).animate(
+  CurvedAnimation(
+    parent: glowController,
+    curve: Curves.easeInOut,
+  ),
+);
+
+glowController.repeat(
+  reverse: true,
+);
   startBlink();
-startGlow();
+
 
   talking = StarVoiceManager.isTalking;
 
@@ -58,19 +80,7 @@ startGlow();
   );
 }
 
-void startGlow() {
-  glowTimer = Timer.periodic(
-    const Duration(milliseconds: 120),
-    (_) {
-      if (!mounted) return;
 
-      setState(() {
-        glowScale =
-            glowScale == 1.0 ? 1.12 : 1.0;
-      });
-    },
-  );
-}
 
   void startBlink() {
   blinkTimer = Timer.periodic(
@@ -139,7 +149,8 @@ void dispose() {
 
 blinkTimer?.cancel();
 mouthTimer?.cancel(); 
-glowTimer?.cancel();
+
+glowController.dispose();
 
 super.dispose();
 }
@@ -158,16 +169,22 @@ super.dispose();
 
         Transform.rotate(
   angle: starRotation,
-  child: CustomPaint(
-    size: Size(
-      widget.size,
-      widget.size,
-    ),
-    painter: StarPainter(
-      blink: blink,
-      talking: mouthOpen,
-    ),
-  ),
+  child: AnimatedBuilder(
+  animation: glowAnimation,
+  builder: (context, child) {
+    return CustomPaint(
+      size: Size(
+        widget.size,
+        widget.size,
+      ),
+      painter: StarPainter(
+        blink: blink,
+        talking: mouthOpen,
+        glowScale: glowAnimation.value,
+      ),
+    );
+  },
+),
 ),
 
         const SizedBox(
