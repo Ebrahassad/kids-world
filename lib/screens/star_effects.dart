@@ -8,11 +8,11 @@ class StarEffects {
     required double radius,
   }) {
     final Paint glowPaint = Paint()
-      ..color = Colors.amber.withOpacity(0.25)
-      ..maskFilter = const MaskFilter.blur(
-        BlurStyle.normal,
-        25,
-      );
+  ..color = Colors.amber.withValues(alpha: 0.25)
+  ..maskFilter = const MaskFilter.blur(
+    BlurStyle.normal,
+    25,
+  );
 
     canvas.drawCircle(
       Offset(cx, cy),
