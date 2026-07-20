@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'star_face.dart';
 
 class StarPainter extends CustomPainter {
   final bool blink;
@@ -60,56 +61,13 @@ class StarPainter extends CustomPainter {
     // جسم النجمة
     canvas.drawPath(path, paint);
 
-    final Paint eyePaint = Paint()
-      ..color = Colors.black;
-
-    // العيون
-    if (blink) {
-      eyePaint.strokeWidth = 3;
-
-      canvas.drawLine(
-        Offset(
-          cx - size.width * .22,
-          cy - size.height * .05,
-        ),
-        Offset(
-          cx - size.width * .08,
-          cy - size.height * .05,
-        ),
-        eyePaint,
-      );
-
-      canvas.drawLine(
-        Offset(
-          cx + size.width * .08,
-          cy - size.height * .05,
-        ),
-        Offset(
-          cx + size.width * .22,
-          cy - size.height * .05,
-        ),
-        eyePaint,
-      );
-    } else {
-      canvas.drawCircle(
-        Offset(
-          cx - size.width * .15,
-          cy - size.height * .05,
-        ),
-        size.width * .04,
-        eyePaint,
-      );
-
-      canvas.drawCircle(
-        Offset(
-          cx + size.width * .15,
-          cy - size.height * .05,
-        ),
-        size.width * .04,
-        eyePaint,
-      );
-    }
-
+    StarFace.drawEyes(
+  canvas: canvas,
+  cx: cx,
+  cy: cy,
+  size: size.width,
+  blink: blink,
+);
     final Paint smilePaint = Paint()
       ..color = Colors.black
       ..style = PaintingStyle.stroke
