@@ -576,7 +576,7 @@ class _StarAssistantState extends State<StarAssistant>
   }
 
 
- id="b4s7qj"
+ 
   @override
   Widget build(BuildContext context) {
 
