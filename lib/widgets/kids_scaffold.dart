@@ -21,12 +21,7 @@ class KidsScaffold extends StatelessWidget {
       body: Stack(
         children: [
           child,
-
-          const Positioned(
-            top: 0,
-            right: 0,
-            child: StarAssistant(),
-          ),
+          const StarAssistant(),
         ],
       ),
     );
