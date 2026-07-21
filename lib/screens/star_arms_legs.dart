@@ -1,246 +1,157 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 class StarArmsLegs {
-
-
   static void draw(
-
     Canvas canvas,
     double cx,
     double cy,
     double size,
     double animation,
-
   ) {
-
-
-
-    final Paint armPaint = Paint()
-
+    final Paint limbPaint = Paint()
       ..color = Colors.orange.shade800
-
-      ..strokeWidth = size * 0.035
-
+      ..strokeWidth = size * .035
       ..strokeCap = StrokeCap.round;
 
-
-
-    final double wave =
-        animation * size * 0.12;
-
-
-
-    // اليد اليسرى مرفوعة
-    canvas.drawLine(
-
-      Offset(
-
-        cx - size * .38,
-
-        cy,
-
-      ),
-
-      Offset(
-
-        cx - size * .65,
-
-        cy - size * .15 - wave,
-
-      ),
-
-      armPaint,
-
-    );
-
-
-
-
-    // اليد اليمنى مرفوعة
-    canvas.drawLine(
-
-      Offset(
-
-        cx + size * .38,
-
-        cy,
-
-      ),
-
-      Offset(
-
-        cx + size * .65,
-
-        cy - size * .15 + wave,
-
-      ),
-
-      armPaint,
-
-    );
-
-
-
-
-    // الأرجل مع حركة القفز
-
-    final double jump =
-        animation * size * .06;
-
-
-
-    canvas.drawLine(
-
-      Offset(
-
-        cx - size * .15,
-
-        cy + size * .35,
-
-      ),
-
-      Offset(
-
-        cx - size * .28,
-
-        cy + size * .65 - jump,
-
-      ),
-
-      armPaint,
-
-    );
-
-
-
-    canvas.drawLine(
-
-      Offset(
-
-        cx + size * .15,
-
-        cy + size * .35,
-
-      ),
-
-      Offset(
-
-        cx + size * .28,
-
-        cy + size * .65 + jump,
-
-      ),
-
-      armPaint,
-
-    );
-
-
-
-
-
-    // اليدين والرجلين
-
-    final Paint circlePaint = Paint()
-
-      ..color = Colors.orange.shade800;
-
-
-
-    final points = [
-
-
-      Offset(
-
-        cx - size * .65,
-
-        cy - size * .15 - wave,
-
-      ),
-
-
-      Offset(
-
-        cx + size * .65,
-
-        cy - size * .15 + wave,
-
-      ),
-
-
-      Offset(
-
-        cx - size * .28,
-
-        cy + size * .65 - jump,
-
-      ),
-
-
-      Offset(
-
-        cx + size * .28,
-
-        cy + size * .65 + jump,
-
-      ),
-
-    ];
-
-
-
-
-    for (final point in points) {
-
-
-      canvas.drawCircle(
-
-        point,
-
-        size * .05,
-
-        circlePaint,
-
-      );
-
-
-    }
-
-
-
-
-    // خطوط صغيرة كأنها أصابع
+    final Paint handPaint = Paint()
+      ..color = Colors.orange.shade700;
 
     final Paint fingerPaint = Paint()
-
       ..color = Colors.orange.shade900
+      ..strokeWidth = size * .012
+      ..strokeCap = StrokeCap.round;
 
-      ..strokeWidth = size * .015;
+    final double armWave = sin(animation * pi * 2) * size * .08;
+    final double jump = sin(animation * pi * 2) * size * .05;
 
+    // =====================
+    // الذراع اليسرى
+    // =====================
 
-
-    canvas.drawLine(
-
-      points[0],
-
-      points[0] + Offset(-size*.05, -size*.03),
-
-      fingerPaint,
-
+    final Offset leftShoulder = Offset(
+      cx - size * .35,
+      cy,
     );
 
-
-    canvas.drawLine(
-
-      points[1],
-
-      points[1] + Offset(size*.05, -size*.03),
-
-      fingerPaint,
-
+    final Offset leftHand = Offset(
+      cx - size * .63,
+      cy - size * .15 - armWave,
     );
 
+    canvas.drawLine(
+      leftShoulder,
+      leftHand,
+      limbPaint,
+    );
 
+    // =====================
+    // الذراع اليمنى
+    // =====================
+
+    final Offset rightShoulder = Offset(
+      cx + size * .35,
+      cy,
+    );
+
+    final Offset rightHand = Offset(
+      cx + size * .63,
+      cy - size * .15 + armWave,
+    );
+
+    canvas.drawLine(
+      rightShoulder,
+      rightHand,
+      limbPaint,
+    );
+
+    // =====================
+    // الرجل اليسرى
+    // =====================
+
+    final Offset leftHip = Offset(
+      cx - size * .15,
+      cy + size * .34,
+    );
+
+    final Offset leftFoot = Offset(
+      cx - size * .28,
+      cy + size * .64 - jump,
+    );
+
+    canvas.drawLine(
+      leftHip,
+      leftFoot,
+      limbPaint,
+    );
+
+    // =====================
+    // الرجل اليمنى
+    // =====================
+
+    final Offset rightHip = Offset(
+      cx + size * .15,
+      cy + size * .34,
+    );
+
+    final Offset rightFoot = Offset(
+      cx + size * .28,
+      cy + size * .64 + jump,
+    );
+
+    canvas.drawLine(
+      rightHip,
+      rightFoot,
+      limbPaint,
+    );
+
+    // =====================
+    // الكفين والقدمين
+    // =====================
+
+    for (final point in [
+      leftHand,
+      rightHand,
+      leftFoot,
+      rightFoot,
+    ]) {
+      canvas.drawCircle(
+        point,
+        size * .045,
+        handPaint,
+      );
+    }
+
+    // =====================
+    // أصابع اليد اليسرى
+    // =====================
+
+    canvas.drawLine(
+      leftHand,
+      leftHand + Offset(-size * .05, -size * .02),
+      fingerPaint,
+    );
+
+    canvas.drawLine(
+      leftHand,
+      leftHand + Offset(-size * .05, size * .01),
+      fingerPaint,
+    );
+
+    // =====================
+    // أصابع اليد اليمنى
+    // =====================
+
+    canvas.drawLine(
+      rightHand,
+      rightHand + Offset(size * .05, -size * .02),
+      fingerPaint,
+    );
+
+    canvas.drawLine(
+      rightHand,
+      rightHand + Offset(size * .05, size * .01),
+      fingerPaint,
+    );
   }
-
 }
