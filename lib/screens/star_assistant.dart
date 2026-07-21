@@ -89,23 +89,26 @@ class _StarAssistantState extends State<StarAssistant>
   Future<void> openStarMenu() async {
 
 
-    stars =
-        await ProgressManager.getTotalStars();
+  await StarVoiceManager.generalTalk();
 
 
-    setState(() {
-
-      menuVisible = true;
-
-    });
+  stars =
+      await ProgressManager.getTotalStars();
 
 
-    animationController.forward(
-      from: 0,
-    );
+  setState(() {
+
+    menuVisible = true;
+
+  });
 
 
-  }
+  animationController.forward(
+    from: 0,
+  );
+
+
+}
 
 
 
@@ -688,7 +691,11 @@ class _StarAssistantState extends State<StarAssistant>
                       GestureDetector(
 
 
-                        onTap: () {
+                        onTap: () async {
+
+  // صوت النجمة العام عند الضغط عليها
+  await StarVoiceManager.generalTalk();
+
 
   if(menuVisible){
 
@@ -702,7 +709,6 @@ class _StarAssistantState extends State<StarAssistant>
   }
 
 },
-
                         child: AnimatedScale(
 
 
