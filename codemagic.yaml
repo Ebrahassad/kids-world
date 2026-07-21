@@ -1,11 +1,12 @@
 workflows:
   android-workflow:
-    name: Android Build
+    name: ⭐ عالم الأطفال - Test Build
 
     environment:
       flutter: stable
 
     scripts:
+
       - name: Clean project
         script: |
           flutter clean
