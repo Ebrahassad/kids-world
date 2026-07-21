@@ -13,10 +13,10 @@ class StarShine {
     final Paint paint = Paint()
       ..shader = LinearGradient(
         colors: [
-  Colors.white.withValues(alpha: 0),
-  Colors.white.withValues(alpha: 0.8),
-  Colors.white.withValues(alpha: 0),
-],
+          Colors.white.withValues(alpha: 0),
+          Colors.white.withValues(alpha: 0.8),
+          Colors.white.withValues(alpha: 0),
+        ],
       ).createShader(
         Rect.fromLTWH(
           cx - size,
@@ -26,22 +26,35 @@ class StarShine {
         ),
       );
 
+
     canvas.save();
 
-    canvas.rotate(
-      value,
-      Offset(cx, cy),
+
+    // نقل نقطة الدوران إلى مركز النجمة
+    canvas.translate(
+      cx,
+      cy,
     );
 
+
+    // تدوير اللمعة
+    canvas.rotate(
+      value,
+    );
+
+
+    // إعادة الرسم حول المركز
     canvas.drawOval(
       Rect.fromCenter(
-        center: Offset(cx, cy),
+        center: Offset.zero,
         width: size * .25,
         height: size * 1.2,
       ),
       paint,
     );
 
+
     canvas.restore();
+
   }
 }
