@@ -7,16 +7,31 @@ import 'happy_star.dart';
 
 class StarAssistant extends StatelessWidget {
 
+
+  final String gameName;
+
+  final int currentLevel;
+
+
   const StarAssistant({
+
     super.key,
+
+    this.gameName = "memory_game",
+
+    this.currentLevel = 1,
+
   });
 
 
-  // قائمة النجمة
+
+  // فتح قائمة النجمة
   void openStarMenu(BuildContext context) async {
+
 
     final stars =
         await ProgressManager.getTotalStars();
+
 
 
     showModalBottomSheet(
@@ -25,205 +40,325 @@ class StarAssistant extends StatelessWidget {
 
       backgroundColor: Colors.transparent,
 
+
       builder: (context) {
+
 
         return Container(
 
-          padding: const EdgeInsets.all(20),
 
-          decoration: const BoxDecoration(
+          padding:
+              const EdgeInsets.all(20),
+
+
+
+          decoration:
+              const BoxDecoration(
 
             color: Colors.white,
 
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(30),
+            borderRadius:
+                BorderRadius.vertical(
+
+              top:
+                  Radius.circular(30),
+
             ),
 
           ),
 
 
+
           child: Column(
 
-            mainAxisSize: MainAxisSize.min,
+
+            mainAxisSize:
+                MainAxisSize.min,
+
 
 
             children: [
 
 
+
               const Text(
 
-                "⭐ ماذا تريد أن تفعل؟",
+                "⭐ أنا نجمتك، ماذا تريد؟",
 
-                style: TextStyle(
+                style:
+                    TextStyle(
 
                   fontSize: 24,
 
-                  fontWeight: FontWeight.bold,
+                  fontWeight:
+                      FontWeight.bold,
 
                 ),
 
               ),
 
 
-              const SizedBox(height: 20),
+
+              const SizedBox(height:20),
+
+
 
 
 
               // التلميح
+
               ListTile(
 
-                leading: const Icon(
+                leading:
+                    const Icon(
+
                   Icons.lightbulb,
-                  color: Colors.orange,
+
+                  color:
+                      Colors.orange,
+
                 ),
 
 
-                title: const Text(
+                title:
+                    const Text(
+
                   "تلميح 💡",
-                  style: TextStyle(
-                    fontSize: 20,
+
+                  style:
+                      TextStyle(
+
+                    fontSize:20,
+
                   ),
+
                 ),
 
 
                 onTap: () {
 
+
                   Navigator.pop(context);
+
 
                   StarVoiceManager.hint();
 
+
                 },
 
+
               ),
+
+
+
+
 
 
 
               // رصيد النجوم
+
               ListTile(
 
-                leading: const Icon(
+                leading:
+                    const Icon(
+
                   Icons.star,
-                  color: Colors.amber,
+
+                  color:
+                      Colors.amber,
+
                 ),
 
 
-                title: Text(
+
+                title:
+                    Text(
 
                   "رصيد النجوم ⭐ $stars",
 
-                  style: const TextStyle(
+                  style:
+                      const TextStyle(
 
-                    fontSize: 20,
+                    fontSize:20,
 
-                    fontWeight: FontWeight.bold,
+                    fontWeight:
+                        FontWeight.bold,
 
                   ),
 
                 ),
 
 
+
                 onTap: () {
+
 
                   Navigator.pop(context);
 
+
                   StarVoiceManager.stars();
 
+
                 },
+
 
               ),
 
 
 
-              // فتح مرحلة بالنجوم
+
+
+
+
+
+              // فتح مستوى
+
               ListTile(
 
-                leading: const Icon(
+                leading:
+                    const Icon(
+
                   Icons.lock_open,
-                  color: Colors.green,
+
+                  color:
+                      Colors.green,
+
                 ),
 
 
-                title: const Text(
 
-                  "فتح مرحلة 🔓",
+                title:
+                    const Text(
 
-                  style: TextStyle(
+                  "فتح المستوى التالي 🔓",
 
-                    fontSize: 20,
+                  style:
+                      TextStyle(
+
+                    fontSize:20,
 
                   ),
 
                 ),
 
 
+
+
                 onTap: () async {
 
+
                   Navigator.pop(context);
+
 
 
                   const cost = 20;
 
 
-                  final success =
-                      await ProgressManager.spendStars(cost);
+
+                  final paid =
+                      await ProgressManager
+                          .spendStars(cost);
 
 
-                  if (success) {
 
 
-                    await StarVoiceManager.unlock();
+                  if(paid){
+
+
+
+                    await ProgressManager
+                        .saveUnlockedLevel(
+
+                      gameName,
+
+                      currentLevel + 1,
+
+                    );
+
+
+
+                    await StarVoiceManager
+                        .unlock();
+
 
 
                     ScaffoldMessenger.of(context)
                         .showSnackBar(
 
+
+
                       const SnackBar(
 
-                        content: Text(
-                          "تم فتح المرحلة 🔓⭐",
+                        content:
+                            Text(
+
+                          "تم فتح المستوى التالي 🔓⭐",
+
                         ),
 
                       ),
 
+
                     );
+
 
 
                   } else {
 
 
+
                     ScaffoldMessenger.of(context)
                         .showSnackBar(
 
+
+
                       const SnackBar(
 
-                        content: Text(
+                        content:
+                            Text(
+
                           "تحتاج 20 نجمة ⭐",
+
                         ),
 
                       ),
 
+
                     );
+
 
 
                   }
 
 
+
                 },
+
 
               ),
 
 
+
+
             ],
+
 
           ),
 
+
         );
+
 
       },
 
+
     );
 
+
   }
+
+
+
 
 
 
@@ -231,71 +366,105 @@ class StarAssistant extends StatelessWidget {
   Widget build(BuildContext context) {
 
 
+
     return ValueListenableBuilder<bool>(
+
 
       valueListenable:
           StarVoiceManager.talkingNotifier,
 
 
-      builder: (context, talking, child) {
+
+      builder:
+          (context,talking,child){
+
 
 
         return SafeArea(
 
-          child: Align(
+
+
+          child:
+              Align(
+
 
             alignment:
                 Alignment.topRight,
 
 
-            child: Padding(
 
-              padding: const EdgeInsets.only(
+            child:
+                Padding(
 
-                top: 12,
 
-                right: 12,
+              padding:
+                  const EdgeInsets.only(
+
+                top:12,
+
+                right:12,
 
               ),
 
 
-              child: Column(
+
+
+              child:
+                  Column(
+
+
 
                 mainAxisSize:
                     MainAxisSize.min,
+
 
 
                 crossAxisAlignment:
                     CrossAxisAlignment.end,
 
 
+
                 children: [
 
 
-                  if (talking)
+
+
+                  if(talking)
+
+
 
                     Container(
+
+
 
                       padding:
                           const EdgeInsets.all(10),
 
 
+
                       decoration:
                           BoxDecoration(
 
-                        color: Colors.white,
+
+                        color:
+                            Colors.white,
+
 
                         borderRadius:
                             BorderRadius.circular(20),
 
+
                       ),
 
 
-                      child: const Text(
+
+                      child:
+                          const Text(
 
                         "أنا معك ⭐",
 
-                        style: TextStyle(
+                        style:
+                            TextStyle(
 
                           fontWeight:
                               FontWeight.bold,
@@ -304,71 +473,114 @@ class StarAssistant extends StatelessWidget {
 
                       ),
 
+
+
                     ),
+
+
 
 
 
                   GestureDetector(
 
+
+
                     onTap: () async {
+
 
 
                       await StarVoiceManager.chooseGame();
 
 
+
                       openStarMenu(context);
+
 
 
                     },
 
 
-                    child: AnimatedScale(
+
+
+                    child:
+                        AnimatedScale(
+
+
 
                       scale:
                           talking ? 1.25 : 1.0,
 
 
+
                       duration:
                           const Duration(
-                            milliseconds: 350,
-                          ),
+
+                        milliseconds:350,
+
+                      ),
 
 
-                      child: HappyStar(
+
+
+                      child:
+                          HappyStar(
+
+
 
                         size:
                             talking ? 95 : 65,
+
 
 
                         idle:
                             !talking,
 
 
+
                         message:
                             "",
 
+
                       ),
 
+
+
                     ),
+
+
 
                   ),
 
 
+
+
                 ],
+
+
 
               ),
 
+
+
             ),
 
+
+
           ),
+
+
 
         );
 
 
+
       },
+
 
     );
 
+
   }
+
 
 }
