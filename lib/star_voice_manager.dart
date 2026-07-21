@@ -100,5 +100,13 @@ static Future<void> hint() async {
   // 👋 الوداع
   static Future<void> goodbye() async {
     await _play("goodbye.mp3");
+
   }
+
+// 💬 رسالة الفوز
+static String winMessage() {
+
+  return "رائع! أحسنت 👏⭐ حصلت على نجوم جديدة، هل أنت مستعد للمرحلة القادمة؟";
+
+}
 }
