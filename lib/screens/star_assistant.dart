@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../star_voice_manager.dart';
+import '../progress_manager.dart';
 import 'happy_star.dart';
+
+
 
 
 class StarAssistant extends StatelessWidget {
@@ -10,8 +13,11 @@ class StarAssistant extends StatelessWidget {
   });
 
 
-  void openStarMenu(BuildContext context) {
+  void openStarMenu(BuildContext context) async {
 
+  final stars = await ProgressManager.getTotalStars();
+
+  
     showModalBottomSheet(
 
       context: context,
@@ -95,12 +101,13 @@ class StarAssistant extends StatelessWidget {
                   color: Colors.amber,
                 ),
 
-                title: const Text(
-                  "رصيد النجوم ⭐",
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
+                title: Text(
+  "رصيد النجوم ⭐ $stars",
+  style: const TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  ),
+),
 
                 onTap: () {
 
@@ -233,11 +240,13 @@ class StarAssistant extends StatelessWidget {
 
                   GestureDetector(
 
-                    onTap: () {
+                    onTap: () async {
 
-                      openStarMenu(context);
+  await StarVoiceManager.chooseGame();
 
-                    },
+  openStarMenu(context);
+
+},
 
 
                     child: AnimatedScale(
