@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../star_voice_manager.dart';
 import '../progress_manager.dart';
 import 'happy_star.dart';
-
-
 
 
 class StarAssistant extends StatelessWidget {
@@ -13,11 +12,13 @@ class StarAssistant extends StatelessWidget {
   });
 
 
+  // قائمة النجمة
   void openStarMenu(BuildContext context) async {
 
-  final stars = await ProgressManager.getTotalStars();
+    final stars =
+        await ProgressManager.getTotalStars();
 
-  
+
     showModalBottomSheet(
 
       context: context,
@@ -68,6 +69,7 @@ class StarAssistant extends StatelessWidget {
 
 
 
+              // التلميح
               ListTile(
 
                 leading: const Icon(
@@ -75,12 +77,14 @@ class StarAssistant extends StatelessWidget {
                   color: Colors.orange,
                 ),
 
+
                 title: const Text(
                   "تلميح 💡",
                   style: TextStyle(
                     fontSize: 20,
                   ),
                 ),
+
 
                 onTap: () {
 
@@ -94,6 +98,7 @@ class StarAssistant extends StatelessWidget {
 
 
 
+              // رصيد النجوم
               ListTile(
 
                 leading: const Icon(
@@ -101,13 +106,21 @@ class StarAssistant extends StatelessWidget {
                   color: Colors.amber,
                 ),
 
+
                 title: Text(
-  "رصيد النجوم ⭐ $stars",
-  style: const TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.bold,
-  ),
-),
+
+                  "رصيد النجوم ⭐ $stars",
+
+                  style: const TextStyle(
+
+                    fontSize: 20,
+
+                    fontWeight: FontWeight.bold,
+
+                  ),
+
+                ),
+
 
                 onTap: () {
 
@@ -121,6 +134,7 @@ class StarAssistant extends StatelessWidget {
 
 
 
+              // فتح مرحلة بالنجوم
               ListTile(
 
                 leading: const Icon(
@@ -128,18 +142,71 @@ class StarAssistant extends StatelessWidget {
                   color: Colors.green,
                 ),
 
+
                 title: const Text(
+
                   "فتح مرحلة 🔓",
+
                   style: TextStyle(
+
                     fontSize: 20,
+
                   ),
+
                 ),
 
-                onTap: () {
+
+                onTap: () async {
 
                   Navigator.pop(context);
 
-                  StarVoiceManager.unlock();
+
+                  const cost = 20;
+
+
+                  final success =
+                      await ProgressManager.spendStars(cost);
+
+
+                  if (success) {
+
+
+                    await StarVoiceManager.unlock();
+
+
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(
+
+                      const SnackBar(
+
+                        content: Text(
+                          "تم فتح المرحلة 🔓⭐",
+                        ),
+
+                      ),
+
+                    );
+
+
+                  } else {
+
+
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(
+
+                      const SnackBar(
+
+                        content: Text(
+                          "تحتاج 20 نجمة ⭐",
+                        ),
+
+                      ),
+
+                    );
+
+
+                  }
+
 
                 },
 
@@ -183,14 +250,13 @@ class StarAssistant extends StatelessWidget {
 
             child: Padding(
 
-              padding:
-                  const EdgeInsets.only(
+              padding: const EdgeInsets.only(
 
-                    top: 12,
+                top: 12,
 
-                    right: 12,
+                right: 12,
 
-                  ),
+              ),
 
 
               child: Column(
@@ -213,26 +279,30 @@ class StarAssistant extends StatelessWidget {
                       padding:
                           const EdgeInsets.all(10),
 
+
                       decoration:
                           BoxDecoration(
 
-                        color:
-                            Colors.white,
+                        color: Colors.white,
 
                         borderRadius:
                             BorderRadius.circular(20),
 
                       ),
 
-                      child:
-                          const Text(
-                            "أنا معك ⭐",
-                            style:
-                                TextStyle(
-                              fontWeight:
-                                  FontWeight.bold,
-                            ),
-                          ),
+
+                      child: const Text(
+
+                        "أنا معك ⭐",
+
+                        style: TextStyle(
+
+                          fontWeight:
+                              FontWeight.bold,
+
+                        ),
+
+                      ),
 
                     ),
 
@@ -242,11 +312,14 @@ class StarAssistant extends StatelessWidget {
 
                     onTap: () async {
 
-  await StarVoiceManager.chooseGame();
 
-  openStarMenu(context);
+                      await StarVoiceManager.chooseGame();
 
-},
+
+                      openStarMenu(context);
+
+
+                    },
 
 
                     child: AnimatedScale(
@@ -261,20 +334,20 @@ class StarAssistant extends StatelessWidget {
                           ),
 
 
-                      child:
+                      child: HappyStar(
 
-                          HappyStar(
+                        size:
+                            talking ? 95 : 65,
 
-                            size:
-                                talking ? 95 : 65,
 
-                            idle:
-                                !talking,
+                        idle:
+                            !talking,
 
-                            message:
-                                "",
 
-                          ),
+                        message:
+                            "",
+
+                      ),
 
                     ),
 
