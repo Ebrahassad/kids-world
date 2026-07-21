@@ -88,13 +88,8 @@ class _StarAssistantState extends State<StarAssistant>
 
   Future<void> openStarMenu() async {
 
-
-  await StarVoiceManager.generalTalk();
-
-
   stars =
       await ProgressManager.getTotalStars();
-
 
   setState(() {
 
@@ -106,7 +101,6 @@ class _StarAssistantState extends State<StarAssistant>
   animationController.forward(
     from: 0,
   );
-
 
 }
 
