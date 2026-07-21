@@ -165,7 +165,29 @@ static const int totalGames = 10;
 
 
 
+// ==================================
+// خصم النجوم
+// ==================================
 
+static Future<bool> spendStars(int amount) async {
+
+  final prefs = await _prefs();
+
+  final currentStars =
+      prefs.getInt(totalStarsKey) ?? 0;
+
+  if (currentStars >= amount) {
+
+    await prefs.setInt(
+      totalStarsKey,
+      currentStars - amount,
+    );
+
+    return true;
+  }
+
+  return false;
+}
 
 
   // ==================================
