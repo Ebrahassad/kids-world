@@ -45,7 +45,7 @@ flutter:
 
 
 
-# إعداد أيقونة التطبيق
+# أيقونة التطبيق
 flutter_launcher_icons:
 
   android: true
@@ -58,7 +58,7 @@ flutter_launcher_icons:
 
 
 
-# إعداد شاشة البداية
+# شاشة البداية
 flutter_native_splash:
 
   color: "#87CEEB"
@@ -69,3 +69,5 @@ flutter_native_splash:
   android_12:
 
     color: "#87CEEB"
+
+    image: assets/icon/app_icon.png
