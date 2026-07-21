@@ -1,74 +1,42 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-
 class StarMouth {
-
-
   static void draw({
-
     required Canvas canvas,
     required double cx,
     required double cy,
     required double size,
     required bool talking,
     required bool happy,
-
   }) {
-
-
-
     final Paint smilePaint = Paint()
-
       ..color = Colors.black
-
       ..style = PaintingStyle.stroke
-
       ..strokeWidth = size * 0.025
-
       ..strokeCap = StrokeCap.round;
 
-
-
-    // ⭐ فم سعيد عند الفوز
+    // =========================
+    // وجه سعيد جداً
+    // =========================
     if (happy) {
-
-
       canvas.drawArc(
-
         Rect.fromCenter(
-
           center: Offset(
-
             cx,
-
-            cy + size * .10,
-
+            cy + size * .11,
           ),
-
           width: size * .45,
-
           height: size * .30,
-
         ),
-
         0,
-
         pi,
-
         false,
-
         smilePaint,
-
       );
 
-
-      // خدود الفوز
-      final Paint cheekPaint = Paint()
-
-        ..color = Colors.pink.withValues(alpha: 0.5);
-
-
+      final Paint blush = Paint()
+        ..color = Colors.pink.withValues(alpha: 0.45);
 
       canvas.drawCircle(
         Offset(
@@ -76,9 +44,8 @@ class StarMouth {
           cy + size * .12,
         ),
         size * .04,
-        cheekPaint,
+        blush,
       );
-
 
       canvas.drawCircle(
         Offset(
@@ -86,182 +53,120 @@ class StarMouth {
           cy + size * .12,
         ),
         size * .04,
-        cheekPaint,
+        blush,
       );
-
 
       return;
-
     }
 
-
-
-    // 🗣️ الكلام
+    // =========================
+    // أثناء الكلام
+    // =========================
     if (talking) {
-
-
-
+      // الفم
       canvas.drawOval(
-
         Rect.fromCenter(
-
           center: Offset(
-
             cx,
-
             cy + size * .15,
-
           ),
-
           width: size * .24,
-
-          height: size * .18,
-
+          height: size * .19,
         ),
-
         Paint()
-
           ..color = Colors.red.shade900,
-
       );
-
-
 
       // الأسنان
-      canvas.drawArc(
-
-        Rect.fromCenter(
-
-          center: Offset(
-
-            cx,
-
-            cy + size * .12,
-
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset(
+              cx,
+              cy + size * .115,
+            ),
+            width: size * .16,
+            height: size * .05,
           ),
-
-          width: size * .18,
-
-          height: size * .08,
-
+          Radius.circular(size * .02),
         ),
-
-        pi,
-
-        pi,
-
-        false,
-
-        Paint()
-
-          ..color = Colors.white
-
-          ..style = PaintingStyle.fill,
-
+        Paint()..color = Colors.white,
       );
-
-
 
       // اللسان
       canvas.drawOval(
-
         Rect.fromCenter(
-
           center: Offset(
-
             cx,
-
-            cy + size * .20,
-
+            cy + size * .19,
           ),
-
-          width: size * .12,
-
+          width: size * .11,
           height: size * .05,
-
         ),
-
         Paint()
-
           ..color = Colors.pinkAccent,
-
       );
 
-
-
-    } else {
-
-
-
-      // 🙂 الابتسامة العادية
-
-      canvas.drawArc(
-
-        Rect.fromCenter(
-
-          center: Offset(
-
-            cx,
-
-            cy + size * .10,
-
-          ),
-
-          width: size * .38,
-
-          height: size * .28,
-
-        ),
-
-        0,
-
-        pi,
-
-        false,
-
-        smilePaint,
-
-      );
-
-
-
-      final Paint cheekPaint = Paint()
-
-        ..color = Colors.pink.withValues(alpha: 0.5);
-
-
+      // خدود
+      final Paint blush = Paint()
+        ..color = Colors.pink.withValues(alpha: 0.35);
 
       canvas.drawCircle(
+        Offset(
+          cx - size * .27,
+          cy + size * .10,
+        ),
+        size * .03,
+        blush,
+      );
 
+      canvas.drawCircle(
+        Offset(
+          cx + size * .27,
+          cy + size * .10,
+        ),
+        size * .03,
+        blush,
+      );
+    } else {
+      // =========================
+      // ابتسامة عادية
+      // =========================
+      canvas.drawArc(
+        Rect.fromCenter(
+          center: Offset(
+            cx,
+            cy + size * .10,
+          ),
+          width: size * .38,
+          height: size * .28,
+        ),
+        0,
+        pi,
+        false,
+        smilePaint,
+      );
+
+      final Paint blush = Paint()
+        ..color = Colors.pink.withValues(alpha: 0.35);
+
+      canvas.drawCircle(
         Offset(
           cx - size * .27,
           cy + size * .12,
         ),
-
         size * .035,
-
-        cheekPaint,
-
+        blush,
       );
 
-
       canvas.drawCircle(
-
         Offset(
           cx + size * .27,
           cy + size * .12,
         ),
-
         size * .035,
-
-        cheekPaint,
-
+        blush,
       );
-
-
     }
-
   }
-
-
 }
