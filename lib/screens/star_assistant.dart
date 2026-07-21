@@ -6,13 +6,10 @@ import '../reward_ad_manager.dart';
 import 'happy_star.dart';
 
 
-class StarAssistant extends StatelessWidget {
-
+class StarAssistant extends StatefulWidget {
 
   final String gameName;
-
   final int currentLevel;
-
 
   const StarAssistant({
 
@@ -25,46 +22,381 @@ class StarAssistant extends StatelessWidget {
   });
 
 
+  @override
+  State<StarAssistant> createState() => _StarAssistantState();
 
-  // فتح قائمة النجمة
-  void openStarMenu(BuildContext context) async {
+}
 
 
-    final stars =
+class _StarAssistantState extends State<StarAssistant>
+    with SingleTickerProviderStateMixin {
+
+
+  bool menuVisible = false;
+
+  int stars = 0;
+
+
+  late AnimationController animationController;
+
+
+  late Animation<double> scaleAnimation;
+
+
+
+  @override
+  void initState() {
+
+    super.initState();
+
+
+    animationController = AnimationController(
+
+      vsync: this,
+
+      duration: const Duration(
+        milliseconds: 350,
+      ),
+
+    );
+
+
+    scaleAnimation = CurvedAnimation(
+
+      parent: animationController,
+
+      curve: Curves.elasticOut,
+
+    );
+
+
+  }
+
+
+
+  @override
+  void dispose(){
+
+    animationController.dispose();
+
+    super.dispose();
+
+  }
+
+
+
+
+  Future<void> openStarMenu() async {
+
+
+    stars =
         await ProgressManager.getTotalStars();
 
 
+    setState(() {
 
-    showModalBottomSheet(
+      menuVisible = true;
 
-      context: context,
-
-      backgroundColor: Colors.transparent,
-
-
-      builder: (context) {
+    });
 
 
-        return Container(
+    animationController.forward(
+      from: 0,
+    );
 
 
-          padding:
-              const EdgeInsets.all(20),
+  }
 
 
 
-          decoration:
-              const BoxDecoration(
+  void closeStarMenu(){
+
+
+    animationController.reverse();
+
+
+    Future.delayed(
+
+      const Duration(
+        milliseconds:200,
+      ),
+
+      (){
+
+        if(mounted){
+
+          setState(() {
+
+            menuVisible = false;
+
+          });
+
+        }
+
+      },
+
+    );
+
+
+  }
+
+
+
+  Widget starTitle(String text){
+
+    return Text(
+
+      text,
+
+      textAlign: TextAlign.center,
+
+
+      style: TextStyle(
+
+        fontSize: 22,
+
+        fontWeight: FontWeight.w900,
+
+        color: Colors.orange.shade700,
+
+
+        shadows: const [
+
+          Shadow(
 
             color: Colors.white,
 
-            borderRadius:
-                BorderRadius.vertical(
+            offset: Offset(0,-2),
 
-              top:
-                  Radius.circular(30),
+            blurRadius: 2,
+
+          ),
+
+
+          Shadow(
+
+            color: Colors.brown,
+
+            offset: Offset(0,3),
+
+            blurRadius: 2,
+
+          ),
+
+        ],
+
+      ),
+
+    );
+
+  }
+
+  Widget starMenuCard({
+
+    required IconData icon,
+
+    required String title,
+
+    required Color color,
+
+    required VoidCallback onTap,
+
+  }){
+
+
+    return InkWell(
+
+      borderRadius: BorderRadius.circular(20),
+
+      onTap: onTap,
+
+
+      child: Container(
+
+        margin: const EdgeInsets.symmetric(
+          vertical: 6,
+        ),
+
+
+        padding: const EdgeInsets.all(12),
+
+
+        decoration: BoxDecoration(
+
+          color: color.withOpacity(0.15),
+
+          borderRadius: BorderRadius.circular(20),
+
+
+          border: Border.all(
+
+            color: color.withOpacity(0.5),
+
+            width: 2,
+
+          ),
+
+
+          boxShadow: [
+
+            BoxShadow(
+
+              color: color.withOpacity(0.25),
+
+              blurRadius: 8,
+
+              offset: const Offset(0,4),
 
             ),
+
+          ],
+
+        ),
+
+
+
+        child: Row(
+
+          children: [
+
+
+            Container(
+
+              padding: const EdgeInsets.all(8),
+
+
+              decoration: BoxDecoration(
+
+                color: color,
+
+                shape: BoxShape.circle,
+
+              ),
+
+
+              child: Icon(
+
+                icon,
+
+                color: Colors.white,
+
+                size: 28,
+
+              ),
+
+            ),
+
+
+
+            const SizedBox(width:12),
+
+
+
+            Expanded(
+
+              child: Text(
+
+                title,
+
+
+                style: TextStyle(
+
+                  fontSize: 18,
+
+                  fontWeight: FontWeight.w900,
+
+                  color: color,
+
+                  shadows: const [
+
+                    Shadow(
+
+                      color: Colors.white,
+
+                      offset: Offset(0,-1),
+
+                      blurRadius: 1,
+
+                    ),
+
+                  ],
+
+                ),
+
+              ),
+
+            ),
+
+
+
+          ],
+
+        ),
+
+      ),
+
+    );
+
+  }
+
+
+
+
+
+
+  Widget floatingStarMenu(){
+
+
+    if(!menuVisible){
+
+      return const SizedBox();
+
+    }
+
+
+
+    return Positioned(
+
+      top: 85,
+
+      right: 15,
+
+
+      child: ScaleTransition(
+
+        scale: scaleAnimation,
+
+
+        child: Container(
+
+          width: 260,
+
+
+          padding: const EdgeInsets.all(16),
+
+
+          decoration: BoxDecoration(
+
+
+            color: Colors.white,
+
+
+            borderRadius: BorderRadius.circular(28),
+
+
+            boxShadow: [
+
+              BoxShadow(
+
+                color: Colors.black.withOpacity(0.25),
+
+                blurRadius: 15,
+
+                offset: const Offset(0,8),
+
+              ),
+
+            ],
 
           ),
 
@@ -72,27 +404,34 @@ class StarAssistant extends StatelessWidget {
 
           child: Column(
 
-
-            mainAxisSize:
-                MainAxisSize.min,
-
+            mainAxisSize: MainAxisSize.min,
 
 
             children: [
 
 
 
-              const Text(
+              starTitle(
+                "⭐ أنا نجمتك",
+              ),
 
-                "⭐ أنا نجمتك، ماذا تريد؟",
 
-                style:
-                    TextStyle(
 
-                  fontSize: 24,
+              const SizedBox(height:8),
 
-                  fontWeight:
-                      FontWeight.bold,
+
+
+              Text(
+
+                "ماذا تريد أن أفعل؟",
+
+                style: TextStyle(
+
+                  fontSize: 16,
+
+                  fontWeight: FontWeight.bold,
+
+                  color: Colors.grey.shade700,
 
                 ),
 
@@ -100,117 +439,356 @@ class StarAssistant extends StatelessWidget {
 
 
 
-              const SizedBox(height:20),
+              const SizedBox(height:12),
 
 
 
+              Container(
 
+                padding: const EdgeInsets.all(8),
 
-              // التلميح
+                decoration: BoxDecoration(
 
-              ListTile(
+                  color: Colors.amber.shade100,
 
-                leading:
-                    const Icon(
-
-                  Icons.lightbulb,
-
-                  color:
-                      Colors.orange,
+                  borderRadius: BorderRadius.circular(15),
 
                 ),
 
+                child: Text(
 
-                title:
-                    const Text(
+                  "⭐ رصيدك: $stars",
 
-                  "تلميح 💡",
+                  style: const TextStyle(
 
-                  style:
-                      TextStyle(
+                    fontSize:18,
 
-                    fontSize:20,
+                    fontWeight: FontWeight.bold,
 
                   ),
 
                 ),
 
+              ),
 
-                onTap: () {
 
 
-                  Navigator.pop(context);
+              const SizedBox(height:10),
 
+
+
+              starMenuCard(
+
+                icon: Icons.lightbulb,
+
+                title:"تلميح 💡",
+
+                color:Colors.orange,
+
+                onTap: (){
+
+                  closeStarMenu();
 
                   StarVoiceManager.hint();
 
-
                 },
-
 
               ),
 
 
 
+              starMenuCard(
+
+                icon:Icons.card_giftcard,
+
+                title:"شاهد إعلان واحصل على 50 ⭐",
+
+                color:Colors.purple,
+
+                onTap: () async {
+
+                  closeStarMenu();
+
+                  final rewarded =
+                      await RewardAdManager.showRewardAd();
+
+
+                  if(rewarded){
+
+                    await ProgressManager.addStars(50);
+
+                  }
+
+                },
+
+              ),
+
+
+
+              starMenuCard(
+
+                icon:Icons.lock_open,
+
+                title:"فتح المستوى التالي 🔓",
+
+                color:Colors.green,
+
+                onTap: (){
+
+  closeStarMenu();
+
+  unlockLevel();
+
+
+                  // نضع كود الفتح في الجزء الثالث
+
+                },
+
+              ),
+
+
+
+              TextButton(
+
+                onPressed: closeStarMenu,
+
+                child: const Text(
+
+                  "إغلاق ✖",
+
+                  style: TextStyle(
+
+                    fontWeight: FontWeight.bold,
+
+                  ),
+
+                ),
+
+              ),
+
+
+            ],
+
+          ),
+
+        ),
+
+      ),
+
+    );
+
+  }
+
+
+ id="b4s7qj"
+  @override
+  Widget build(BuildContext context) {
+
+
+    return ValueListenableBuilder<bool>(
+
+      valueListenable:
+          StarVoiceManager.talkingNotifier,
+
+
+      builder: (context, talking, child) {
+
+
+        return Stack(
+
+          children: [
+
+
+            floatingStarMenu(),
+
+
+
+            SafeArea(
+
+              child: Align(
+
+                alignment: Alignment.topRight,
+
+
+                child: Padding(
+
+                  padding: const EdgeInsets.only(
+
+                    top:12,
+
+                    right:12,
+
+                  ),
+
+
+                  child: Column(
+
+                    mainAxisSize:
+                        MainAxisSize.min,
+
+
+                    crossAxisAlignment:
+                        CrossAxisAlignment.end,
+
+
+                    children: [
+
+
+
+                      if(talking)
+
+                        Container(
+
+                          padding:
+                              const EdgeInsets.all(10),
+
+
+                          decoration:
+                              BoxDecoration(
+
+                            color: Colors.white,
+
+                            borderRadius:
+                                BorderRadius.circular(20),
+
+                            boxShadow: [
+
+                              BoxShadow(
+
+                                color:
+                                    Colors.black.withOpacity(0.15),
+
+                                blurRadius:8,
+
+                              ),
+
+                            ],
+
+                          ),
+
+
+                          child: const Text(
+
+                            "أنا معك ⭐",
+
+                            style: TextStyle(
+
+                              fontWeight:
+                                  FontWeight.bold,
+
+                            ),
+
+                          ),
+
+                        ),
 
 
 
 
-              
-
-                // رصيد النجوم
-
-ListTile(
-
-  leading: const Icon(
-    Icons.star,
-    color: Colors.amber,
-  ),
-
-  title: Text(
-    "رصيد النجوم ⭐ $stars",
-    style: const TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-
-  
-
-),
+                      GestureDetector(
 
 
+                        onTap: () {
 
-// نجوم مجانية من الإعلان
+  if(menuVisible){
 
-ListTile(
+    closeStarMenu();
 
-  leading: const Icon(
-    Icons.card_giftcard,
-    color: Colors.purple,
-  ),
+  }
+  else{
 
-  title: const Text(
-    "شاهد إعلان واحصل على 50 نجمة 🎬⭐",
-    style: TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
+    openStarMenu();
 
-  onTap: () async {
+  }
 
-    Navigator.pop(context);
+},
+
+                        child: AnimatedScale(
 
 
-    final rewarded =
-        await RewardAdManager.showRewardAd();
+                          scale:
+                              talking ? 1.25 : 1.0,
 
 
-    if (rewarded) {
+                          duration:
+                              const Duration(
+
+                            milliseconds:350,
+
+                          ),
 
 
-      await ProgressManager.addStars(50);
+
+                          child: HappyStar(
+
+                            size:
+                                talking ? 95 : 75,
+
+                            idle:
+                                !talking,
+
+                            message:
+                                "",
+
+                          ),
+
+
+                        ),
+
+
+                      ),
+
+
+                    ],
+
+                  ),
+
+                ),
+
+              ),
+
+            ),
+
+
+          ],
+
+        );
+
+
+      },
+
+    );
+
+
+  }
+
+
+
+  Future<void> unlockLevel() async {
+
+
+    const cost = 20;
+
+
+    final paid =
+        await ProgressManager.spendStars(cost);
+
+
+
+    if(paid){
+
+
+      await ProgressManager.saveUnlockedLevel(
+
+        widget.gameName,
+
+        widget.currentLevel + 1,
+
+      );
+
+
+      await StarVoiceManager.unlock();
+
 
 
       ScaffoldMessenger.of(context)
@@ -218,8 +796,11 @@ ListTile(
 
         const SnackBar(
 
-          content: Text(
-            "🎁 حصلت على 50 نجمة ⭐",
+          content:
+              Text(
+
+            "تم فتح المستوى التالي 🔓⭐",
+
           ),
 
         ),
@@ -227,7 +808,10 @@ ListTile(
       );
 
 
-    } else {
+
+    }
+
+    else{
 
 
       ScaffoldMessenger.of(context)
@@ -235,8 +819,11 @@ ListTile(
 
         const SnackBar(
 
-          content: Text(
-            "لم يكتمل الإعلان ❌",
+          content:
+              Text(
+
+            "تحتاج 20 نجمة ⭐",
+
           ),
 
         ),
@@ -246,380 +833,5 @@ ListTile(
 
     }
 
-  },
-
-),
-
-              // فتح مستوى
-
-              ListTile(
-
-                leading:
-                    const Icon(
-
-                  Icons.lock_open,
-
-                  color:
-                      Colors.green,
-
-                ),
-
-
-
-                title:
-                    const Text(
-
-                  "فتح المستوى التالي 🔓",
-
-                  style:
-                      TextStyle(
-
-                    fontSize:20,
-
-                  ),
-
-                ),
-
-
-
-
-                onTap: () async {
-
-
-                  Navigator.pop(context);
-
-
-
-                  const cost = 20;
-
-
-
-                  final paid =
-                      await ProgressManager
-                          .spendStars(cost);
-
-
-
-
-                  if(paid){
-
-
-
-                    await ProgressManager
-                        .saveUnlockedLevel(
-
-                      gameName,
-
-                      currentLevel + 1,
-
-                    );
-
-
-
-                    await StarVoiceManager
-                        .unlock();
-
-
-
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(
-
-
-
-                      const SnackBar(
-
-                        content:
-                            Text(
-
-                          "تم فتح المستوى التالي 🔓⭐",
-
-                        ),
-
-                      ),
-
-
-                    );
-
-
-
-                  } else {
-
-
-
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(
-
-
-
-                      const SnackBar(
-
-                        content:
-                            Text(
-
-                          "تحتاج 20 نجمة ⭐",
-
-                        ),
-
-                      ),
-
-
-                    );
-
-
-
-                  }
-
-
-
-                },
-
-
-              ),
-
-
-
-
-            ],
-
-
-          ),
-
-
-        );
-
-
-      },
-
-
-    );
-
 
   }
-
-
-
-
-
-
-  @override
-  Widget build(BuildContext context) {
-
-
-
-    return ValueListenableBuilder<bool>(
-
-
-      valueListenable:
-          StarVoiceManager.talkingNotifier,
-
-
-
-      builder:
-          (context,talking,child){
-
-
-
-        return SafeArea(
-
-
-
-          child:
-              Align(
-
-
-            alignment:
-                Alignment.topRight,
-
-
-
-            child:
-                Padding(
-
-
-              padding:
-                  const EdgeInsets.only(
-
-                top:12,
-
-                right:12,
-
-              ),
-
-
-
-
-              child:
-                  Column(
-
-
-
-                mainAxisSize:
-                    MainAxisSize.min,
-
-
-
-                crossAxisAlignment:
-                    CrossAxisAlignment.end,
-
-
-
-                children: [
-
-
-
-
-                  if(talking)
-
-
-
-                    Container(
-
-
-
-                      padding:
-                          const EdgeInsets.all(10),
-
-
-
-                      decoration:
-                          BoxDecoration(
-
-
-                        color:
-                            Colors.white,
-
-
-                        borderRadius:
-                            BorderRadius.circular(20),
-
-
-                      ),
-
-
-
-                      child:
-                          const Text(
-
-                        "أنا معك ⭐",
-
-                        style:
-                            TextStyle(
-
-                          fontWeight:
-                              FontWeight.bold,
-
-                        ),
-
-                      ),
-
-
-
-                    ),
-
-
-
-
-
-                  GestureDetector(
-
-
-
-                    onTap: () async {
-
-
-
-                      await StarVoiceManager.chooseGame();
-
-
-
-                      openStarMenu(context);
-
-
-
-                    },
-
-
-
-
-                    child:
-                        AnimatedScale(
-
-
-
-                      scale:
-                          talking ? 1.25 : 1.0,
-
-
-
-                      duration:
-                          const Duration(
-
-                        milliseconds:350,
-
-                      ),
-
-
-
-
-                      child:
-                          HappyStar(
-
-
-
-                        size:
-                            talking ? 95 : 65,
-
-
-
-                        idle:
-                            !talking,
-
-
-
-                        message:
-                            "",
-
-
-                      ),
-
-
-
-                    ),
-
-
-
-                  ),
-
-
-
-
-                ],
-
-
-
-              ),
-
-
-
-            ),
-
-
-
-          ),
-
-
-
-        );
-
-
-
-      },
-
-
-    );
-
-
-  }
-
-
-}
