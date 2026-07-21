@@ -28,8 +28,7 @@ final bool idle;
 
 
 class _HappyStarState extends State<HappyStar>
-    with SingleTickerProviderStateMixin {
-
+    with TickerProviderStateMixin {
 
   bool blink = false;
   bool talking = false;
