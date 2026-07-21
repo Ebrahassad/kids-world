@@ -245,6 +245,42 @@ Future<void> unlockGame() async {
   },
 ),
 
+const SizedBox(height: 15),
+
+Container(
+  padding: const EdgeInsets.all(15),
+
+  margin: const EdgeInsets.symmetric(
+    horizontal: 10,
+  ),
+
+  decoration: BoxDecoration(
+    color: Colors.white,
+
+    borderRadius: BorderRadius.circular(20),
+
+    boxShadow: const [
+      BoxShadow(
+        color: Colors.black26,
+        blurRadius: 8,
+        offset: Offset(0, 3),
+      ),
+    ],
+  ),
+
+  child: Text(
+    "⭐ ${StarVoiceManager.winMessage()}",
+
+    textAlign: TextAlign.center,
+
+    style: const TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+),
+
+
                    const SizedBox(height: 40),
                     // زر المستوى التالي (يظهر فقط في الألعاب ذات المستويات)
                     if (widget.hasLevels)
