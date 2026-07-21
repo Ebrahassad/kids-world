@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../progress_manager.dart';
-
+import '../star_voice_manager.dart';
+import 'happy_star.dart';
 import 'game_screen.dart';
 import 'choose_image_screen.dart';
 import 'match_image_screen.dart';
@@ -114,25 +115,32 @@ class _GamesScreenState extends State<GamesScreen> {
   ];
 
 
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
+ @override
+void initState() {
+  super.initState();
+
+  _loadData();
+}
+
+
+Future<void> _loadData() async {
+
+  totalStars =
+      await ProgressManager.getTotalStars();
+
+  openedGames =
+      await ProgressManager.getUnlockedGame();
+
+  if (mounted) {
+
+    setState(() {
+      loading = false;
+    });
+
+    StarVoiceManager.chooseGame();
+
   }
-
-  Future<void> _loadData() async {
-    totalStars =
-        await ProgressManager.getTotalStars();
-
-    openedGames =
-        await ProgressManager.getUnlockedGame();
-
-    if (mounted) {
-      setState(() {
-        loading = false;
-      });
-    }
-  }
+}
 
   Future<void> _refreshData() async {
     await _loadData();
@@ -205,6 +213,7 @@ Widget build(BuildContext context) {
   return Scaffold(
     body: Stack(
       children: [
+
         Positioned.fill(
           child: Image.asset(
             "assets/images/background.png",
@@ -212,15 +221,29 @@ Widget build(BuildContext context) {
           ),
         ),
 
+
         Positioned.fill(
           child: Container(
             color: Colors.white.withOpacity(0.12),
           ),
         ),
 
+
+        // ⭐ النجمة المساعدة فوق الشاشة
+        Positioned(
+          bottom: 20,
+          right: 10,
+          child: HappyStar(
+            size: 85,
+            message: "اختر لعبتك ⭐",
+          ),
+        ),
+
+
         SafeArea(
           child: Column(
             children: [
+
               const SizedBox(height: 12),
 
               const Text(
@@ -232,119 +255,148 @@ Widget build(BuildContext context) {
                 ),
               ),
 
+
               const SizedBox(height: 18),
-Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16),
-  child: Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: Colors.white.withOpacity(0.92),
-      borderRadius: BorderRadius.circular(22),
-      boxShadow: const [
-        BoxShadow(
-          color: Colors.black12,
-          blurRadius: 12,
-          offset: Offset(0, 6),
-        ),
-      ],
-    ),
-    child: Column(
-      children: [
-        Row(
-          children: [
-            const Icon(
-              Icons.star_rounded,
-              color: Colors.amber,
-              size: 34,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                "النجوم: $totalStars",
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.92),
+                    borderRadius: BorderRadius.circular(22),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 12,
+                        offset: Offset(0, 6),
+                      ),
+                    ],
+                  ),
+
+                  child: Column(
+                    children: [
+
+                      Row(
+                        children: [
+
+                          const Icon(
+                            Icons.star_rounded,
+                            color: Colors.amber,
+                            size: 34,
+                          ),
+
+                          const SizedBox(width: 10),
+
+                          Expanded(
+                            child: Text(
+                              "النجوم: $totalStars",
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+
+
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
+
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+
+                            child: Text(
+                              "$openedGames / 10",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+
+                        ],
+                      ),
+
+
+                      const SizedBox(height: 14),
+
+
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: LinearProgressIndicator(
+                          value: openedGames / 10,
+                          minHeight: 12,
+                          backgroundColor: Colors.grey.shade300,
+                          color: Colors.blue,
+                        ),
+                      ),
+
+
+                      const SizedBox(height: 8),
+
+
+                      Text(
+                        "تم فتح $openedGames من أصل 10 ألعاب",
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 8,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Text(
-                "$openedGames / 10",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+
+
+              const SizedBox(height: 18),
+
+
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+
+                  child: GridView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: games.length,
+
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 0.86,
+                    ),
+
+
+                    itemBuilder: (context, index) {
+
+                      final game = games[index];
+
+                      final unlocked = _isUnlocked(game.id);
+
+
+                      return GameCard(
+                        game: game,
+                        unlocked: unlocked,
+                        index: index,
+                        onTap: () => _openGame(game),
+                      );
+
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 14),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: LinearProgressIndicator(
-            value: openedGames / 10,
-            minHeight: 12,
-            backgroundColor: Colors.grey.shade300,
-            color: Colors.blue,
+
+            ],
           ),
         ),
-        const SizedBox(height: 8),
-        Text(
-          "تم فتح $openedGames من أصل 10 ألعاب",
-          style: TextStyle(
-            color: Colors.grey.shade700,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
-  ),
-),
 
-const SizedBox(height: 18),
-
-Expanded(
-  child: Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16),
-    child: GridView.builder(
-      physics: const BouncingScrollPhysics(),
-      itemCount: games.length,
-      gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 0.86,
-      ),
-      itemBuilder: (context, index) {
-
-  final game = games[index];
-
-  final unlocked = _isUnlocked(game.id);
-
-  return GameCard(
-    game: game,
-    unlocked: unlocked,
-    index: index,
-    onTap: () => _openGame(game),
-  );
-},
-
-     ),
-  ),
-),
-       
-             ],
-          ),
-        ),
       ],
     ),
   );
@@ -353,66 +405,58 @@ Expanded(
   // ==================================
   // رسالة عند فتح لعبة جديدة
   // ==================================
+// ==================================
+// رسالة عند فتح لعبة جديدة
+// ==================================
 
-  void showUnlockMessage(
-    String title,
-  ) {
+void showUnlockMessage(
+  String title,
+) {
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
+  StarVoiceManager.unlock();
 
-      SnackBar(
+  ScaffoldMessenger.of(context)
+      .showSnackBar(
 
-        behavior:
-            SnackBarBehavior.floating,
+    SnackBar(
 
-        shape:
-            RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(20),
-        ),
+      behavior: SnackBarBehavior.floating,
 
-        backgroundColor:
-            Colors.green,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
 
-        content: Row(
+      backgroundColor: Colors.green,
 
-          children: [
+      content: Row(
 
-            const Icon(
-              Icons.star,
-              color: Colors.yellow,
-            ),
+        children: [
 
-            const SizedBox(
-              width: 10,
-            ),
+          const Icon(
+            Icons.star,
+            color: Colors.yellow,
+          ),
 
-            Expanded(
+          const SizedBox(width: 10),
 
-              child: Text(
-
-                "تم فتح لعبة جديدة: $title",
-
-                style:
-                    const TextStyle(
-                  fontWeight:
-                      FontWeight.bold,
-                ),
-
+          Expanded(
+            child: Text(
+              "تم فتح لعبة جديدة: $title",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
               ),
-
             ),
+          ),
 
-          ],
-
-        ),
+        ],
 
       ),
 
-    );
+    ),
 
-  }
+  );
+
+}
 
 
 
