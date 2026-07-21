@@ -19,9 +19,9 @@ workflows:
         script: |
           dart run flutter_launcher_icons
 
-      - name: Build APK Split
+      - name: Build Debug APK Split
         script: |
-          flutter build apk --release --split-per-abi
+          flutter build apk --debug --split-per-abi
 
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
