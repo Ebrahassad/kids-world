@@ -6,8 +6,7 @@
 
         android:name="${applicationName}"
 
-        android:label="Kids World"
-
+        android:label="⭐ عالم الأطفال"
         android:icon="@drawable/ic_launcher">
 
 
