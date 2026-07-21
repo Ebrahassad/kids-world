@@ -1,11 +1,10 @@
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 
 class RewardAdManager {
 
 
-  // ضع معرف إعلان المكافأة التجريبي أثناء التطوير
   static const String rewardAdUnitId =
       'ca-app-pub-3940256099942544/5224354917';
 
@@ -14,19 +13,17 @@ class RewardAdManager {
 
 
 
-  // تحميل الإعلان
-  static void loadRewardAd() {
+  static Future<void> loadRewardAd() async {
 
 
-    RewardedAd.load(
+    await RewardedAd.load(
 
       adUnitId: rewardAdUnitId,
 
       request: const AdRequest(),
 
       rewardedAdLoadCallback:
-
-      RewardedAdLoadCallback(
+          RewardedAdLoadCallback(
 
 
         onAdLoaded: (ad) {
@@ -58,17 +55,23 @@ class RewardAdManager {
 
 
 
-  // عرض الإعلان وإرجاع هل حصل الطفل على المكافأة
   static Future<bool> showRewardAd() async {
 
 
     if (_rewardedAd == null) {
 
-      loadRewardAd();
+      await loadRewardAd();
+
+    }
+
+
+
+    if (_rewardedAd == null) {
 
       return false;
 
     }
+
 
 
     bool rewarded = false;
@@ -80,9 +83,7 @@ class RewardAdManager {
       onUserEarnedReward:
           (ad, reward) {
 
-
         rewarded = true;
-
 
       },
 
@@ -94,7 +95,6 @@ class RewardAdManager {
 
 
     loadRewardAd();
-
 
 
     return rewarded;
