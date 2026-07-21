@@ -13,6 +13,8 @@ import 'sort_objects_screen.dart';
 import 'puzzle_order_screen.dart';
 import 'hard_puzzle_screen.dart';
 import '../progress_manager.dart';
+import 'exit_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -1189,7 +1191,45 @@ class _HomeScreenState extends State<HomeScreen>
 
                   ),
 
+Container(
 
+  decoration: BoxDecoration(
+
+    color: Colors.white.withOpacity(0.18),
+
+    borderRadius: BorderRadius.circular(16),
+
+  ),
+
+  child: IconButton(
+
+    icon: const Icon(
+
+      Icons.exit_to_app_rounded,
+
+      color: Colors.white,
+
+    ),
+
+    onPressed: () {
+
+      Navigator.push(
+
+        context,
+
+        MaterialPageRoute(
+
+          builder: (_) => const ExitScreen(),
+
+        ),
+
+      );
+
+    },
+
+  ),
+
+),
 
 
                   const SizedBox(height: 15),
