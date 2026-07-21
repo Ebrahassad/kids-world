@@ -835,3 +835,4 @@ class _StarAssistantState extends State<StarAssistant>
 
 
   }
+}
