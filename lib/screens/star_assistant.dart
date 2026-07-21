@@ -498,31 +498,35 @@ class _StarAssistantState extends State<StarAssistant>
 
 
               starMenuCard(
+  icon: Icons.card_giftcard,
+  title:"شاهد إعلان واحصل على 50 ⭐",
+  color: Colors.purple,
+  onTap: () async {
 
-                icon:Icons.card_giftcard,
+    closeStarMenu();
 
-                title:"شاهد إعلان واحصل على 50 ⭐",
-
-                color:Colors.purple,
-
-                onTap: () async {
-
-                  closeStarMenu();
-
-                  final rewarded =
-                      await RewardAdManager.showRewardAd();
+    final rewarded =
+        await RewardAdManager.showRewardAd();
 
 
-                  if(rewarded){
+    if(rewarded){
 
-                    await ProgressManager.addStars(50);
+      await ProgressManager.addStars(50);
 
-                  }
+      if(mounted){
 
-                },
+        setState(() {
 
-              ),
+          stars += 50;
 
+        });
+
+      }
+
+    }
+
+  },
+),
 
 
               starMenuCard(
