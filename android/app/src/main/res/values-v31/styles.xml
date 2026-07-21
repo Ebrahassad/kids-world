@@ -7,10 +7,6 @@
 
         <item name="android:windowSplashScreenAnimatedIcon">@null</item>
 
-        <item name="android:windowSplashScreenBrandingImage">@null</item>
-
-        <item name="android:postSplashScreenTheme">@style/NormalTheme</item>
-
     </style>
 
 
