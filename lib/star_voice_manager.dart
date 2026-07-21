@@ -124,15 +124,11 @@ class StarVoiceManager {
 
 
 
-  // ⭐ الصوت العام عند الضغط على النجمة
-  static Future<void> generalTalk() async {
-
-    await _play(
-      "star_talk.mp3",
-    );
-
-  }
-
+  
+  // ⭐ الحديث العام عند الضغط على النجمة
+static Future<void> generalTalk() async {
+  await _play("general_talk.mp3");
+}
 
 
 
