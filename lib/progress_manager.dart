@@ -189,7 +189,24 @@ static Future<bool> spendStars(int amount) async {
   return false;
 }
 
+// ==================================
+// إضافة نجوم (مكافآت - إعلانات)
+// ==================================
 
+static Future<void> addStars(int amount) async {
+
+  final prefs = await _prefs();
+
+  final currentStars =
+      prefs.getInt(totalStarsKey) ?? 0;
+
+
+  await prefs.setInt(
+    totalStarsKey,
+    currentStars + amount,
+  );
+
+}
   // ==================================
   // حفظ اللعبة المكتملة
   // ==================================
