@@ -14,6 +14,7 @@ import 'puzzle_order_screen.dart';
 import 'hard_puzzle_screen.dart';
 import '../progress_manager.dart';
 import 'exit_screen.dart';
+import 'star_assistant.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -193,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen>
 
           ),
 
-
+const StarAssistant(),
 
           SafeArea(
 
