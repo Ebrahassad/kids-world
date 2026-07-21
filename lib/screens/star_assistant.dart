@@ -10,6 +10,149 @@ class StarAssistant extends StatelessWidget {
   });
 
 
+  void openStarMenu(BuildContext context) {
+
+    showModalBottomSheet(
+
+      context: context,
+
+      backgroundColor: Colors.transparent,
+
+      builder: (context) {
+
+        return Container(
+
+          padding: const EdgeInsets.all(20),
+
+          decoration: const BoxDecoration(
+
+            color: Colors.white,
+
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(30),
+            ),
+
+          ),
+
+
+          child: Column(
+
+            mainAxisSize: MainAxisSize.min,
+
+
+            children: [
+
+
+              const Text(
+
+                "⭐ ماذا تريد أن تفعل؟",
+
+                style: TextStyle(
+
+                  fontSize: 24,
+
+                  fontWeight: FontWeight.bold,
+
+                ),
+
+              ),
+
+
+              const SizedBox(height: 20),
+
+
+
+              ListTile(
+
+                leading: const Icon(
+                  Icons.lightbulb,
+                  color: Colors.orange,
+                ),
+
+                title: const Text(
+                  "تلميح 💡",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+
+                onTap: () {
+
+                  Navigator.pop(context);
+
+                  StarVoiceManager.hint();
+
+                },
+
+              ),
+
+
+
+              ListTile(
+
+                leading: const Icon(
+                  Icons.star,
+                  color: Colors.amber,
+                ),
+
+                title: const Text(
+                  "رصيد النجوم ⭐",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+
+                onTap: () {
+
+                  Navigator.pop(context);
+
+                  StarVoiceManager.stars();
+
+                },
+
+              ),
+
+
+
+              ListTile(
+
+                leading: const Icon(
+                  Icons.lock_open,
+                  color: Colors.green,
+                ),
+
+                title: const Text(
+                  "فتح مرحلة 🔓",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+
+                onTap: () {
+
+                  Navigator.pop(context);
+
+                  StarVoiceManager.unlock();
+
+                },
+
+              ),
+
+
+            ],
+
+          ),
+
+        );
+
+      },
+
+    );
+
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -61,20 +204,7 @@ class StarAssistant extends StatelessWidget {
                     Container(
 
                       padding:
-                          const EdgeInsets.symmetric(
-
-                            horizontal: 12,
-
-                            vertical: 8,
-
-                          ),
-
-
-                      margin:
-                          const EdgeInsets.only(
-                            bottom: 5,
-                          ),
-
+                          const EdgeInsets.all(10),
 
                       decoration:
                           BoxDecoration(
@@ -85,69 +215,59 @@ class StarAssistant extends StatelessWidget {
                         borderRadius:
                             BorderRadius.circular(20),
 
-
-                        boxShadow: const [
-
-                          BoxShadow(
-
-                            color:
-                                Colors.black26,
-
-                            blurRadius:
-                                5,
-
-                          ),
-
-                        ],
-
                       ),
-
 
                       child:
                           const Text(
-
-                        "أنا معك ⭐",
-
-                        style:
-                            TextStyle(
-
-                          fontWeight:
-                              FontWeight.bold,
-
-                        ),
-
-                      ),
+                            "أنا معك ⭐",
+                            style:
+                                TextStyle(
+                              fontWeight:
+                                  FontWeight.bold,
+                            ),
+                          ),
 
                     ),
 
 
 
-                  AnimatedScale(
+                  GestureDetector(
 
-                    scale:
-                        talking ? 1.25 : 1.0,
+                    onTap: () {
 
+                      openStarMenu(context);
 
-                    duration:
-                        const Duration(
-                          milliseconds: 350,
-                        ),
+                    },
 
 
-                    child:
+                    child: AnimatedScale(
 
-                        HappyStar(
+                      scale:
+                          talking ? 1.25 : 1.0,
 
-                          size:
-                              talking ? 95 : 65,
 
-                          idle:
-                              !talking,
+                      duration:
+                          const Duration(
+                            milliseconds: 350,
+                          ),
 
-                          message:
-                              "",
 
-                        ),
+                      child:
+
+                          HappyStar(
+
+                            size:
+                                talking ? 95 : 65,
+
+                            idle:
+                                !talking,
+
+                            message:
+                                "",
+
+                          ),
+
+                    ),
 
                   ),
 
