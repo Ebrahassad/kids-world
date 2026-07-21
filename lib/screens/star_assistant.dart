@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../star_voice_manager.dart';
 import '../progress_manager.dart';
+import '../reward_ad_manager.dart';
 import 'happy_star.dart';
 
 
@@ -205,7 +206,44 @@ class StarAssistant extends StatelessWidget {
               ),
 
 
+// نجوم مجانية من الإعلان
 
+ListTile(
+
+  leading: const Icon(
+    Icons.card_giftcard,
+    color: Colors.purple,
+  ),
+
+  title: const Text(
+    "احصل على 50 نجمة مجانية 🎬",
+    style: TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+
+  onTap: () async {
+
+    Navigator.pop(context);
+
+    if (await RewardAdManager.showRewardAd()) {
+
+  await ProgressManager.addStars(50);
+
+}
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+      const SnackBar(
+        content: Text(
+          "🎁 حصلت على 50 نجمة ⭐",
+        ),
+      ),
+    );
+
+  },
+
+),
 
 
 
