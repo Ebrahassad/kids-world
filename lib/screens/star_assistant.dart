@@ -527,25 +527,21 @@ class _StarAssistantState extends State<StarAssistant>
 
               starMenuCard(
 
-                icon:Icons.lock_open,
+  icon: Icons.lock_open,
 
-                title:"فتح المستوى التالي 🔓",
+  title: "فتح المستوى التالي 🔓",
 
-                color:Colors.green,
+  color: Colors.green,
 
-                onTap: (){
+  onTap: () {
 
-  closeStarMenu();
+    closeStarMenu();
 
-  unlockLevel();
+    unlockLevel();
 
+  },
 
-                  // نضع كود الفتح في الجزء الثالث
-
-                },
-
-              ),
-
+),
 
 
               TextButton(
