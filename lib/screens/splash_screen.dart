@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
+import '../star_voice_manager.dart';
+import 'happy_star.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,6 +25,14 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+
+Future.delayed(
+  const Duration(milliseconds: 700),
+  () {
+    StarVoiceManager.welcome();
+  },
+);
+
 
 
     _scaleController = AnimationController(
@@ -143,44 +154,14 @@ class _SplashScreenState extends State<SplashScreen>
 
                       scale: _scaleAnimation,
 
-                      child: Container(
+                      
 
-                        width: 180,
-                        height: 180,
+child: HappyStar(
+  size: 150,
+  message: "أهلاً بك ⭐",
+),
 
-
-                        decoration: BoxDecoration(
-
-                          color: Colors.white,
-
-                          shape: BoxShape.circle,
-
-                          boxShadow: const [
-
-                            BoxShadow(
-                              color: Colors.blueAccent,
-                              blurRadius: 25,
-                              spreadRadius: 5,
-                            ),
-
-                          ],
-
-                        ),
-
-
-                        child: ClipOval(
-
-                          child: Image.asset(
-
-                            "assets/icon/app_icon.png",
-
-                            fit: BoxFit.cover,
-
-                          ),
-
-                        ),
-
-                      ),
+                      
 
                     ),
 
