@@ -9,7 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
 
-  // تشغيل AdMob
+  // تهيئة AdMob
   await MobileAds.instance.initialize();
 
 
