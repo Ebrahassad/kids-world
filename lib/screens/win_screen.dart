@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:confetti/confetti.dart';
-import 'package:flutter/services.dart';
+
 import '../progress_manager.dart';
 import 'win_button_3d.dart';
 import 'stars_card.dart';
 import '../star_voice_manager.dart';
+import '../widgets/kids_scaffold.dart';
+
 
 class WinScreen extends StatefulWidget {
 
@@ -96,22 +98,16 @@ Future<void> unlockGame() async {
 }
 
   Future<void> playWinSound() async {
-
-    try {
-
-      Future<void> playWinSound() async {
   try {
-    // مؤثر الفوز
+    // تشغيل مؤثر الفوز
     await audioPlayer.play(
-      AssetSource(
-        "sounds/win.mp3",
-      ),
+      AssetSource("sounds/win.mp3"),
     );
 
-    // انتظر حتى ينتهي مؤثر الفوز
+    // انتظار انتهاء المؤثر
     await audioPlayer.onPlayerComplete.first;
 
-    // انتظر نصف ثانية
+    // انتظار نصف ثانية
     await Future.delayed(
       const Duration(milliseconds: 500),
     );
@@ -122,15 +118,6 @@ Future<void> unlockGame() async {
     debugPrint("خطأ الصوت: $e");
   }
 }
-    } catch (e) {
-
-      debugPrint(
-        "خطأ الصوت: $e",
-      );
-
-    }
-
-  }
 
   @override
   void dispose() {
@@ -151,12 +138,9 @@ Future<void> unlockGame() async {
     final bool isLastLevel =
         widget.currentLevel >= widget.maxLevels;
 
-    return Scaffold(
-
-      backgroundColor:
-          const Color(0xffB3E5FC),
-
-      body: Stack(
+    return KidsScaffold(
+  backgroundColor: const Color(0xffB3E5FC),
+  child: Stack(
 
         alignment: Alignment.center,
 
@@ -363,30 +347,18 @@ Future<void> unlockGame() async {
 
                           ),
 
+
+
                         );
 
                       },
 
                     ),
 
-                    const SizedBox(height: 15),
+ const SizedBox(height: 30),               
 
-                    WinButton3D(
 
-                      text: "إغلاق التطبيق 🚪",
-
-                      icon: Icons.exit_to_app,
-
-                      color: Colors.red,
-
-                      onPressed: () {
-
-                        SystemNavigator.pop();
-
-                      },
-
-                    ),
-
+ 
                   ],
 
                 ),
