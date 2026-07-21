@@ -156,54 +156,29 @@ class StarAssistant extends StatelessWidget {
 
 
 
-              // رصيد النجوم
+              
 
-              ListTile(
+                // رصيد النجوم
 
-                leading:
-                    const Icon(
+ListTile(
 
-                  Icons.star,
+  leading: const Icon(
+    Icons.star,
+    color: Colors.amber,
+  ),
 
-                  color:
-                      Colors.amber,
+  title: Text(
+    "رصيد النجوم ⭐ $stars",
+    style: const TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
 
-                ),
+  
 
+),
 
-
-                title:
-                    Text(
-
-                  "رصيد النجوم ⭐ $stars",
-
-                  style:
-                      const TextStyle(
-
-                    fontSize:20,
-
-                    fontWeight:
-                        FontWeight.bold,
-
-                  ),
-
-                ),
-
-
-
-                onTap: () {
-
-
-                  Navigator.pop(context);
-
-
-                  StarVoiceManager.stars();
-
-
-                },
-
-
-              ),
 
 
 // نجوم مجانية من الإعلان
@@ -216,7 +191,7 @@ ListTile(
   ),
 
   title: const Text(
-    "احصل على 50 نجمة مجانية 🎬",
+    "شاهد إعلان واحصل على 50 نجمة 🎬⭐",
     style: TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.bold,
@@ -227,27 +202,53 @@ ListTile(
 
     Navigator.pop(context);
 
-    if (await RewardAdManager.showRewardAd()) {
 
-  await ProgressManager.addStars(50);
+    final rewarded =
+        await RewardAdManager.showRewardAd();
 
-}
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-      const SnackBar(
-        content: Text(
-          "🎁 حصلت على 50 نجمة ⭐",
+
+    if (rewarded) {
+
+
+      await ProgressManager.addStars(50);
+
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+
+          content: Text(
+            "🎁 حصلت على 50 نجمة ⭐",
+          ),
+
         ),
-      ),
-    );
+
+      );
+
+
+    } else {
+
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+
+          content: Text(
+            "لم يكتمل الإعلان ❌",
+          ),
+
+        ),
+
+      );
+
+
+    }
 
   },
 
 ),
-
-
-
-
 
               // فتح مستوى
 
