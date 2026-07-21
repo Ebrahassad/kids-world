@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class StarFace {
-
   static void drawEyes({
     required Canvas canvas,
     required double cx,
@@ -10,18 +9,14 @@ class StarFace {
     required bool blink,
     required bool happy,
   }) {
-
     final eyePaint = Paint()
       ..color = Colors.black
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
 
-
-    // ⭐ وجه سعيد عند الفوز
+    // ⭐ وجه سعيد
     if (happy) {
-
       eyePaint.style = PaintingStyle.stroke;
-
 
       canvas.drawArc(
         Rect.fromCenter(
@@ -38,7 +33,6 @@ class StarFace {
         eyePaint,
       );
 
-
       canvas.drawArc(
         Rect.fromCenter(
           center: Offset(
@@ -54,17 +48,12 @@ class StarFace {
         eyePaint,
       );
 
-
       return;
     }
 
-
-
     // 👀 رمش
     if (blink) {
-
       eyePaint.style = PaintingStyle.stroke;
-
 
       canvas.drawLine(
         Offset(
@@ -78,7 +67,6 @@ class StarFace {
         eyePaint,
       );
 
-
       canvas.drawLine(
         Offset(
           cx + size * .08,
@@ -90,14 +78,9 @@ class StarFace {
         ),
         eyePaint,
       );
-
-
     } else {
-
-
-      // 🙂 عيون عادية
+      // 🙂 العينان
       eyePaint.style = PaintingStyle.fill;
-
 
       canvas.drawCircle(
         Offset(
@@ -108,7 +91,6 @@ class StarFace {
         eyePaint,
       );
 
-
       canvas.drawCircle(
         Offset(
           cx + size * .15,
@@ -118,12 +100,9 @@ class StarFace {
         eyePaint,
       );
 
-
-
-      // لمعة العين
-      final Paint shine = Paint()
+      // ✨ لمعة العين
+      final shine = Paint()
         ..color = Colors.white;
-
 
       canvas.drawCircle(
         Offset(
@@ -134,7 +113,6 @@ class StarFace {
         shine,
       );
 
-
       canvas.drawCircle(
         Offset(
           cx + size * .165,
@@ -144,7 +122,57 @@ class StarFace {
         shine,
       );
 
-    }
+      // 😊 الخدود
+      final blush = Paint()
+        ..color = Colors.pink.withValues(alpha: 0.35);
 
+      canvas.drawCircle(
+        Offset(
+          cx - size * .24,
+          cy + size * .05,
+        ),
+        size * .035,
+        blush,
+      );
+
+      canvas.drawCircle(
+        Offset(
+          cx + size * .24,
+          cy + size * .05,
+        ),
+        size * .035,
+        blush,
+      );
+
+      // 👁️ الحواجب
+      final brow = Paint()
+        ..color = Colors.brown.shade700
+        ..strokeWidth = 2.5
+        ..strokeCap = StrokeCap.round;
+
+      canvas.drawLine(
+        Offset(
+          cx - size * .20,
+          cy - size * .12,
+        ),
+        Offset(
+          cx - size * .10,
+          cy - size * .14,
+        ),
+        brow,
+      );
+
+      canvas.drawLine(
+        Offset(
+          cx + size * .10,
+          cy - size * .14,
+        ),
+        Offset(
+          cx + size * .20,
+          cy - size * .12,
+        ),
+        brow,
+      );
+    }
   }
 }
