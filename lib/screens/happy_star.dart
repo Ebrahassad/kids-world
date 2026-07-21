@@ -8,12 +8,15 @@ class HappyStar extends StatefulWidget {
 
   final double size;
   final String message;
+final bool idle;
+
 
   const HappyStar({
-    super.key,
-    this.size = 90,
-    this.message = "أحسنت يا بطل! ⭐",
-  });
+  super.key,
+  this.size = 90,
+  this.message = "أحسنت يا بطل! ⭐",
+  this.idle = false,
+});
 
 
   @override
@@ -331,17 +334,20 @@ class _HappyStarState extends State<HappyStar>
 
 
 
-        Transform.translate(
+        AnimatedScale(
+  duration: const Duration(milliseconds: 400),
+  scale: widget.idle ? 0.72 : 1.0,
+  child: Transform.translate(
 
           offset: Offset(
-            0,
-            -10 * bounceAnimation.value,
-          ),
+  0,
+  widget.idle ? 0 : -10 * bounceAnimation.value,
+),
 
 
           child: Transform.rotate(
 
-            angle: starRotation,
+            angle: widget.idle ? 0 : starRotation,
 
 
             child: AnimatedBuilder(
@@ -399,69 +405,41 @@ class _HappyStarState extends State<HappyStar>
 
         ),
 
-
+),
 
         const SizedBox(
+  width: 10,
+),
 
-          width: 10,
+if (!widget.idle)
+  Container(
 
+    padding: const EdgeInsets.all(12),
+
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(18),
+      boxShadow: const [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 8,
+          offset: Offset(0, 3),
         ),
+      ],
+    ),
+
+    child: Text(
+      widget.message,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Colors.black87,
+      ),
+    ),
+  ),
 
 
-
-        Container(
-
-          padding: const EdgeInsets.all(12),
-
-
-          decoration: BoxDecoration(
-
-            color: Colors.white,
-
-            borderRadius:
-                BorderRadius.circular(18),
-
-
-            boxShadow: const [
-
-              BoxShadow(
-
-                color: Colors.black12,
-
-                blurRadius: 8,
-
-                offset: Offset(0, 3),
-
-              ),
-
-            ],
-
-          ),
-
-
-
-          child: Text(
-
-            widget.message,
-
-
-            style: const TextStyle(
-
-              fontSize: 16,
-
-              fontWeight:
-                  FontWeight.bold,
-
-              color:
-                  Colors.black87,
-
-            ),
-
-          ),
-
-        ),
-
-
+          
       ],
 
     );
