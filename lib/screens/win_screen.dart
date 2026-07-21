@@ -3,40 +3,46 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:confetti/confetti.dart';
 
 import '../progress_manager.dart';
-import 'win_button_3d.dart';
-import 'stars_card.dart';
 import '../star_voice_manager.dart';
 import '../widgets/kids_scaffold.dart';
+
+import 'win_button_3d.dart';
+import 'stars_card.dart';
+
 
 
 class WinScreen extends StatefulWidget {
 
+
   final int stars;
 
-final int gameId;
+  final int gameId;
 
   final Widget nextGame;
 
   final Widget gamesPage;
 
-  // هل اللعبة تحتوي على مستويات؟
+
   final bool hasLevels;
 
-  // المستوى الحالي
+
   final int currentLevel;
 
-  // عدد المستويات
+
   final int maxLevels;
 
-  // صفحة المستوى التالي
+
   final Widget? nextLevelPage;
+
+
 
   const WinScreen({
 
     super.key,
 
     required this.stars,
-required this.gameId,
+
+    required this.gameId,
 
     required this.nextGame,
 
@@ -52,75 +58,200 @@ required this.gameId,
 
   });
 
+
+
   @override
   State<WinScreen> createState() =>
       _WinScreenState();
+
 }
+
+
+
+
 
 class _WinScreenState extends State<WinScreen> {
 
-  final AudioPlayer audioPlayer = AudioPlayer();
+
+  final AudioPlayer audioPlayer =
+      AudioPlayer();
+
+
 
   late ConfettiController confettiController;
+
+
+
+
 
   @override
   void initState() {
 
     super.initState();
 
-    confettiController = ConfettiController(
-      duration: const Duration(seconds: 5),
+
+
+    confettiController =
+        ConfettiController(
+
+      duration:
+          const Duration(seconds: 5),
+
     );
 
-    playWinSound();
+
 
     confettiController.play();
 
-Future.microtask(() {
-  unlockGame();
-});
 
-    
+
+    saveProgress();
+
+
+
+    playWinSound();
+
 
   }
 
-  
-Future<int> getTotalStars() {
-  return ProgressManager.getTotalStars();
-}
 
-Future<void> unlockGame() async {
 
-  await ProgressManager.unlockNextGame(
-    widget.gameId,
-  );
 
-}
+
+
+  Future<void> saveProgress() async {
+
+
+    // حفظ النجوم
+    await ProgressManager.saveStars(
+
+      "memory_game",
+
+      widget.stars,
+
+    );
+
+
+
+    // فتح اللعبة التالية
+    await ProgressManager.unlockNextGame(
+
+      widget.gameId,
+
+    );
+
+
+
+    // حفظ تقدم المستوى
+    if(widget.hasLevels){
+
+
+      await ProgressManager.saveCompletedLevel(
+
+        "memory_game",
+
+        widget.currentLevel,
+
+      );
+
+
+
+      if(widget.currentLevel < widget.maxLevels){
+
+
+        await ProgressManager.saveUnlockedLevel(
+
+          "memory_game",
+
+          widget.currentLevel + 1,
+
+        );
+
+
+      }
+
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+  Future<int> getTotalStars() async {
+
+
+    return await ProgressManager
+        .getTotalStars();
+
+
+  }
+
+
+
+
+
 
   Future<void> playWinSound() async {
-  try {
-    // تشغيل مؤثر الفوز
-    await audioPlayer.play(
-      AssetSource("sounds/win.mp3"),
-    );
 
-    // انتظار انتهاء المؤثر
-    await audioPlayer.onPlayerComplete.first;
 
-    // انتظار نصف ثانية
-    await Future.delayed(
-      const Duration(milliseconds: 500),
-    );
+    try {
 
-    // كلام النجمة
-    await StarVoiceManager.win();
-  } catch (e) {
-    debugPrint("خطأ الصوت: $e");
+
+      await audioPlayer.play(
+
+        AssetSource(
+          "sounds/win.mp3",
+        ),
+
+      );
+
+
+
+      await audioPlayer
+          .onPlayerComplete
+          .first;
+
+
+
+      await Future.delayed(
+
+        const Duration(
+          milliseconds: 500,
+        ),
+
+      );
+
+
+
+      await StarVoiceManager.win();
+
+
+
+    } catch(e){
+
+
+      debugPrint(
+        "Win Sound Error: $e",
+      );
+
+
+    }
+
+
   }
-}
+
+
+
+
+
 
   @override
-  void dispose() {
+  void dispose(){
 
     audioPlayer.dispose();
 
@@ -130,69 +261,120 @@ Future<void> unlockGame() async {
 
   }
 
-  
-  
-  @override
-  Widget build(BuildContext context) {
 
-    final bool isLastLevel =
+
+
+
+
+
+
+  @override
+  Widget build(BuildContext context){
+
+
+
+    final isLastLevel =
         widget.currentLevel >= widget.maxLevels;
 
-    return KidsScaffold(
-  backgroundColor: const Color(0xffB3E5FC),
-  child: Stack(
 
-        alignment: Alignment.center,
+
+
+    return KidsScaffold(
+
+
+      backgroundColor:
+          const Color(0xffB3E5FC),
+
+
+
+      child: Stack(
+
+
+        alignment:
+            Alignment.center,
+
+
 
         children: [
 
+
+
           Align(
 
-            alignment: Alignment.topCenter,
+            alignment:
+                Alignment.topCenter,
+
 
             child: ConfettiWidget(
 
               confettiController:
                   confettiController,
 
+
               blastDirectionality:
                   BlastDirectionality.explosive,
 
-              shouldLoop: false,
 
-              numberOfParticles: 50,
+              numberOfParticles:
+                  50,
+
 
             ),
 
           ),
 
+
+
+
+
+
           Center(
+
 
             child: SingleChildScrollView(
 
+
+
               child: Padding(
+
 
                 padding:
                     const EdgeInsets.all(25),
 
+
+
+
                 child: Column(
+
 
                   mainAxisAlignment:
                       MainAxisAlignment.center,
 
+
+
                   children: [
+
+
 
                     const Text(
 
                       "🎉🏆⭐",
 
                       style: TextStyle(
+
                         fontSize: 80,
+
                       ),
 
                     ),
 
-                    const SizedBox(height: 20),
+
+
+                    const SizedBox(height:20),
+
+
+
+
 
                     const Text(
 
@@ -200,18 +382,25 @@ Future<void> unlockGame() async {
 
                       style: TextStyle(
 
-                        fontSize: 42,
+                        fontSize:42,
 
                         fontWeight:
                             FontWeight.bold,
 
-                        color: Colors.green,
+                        color:
+                            Colors.green,
 
                       ),
 
                     ),
 
-                    const SizedBox(height: 20),
+
+
+
+                    const SizedBox(height:20),
+
+
+
 
                     const Text(
 
@@ -220,9 +409,10 @@ Future<void> unlockGame() async {
                       textAlign:
                           TextAlign.center,
 
+
                       style: TextStyle(
 
-                        fontSize: 23,
+                        fontSize:23,
 
                         fontWeight:
                             FontWeight.bold,
@@ -231,73 +421,159 @@ Future<void> unlockGame() async {
 
                     ),
 
-                    const SizedBox(height: 25),
+
+
+
+
+                    const SizedBox(height:25),
+
+
+
 
                     FutureBuilder<int>(
-  future: getTotalStars(),
-  builder: (context, snapshot) {
-
-    return StarsCard(
-      totalStars:
-          snapshot.data ?? widget.stars,
-    );
-
-  },
-),
-
-const SizedBox(height: 15),
-
-Container(
-  padding: const EdgeInsets.all(15),
-
-  margin: const EdgeInsets.symmetric(
-    horizontal: 10,
-  ),
-
-  decoration: BoxDecoration(
-    color: Colors.white,
-
-    borderRadius: BorderRadius.circular(20),
-
-    boxShadow: const [
-      BoxShadow(
-        color: Colors.black26,
-        blurRadius: 8,
-        offset: Offset(0, 3),
-      ),
-    ],
-  ),
-
-  child: Text(
-    "⭐ ${StarVoiceManager.winMessage()}",
-
-    textAlign: TextAlign.center,
-
-    style: const TextStyle(
-      fontSize: 18,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-),
 
 
-                   const SizedBox(height: 40),
-                    // زر المستوى التالي (يظهر فقط في الألعاب ذات المستويات)
-                    if (widget.hasLevels)
+                      future:
+                          getTotalStars(),
+
+
+
+                      builder:(context,snapshot){
+
+
+                        return StarsCard(
+
+                          totalStars:
+                              snapshot.data ??
+                              widget.stars,
+
+                        );
+
+
+                      },
+
+                    ),
+
+
+
+
+
+                    const SizedBox(height:20),
+
+
+
+
+
+                    Container(
+
+
+                      padding:
+                          const EdgeInsets.all(15),
+
+
+
+                      decoration:
+                          BoxDecoration(
+
+
+                        color:
+                            Colors.white,
+
+
+                        borderRadius:
+                            BorderRadius.circular(20),
+
+
+
+                        boxShadow: const [
+
+                          BoxShadow(
+
+                            color:
+                                Colors.black26,
+
+                            blurRadius:
+                                8,
+
+                          ),
+
+                        ],
+
+
+                      ),
+
+
+
+                      child: Text(
+
+                        "⭐ ${StarVoiceManager.winMessage()}",
+
+
+                        textAlign:
+                            TextAlign.center,
+
+
+
+                        style:
+                            const TextStyle(
+
+                          fontSize:18,
+
+                          fontWeight:
+                              FontWeight.bold,
+
+                        ),
+
+                      ),
+
+                    ),
+
+
+
+
+
+
+                    const SizedBox(height:40),
+
+
+
+
+
+
+                    if(widget.hasLevels)
+
 
                       WinButton3D(
 
-                        text: isLastLevel
-                            ? "العودة إلى المراحل 📋"
+
+                        text:
+
+                        isLastLevel
+
+                            ? "العودة للمراحل 📋"
+
                             : "المستوى التالي ➡",
 
-                        icon: isLastLevel
+
+
+                        icon:
+
+                        isLastLevel
+
                             ? Icons.list
+
                             : Icons.arrow_forward,
 
-                        color: Colors.orange,
 
-                        onPressed: () {
+
+                        color:
+                            Colors.orange,
+
+
+
+                        onPressed:(){
+
+
 
                           Navigator.pushReplacement(
 
@@ -305,37 +581,63 @@ Container(
 
                             MaterialPageRoute(
 
-                              builder: (_) {
+                              builder:(_){
 
-  if (isLastLevel || widget.nextLevelPage == null) {
-    return widget.gamesPage;
-  }
 
-  return widget.nextLevelPage!;
+                                if(isLastLevel ||
+                                   widget.nextLevelPage == null){
 
-},
+                                  return widget.gamesPage;
+
+                                }
+
+
+                                return widget.nextLevelPage!;
+
+
+                              },
 
                             ),
 
                           );
 
+
                         },
 
                       ),
 
-                    if (widget.hasLevels)
-                      const SizedBox(height: 15),
 
-                    // إعادة اللعب
+
+
+
+
+                    const SizedBox(height:15),
+
+
+
+
+
+
                     WinButton3D(
 
-                      text: "إعادة اللعب 🔄",
 
-                      icon: Icons.refresh,
+                      text:
+                          "إعادة اللعب 🔄",
 
-                      color: Colors.green,
 
-                      onPressed: () {
+
+                      icon:
+                          Icons.refresh,
+
+
+
+                      color:
+                          Colors.green,
+
+
+
+                      onPressed:(){
+
 
                         Navigator.pushReplacement(
 
@@ -343,34 +645,61 @@ Container(
 
                           MaterialPageRoute(
 
-                            builder: (_) =>
+                            builder:(_)=>
                                 widget.nextGame,
 
                           ),
 
                         );
 
+
                       },
+
 
                     ),
 
-                    const SizedBox(height: 15),
 
-                    // إذا كانت اللعبة بدون مستويات يظهر زر الألعاب
-                    // وإذا كانت بمستويات يظهر زر المراحل
+
+
+
+
+                    const SizedBox(height:15),
+
+
+
+
+
                     WinButton3D(
 
-                      text: widget.hasLevels
+
+                      text:
+
+                      widget.hasLevels
+
                           ? "المراحل 📋"
+
                           : "صفحة الألعاب 🎮",
 
-                      icon: widget.hasLevels
+
+
+                      icon:
+
+                      widget.hasLevels
+
                           ? Icons.list
+
                           : Icons.games,
 
-                      color: Colors.blue,
 
-                      onPressed: () {
+
+                      color:
+                          Colors.blue,
+
+
+
+                      onPressed:(){
+
+
 
                         Navigator.pushReplacement(
 
@@ -378,39 +707,46 @@ Container(
 
                           MaterialPageRoute(
 
-                            builder: (_) =>
+                            builder:(_)=>
                                 widget.gamesPage,
 
                           ),
 
-
-
                         );
+
 
                       },
 
+
                     ),
 
- const SizedBox(height: 30),               
 
 
- 
+
                   ],
+
 
                 ),
 
+
               ),
+
 
             ),
 
+
           ),
+
 
         ],
 
+
       ),
+
 
     );
 
   }
+
 
 }
