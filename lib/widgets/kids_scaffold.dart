@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'star_assistant.dart';
+import '../screens/star_assistant.dart';
 
 class KidsScaffold extends StatelessWidget {
   final Widget child;
