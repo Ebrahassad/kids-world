@@ -21,7 +21,7 @@ class StarAssistant extends StatelessWidget {
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 350),
                 child: HappyStar(
-                  key: ValueKey(talking),
+                  
                   size: talking ? 95 : 65,
                   idle: !talking,
                   message: talking
